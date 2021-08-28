@@ -24,6 +24,6 @@ nGrok is used for speed + convenience only, instead, you can deploy to a publica
 
 There are other alternative services like **[https://localtunnel.github.io/www/](localtunnel)**
 
-Long story short, if nGrok/tunneling is scary, just deploy the server and use the hostname as the "tunnel" value in **[config.json](./../settings/config.json)**
+Long story short, if nGrok/tunneling is scary or a Bad Idea for yourself and organization, just deploy the server and use the hostname as the "tunnel" value in **[config.json](./../settings/config.json)**
 </p>
 </details>

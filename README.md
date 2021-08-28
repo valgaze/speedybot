@@ -14,7 +14,7 @@ tl:dr; Speedy & easy way to rapidly iterate with conversation "bots"
 
 ## In a nutshell
 
-Speedybot is a virtually-zero configuration kit designed to take you from zero to a useful bot. It instruments on top of the handy **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** but handles most configuration details for. With a bot token and a tunnel address, you'll be up & running in less than a couple minutes.
+Speedybot is a virtually-zero configuration kit designed to take you from zero to a useful bot. It instruments on top of the handy **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** but handles most configuration details for you. With a bot token and a tunnel address, you'll be up & running in less than a couple minutes.
 
 With Speedybot, all you need to worry about is the **[settings](https://github.com/valgaze/speedybot/tree/master/settings)** directory where you'll find two files:
 
@@ -75,7 +75,7 @@ Rather than using **[npx](https://docs.npmjs.com/cli/v7/commands/npx)**, you can
 ```sh
 npm i -g speedybot
 
-yarn add global speedyspot
+yarn global add speedybot
 ```
 
 Make sure all works well by opening a new terminal and entering:

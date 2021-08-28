@@ -1,6 +1,6 @@
 ## Quickstart
 
-Note: The steps below assume you have a working WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 10.15 or higher
+Note: The steps below assume you have a working WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+
 
 ## 0. Fetch repo & install dependencies
 
