@@ -1,0 +1,109 @@
+<script src="https://code.s4d.io/widget-space/production/bundle.js"></script>
+<link rel="stylesheet" href="https://code.s4d.io/widget-space/production/main.css">
+
+<body>
+    <div class="chat-wrap">
+        <fieldset>
+            <legend>See WebEx in a Web Embed</legend>
+            <div><label>STEP 1: Set  accessId (copy personal access token from <a href="https://developer.webex.com/docs/api/v1/rooms/list-rooms" _target="_blank">here</a>): </label><input type="text" id="access_id" value="" placeholder="access id here" /></div>
+            <div><label>STEP 2: Set RoomId (not room name): </label><input type="text" id="space_id" value="" placeholder="space id here" /></div>
+            <ul class="resources">
+                <li><a href="https://developer.webex.com/docs/api/v1/rooms/list-rooms">Get access token</a></li>
+                <li><a href="https://developer.webex.com/docs/api/v1/rooms/list-rooms">Get all subscribed rooms</a></li>
+                <li><a href="https://www.github.com/webex/react-widgets">Source</a></li>
+            </ul>
+        </fieldset>
+        <div class="launch-wrap">
+            <button id="launch" class="chat-inactive">LAUNCH</button>
+            <div id="my-webexteams-widget" style="width: 500px; height: 500px;" />
+        </div>
+    </div>
+    <script>
+        window.__active = false;
+        const setInputs = (selectors, vals) => {
+            selectors.forEach((selector, idx) => {
+                document.querySelector(selector, idx).value = vals[idx]
+            })
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessid = urlParams.get('access_id')
+        const roomid = urlParams.get('room_id')
+        if (accessid && roomid) {
+            const $accessid = document.querySelector('#access_id')
+            const $spaceid = document.querySelector('#space_id')
+
+            // setInputs([$accessid, $spaceid], [accessid, roomid])
+            setInputs(['#space_id', '#access_id'], [roomid, accessid])
+        }
+        // Helpers
+        const $button = document.querySelector('#launch')
+        const addClass = (selector, className) => selector.classList.add(className)
+        const removeClass = (selector, className) => selector.classList.remove(className)
+        const changeLabel = (label) => {
+            $button.innerHTML = label
+        }
+        const setButton = (status) => {
+
+            // alert(document.querySelector('#launch').classList.removeClass('x'))
+            if (status === 'active') {
+                addClass($button, 'chat-inactive')
+                removeClass($button, 'chat-active')
+                changeLabel('Launch')
+            } else {
+                removeClass($button, 'chat-inactive')
+                addClass($button, 'chat-active')
+                changeLabel('Hide')
+            }
+        }
+
+        // Launch button
+        const launch = (accessId, spaceId, $elector) => {
+            const errorBank = []
+            if (!accessId) {
+                errorBank.push(`Missing access token (copy 'Bearer' token from here: Copy token from here: https://developer.webex.com/docs/api/v1/rooms/list-rooms)`)
+            }
+            if (!spaceId) {
+                errorBank.push(`Missing space id. Click "run" for a list of all your spaces: https://developer.webex.com/docs/api/v1/people/list-people`)
+            }
+            // if ($elector) {
+            //   errorBank.push(`Missing element mount, use document.querySelector('.element-selector-here')`);
+            // }
+            if (errorBank.length) {
+                const error = errorBank.join('\n')
+                console.log(error)
+                return alert(errorBank.join('\n'))
+            }
+
+            window.__active = !window.__active;
+            if (window.__active) {
+                setButton('inactive')
+                webex.widget($elector).spaceWidget({
+                    accessToken: accessId,
+                    destinationId: spaceId,
+                    destinationType: 'spaceId'
+                });
+            } else {
+                setButton('active')
+                webex.widget($elector).remove()
+            }
+
+        }
+
+
+        const getInputs = (...selectors) => {
+            const vals = []
+            selectors.forEach((selector, idx) => {
+                const val = document.querySelector(selector).value
+                vals.push(val)
+            })
+            return vals
+        }
+
+        document.querySelector('#launch').addEventListener('click', (e) => {
+            const [access_id, space_id] = getInputs('#access_id', '#space_id');
+            const widgetEl = document.getElementById('my-webexteams-widget');
+            launch(access_id, space_id, widgetEl);
+        })
+        const widgetEl = document.getElementById('my-webexteams-widget');
+    </script>
+</body>
