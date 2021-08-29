@@ -1,18 +1,17 @@
 {
     "name": "speedybot",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "bin": {
         "speedybot": "./dist/src/cli/index.js"
     },
     "scripts": {
+        "test": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
         "patch": "npx np patch",
         "prepublish": "npm run build",
-        "tunnel": "node dist/src/cli/index.js tunnel 8000",
-        "start:dist": "node dist/src/server",
-        "start": "node -r ts-node/register ./src/server/index.ts",
-        "start:inspect": "node --inspect=5858 -r ts-node/register ./src/server/index.ts",
         "dev": "nodemon",
+        "start": "ts-node src/launcher",
+        "start:dist": "cd dist && node src/launcher",
         "build": "tsc",
         "setup": "npm i && tsc"
     },
@@ -25,20 +24,18 @@
     "author": "valgaze@gmail.com",
     "license": "MIT",
     "dependencies": {
-        "@types/express": "^4.17.13",
         "chalk": "^4.1.2",
-        "express": "^4.17.1",
-        "fs-extra": "^10.0.0",
-        "ngrok": "^3.2.7",
-        "webex-node-bot-framework": "^2.3.7",
-        "@types/node": "^13.13.52"
+        "webex-node-bot-framework": "^2.3.7"
     },
     "files": [
         "dist/**"
     ],
     "devDependencies": {
-        "ts-node": "^8.10.1",
+        "@types/node": "^13.13.52",
+        "@types/tape": "^4.13.2",
         "nodemon": "^2.0.4",
+        "tape": "^5.3.1",
+        "ts-node": "^8.10.1",
         "typescript": "^3.8.3"
     }
 }

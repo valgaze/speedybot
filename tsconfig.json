@@ -22,7 +22,7 @@
   },
   "include": [
     "src/**/*",
-		"tests/**/*"
+		"test/**/*"
   ],
   "exclude": [
     "src/frontend",

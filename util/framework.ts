@@ -55,6 +55,10 @@ export interface FrameworkInst {
 }
 
 export type handlerFunc = (bot: BotInst, trigger: Trigger) => void;
+
+export type activators = string | RegExp;
+export type AllowedActivators = activators | activators[];
+
 /**
  * BotHandler
  * 
@@ -62,15 +66,12 @@ export type handlerFunc = (bot: BotInst, trigger: Trigger) => void;
  * 
  */
  export interface BotHandler {
-	activator: AllowedActivators // todo: restrict "help" &
+	activator: AllowedActivators; // string or regex, or a list of both
 	handler: handlerFunc;
 	helpText: string; // Help is a reserved name, if you type @botname help, any handlers you write this way will list out their help data
 	preference?: number;
 }
 
-export type activatorNames = 'help' | 'healthcheck' | 'help'
-export type activators = string | RegExp;
-export type AllowedActivators = activators | activators[];
 
 /**
  * https://github.com/WebexSamples/webex-node-bot-framework/blob/master/README.md#bot
