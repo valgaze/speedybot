@@ -1,10 +1,10 @@
-
 export default {
 	keyword: 'sendcard',
 	handler(bot, trigger) {
 		bot.say('One card on the way...')
 
 		// Adapative Card: https://developer.webex.com/docs/api/guides/cards
+		// Card with n buttons, each emits "chip_action" with their label value
 		const cardPayload = {
 			"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 			"type": "AdaptiveCard",
@@ -43,7 +43,6 @@ export default {
 				}
 			}]
 		}
-
 		bot.sendCard(cardPayload, 'Your client does not currently support Adaptive Cards :(')
 	},
 	helpText: 'Sends an Adaptive Card with an input field to the user'

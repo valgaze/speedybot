@@ -1,51 +1,51 @@
 import chalk from 'chalk';
 import { createInterface } from 'readline';
 
-export function log (...payload) { console.log.apply(console, payload as [any?, ...any[]]); }
+export function log(...payload) { console.log.apply(console, payload as [any?, ...any[]]); }
 
 export function warning(...payload) {
-    log(chalk.yellow(...payload))
+	log(chalk.yellow(...payload))
 }
 
 export function bad(...payload) {
-		color('red', `\n\n# ----------------PROBLEM!------------------- #\n\n`)
-    log(chalk.red(...payload))
-		color('red', `\n\n# ------------------------------------------- #\n\n`)
+	color('red', `\n\n# ----------------PROBLEM!------------------- #\n\n`)
+	log(chalk.red(...payload))
+	color('red', `\n\n# ------------------------------------------- #\n\n`)
 
 }
 
 export function good(...payload) {
-    log(chalk.green(...payload))
+	log(chalk.green(...payload))
 }
 
-export function color (color = "red", ...payload) {
-		try {
-			log(chalk[color](...payload))
-		} catch { 
-			log(chalk['red'](...payload))
-		}
+export function color(color = "red", ...payload) {
+	try {
+		log(chalk[color](...payload))
+	} catch {
+		log(chalk['red'](...payload))
+	}
 }
 
-export function red(...payload) { return color('red', ...payload)}
+export function red(...payload) { return color('red', ...payload) }
 
-export function loud (...payload) {
-    color('red', `\n\n# ---------------------------------------- #\n\n`)
-    log(chalk.yellow(...payload))
-    color('red', `\n\n# ---------------------------------------- #\n\n`)
+export function loud(...payload) {
+	color('red', `\n\n# ---------------------------------------- #\n\n`)
+	log(chalk.yellow(...payload))
+	color('red', `\n\n# ---------------------------------------- #\n\n`)
 }
 
 export function askQuestion(question: string): Promise<string> {
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+	const rl = createInterface({
+		input: process.stdin,
+		output: process.stdout,
+	});
 
-  return new Promise((resolve, reject) => {
-    rl.question(question, function (res) {
-      resolve(res);
-      rl.close();
-    });
-  });
+	return new Promise((resolve, reject) => {
+		rl.question(question, function (res) {
+			resolve(res);
+			rl.close();
+		});
+	});
 }
 
 export async function yesNo(question): Promise<boolean> {
@@ -54,8 +54,8 @@ export async function yesNo(question): Promise<boolean> {
 	return yay.includes(res.toLowerCase());
 }
 
-export const ascii_art = (colorSelect='green')  => {
-color(colorSelect, `
+export const ascii_art = (colorSelect = 'green') => {
+	color(colorSelect, `
 ███████╗██████╗ ███████╗███████╗██████╗ ██╗   ██╗██████╗  ██████╗ ████████╗
 ██╔════╝██╔══██╗██╔════╝██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝
 ███████╗██████╔╝█████╗  █████╗  ██║  ██║ ╚████╔╝ ██████╔╝██║   ██║   ██║   
@@ -63,12 +63,12 @@ color(colorSelect, `
 ███████║██║     ███████╗███████╗██████╔╝   ██║   ██████╔╝╚██████╔╝   ██║   
 ╚══════╝╚═╝     ╚══════╝╚══════╝╚═════╝    ╚═╝   ╚═════╝  ╚═════╝    ╚═╝   
 `)
-	
+
 }
 export const help = () => {
 
-ascii_art()
-log(`
+	ascii_art()
+	log(`
 See here for a step-by-step guide: https://github.com/valgaze/speedybot/blob/master/quickstart.md
 _________________________________
 
@@ -80,19 +80,25 @@ Before you start, you'll need a WebEx bot token
 
 - Create one and save the token from here: https://developer.webex.com/my-apps/new/bot
 
-- Run the following to scaffold up a project:
+## [CLI] Fast setup & boot
+Run the following to scaffold & boot
 
-$ npx speedybot setup
-cd speedybot
-npm run setup
+$ npx speedybot setup xxxxyyyyzzz_bot_token_here_xxxxyyyyzzz
 
-- Save the token to speedybot/settings/config.json under the "token" field:
 
-- Boot the bot with:
+## [Git] Setup & boot
+Or alteratively, run
 
+$ git clone https://github.com/valgaze/speedybot speedybot
+$ cd speedybot
+$ npm run setup
+# Save your bot token to speedybot/settings/config.json under the "token" field
 $ npm start
 
+Once your agent is running:
+
 - Start a 1-1 session with the bot & ask it "healthcheck" to verify all's well
-`)
+
+If any trouble, see here: https://github.com/valgaze/speedybot/blob/master/quickstart.md`)
 
 }

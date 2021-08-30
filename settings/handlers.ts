@@ -1,4 +1,4 @@
-import { BotHandler } from './../util/framework'
+import { BotHandler } from './../util'
 
 /**
  * Add a "handler" below to control your bot's responses to a user-- just add to the list
@@ -51,13 +51,12 @@ const handlers: BotHandler[] = [
 	{
 		keyword: '<@submit>',
 		handler(bot, trigger) {
+			// Ex. From here data could be transmitted to another service or a 3rd-party integrationn
 			bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
-
-			// ex. From here, data could be passed to a 3rd-party integration
 
 		},
 		helpText: `A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
-	}
+	},
 ]
 
 export default handlers;

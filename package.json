@@ -11,7 +11,8 @@
         "prepublish": "npm run build",
         "dev": "nodemon",
         "start": "ts-node src/launcher",
-        "start:dist": "cd dist && node src/launcher",
+        "start:dist": "npm run setup && cd dist && node src/launcher",
+        "write:json": "cd dist && node src/cli write:json",
         "build": "tsc",
         "setup": "npm i && tsc"
     },

@@ -3,7 +3,7 @@ export default {
 	keyword: ['healthcheck'],
 	handler(bot, trigger) {
 		// Pick a random response for healthcheck
-		const choices = [`At the tone, the time will be ${new Date}`]
+		const choices = [`At the tone, the time will be ${new Date}`, `${new Date}, healthcheck is GOOD`, `Health Status: Good (${new Date()})`]
 		bot.say(pickRandom(choices))
 
 		// Attempt to display a rich adaptive card
