@@ -190,3 +190,16 @@ export const CardSample = {
 		}
 	]
 }
+
+
+const payload = {
+	title: 'System is 👍',
+	text: 'If you see this card, everything is working',
+	image: 'https://i.imgur.com/SW78JRd.jpg',
+	buttonLabel: `Take a moment to celebrate`,
+	url: `https://www.youtube.com/watch?v=3GwjfUFyY6M`,
+	input: {
+		placeholder: `What's on your mind?`
+	}		
+}
+console.log(JSON.stringify(easyCard(payload)))

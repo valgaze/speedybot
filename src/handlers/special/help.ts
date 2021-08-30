@@ -1,6 +1,4 @@
 import { easyCard } from './../../../util'
-
-// This might be a 
 export default function (handlerList) {
 	return {
 		activator: ['help', 'helpme', '?'],
@@ -11,9 +9,9 @@ export default function (handlerList) {
 				text
 			}
 			return bot.sendCard(easyCard(payload), `${new Date()} everything is working fine. (But your client doesn't support rendering adpative cards)`);
-	
+
 		},
-		helpText: `**help:**`
+		helpText: `**help: Get help info**`
 	}
 
 }

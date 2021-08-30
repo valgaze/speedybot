@@ -74,25 +74,25 @@ _________________________________
 
 Speedybot makes it easy to QUICKLY stand up a bot without having to worry about infrastructe details
 
-ex. You can edit a single file to handle all your bots logic, receive user data from forms, and easily extend/integrate with third-party services
+ex. You can edit a single file to handle all your bots logic, receive user data from forms, catch file-upload events and easily extend/integrate with third-party services
 
-Before you start, you'll need two things:
+Before you start, you'll need a WebEx bot token
 
-1. Set a WebEx bot token to settings/config.json
+- Create one and save the token from here: https://developer.webex.com/my-apps/new/bot
 
-- If you have an existing bot, get its token here: https://developer.webex.com/my-apps
+- Run the following to scaffold up a project:
 
-- If you don't have a bot, create one and save the token from here: https://developer.webex.com/my-apps/new/bot
+$ npx speedybot setup
+cd speedybot
+npm run setup
 
-2. Set a "tunnel" address to settings/config.json
+- Save the token to speedybot/settings/config.json under the "token" field:
 
-- Your bot instance will need to be reachable from the public internet
+- Boot the bot with:
 
-- You can deploy it to a hosting provider like AWS, GCP, Heroku, etc
+$ npm start
 
-- Or you can use a tunneling service
-You'll need to expose your bot configuration to the public interne
-
+- Start a 1-1 session with the bot & ask it "healthcheck" to verify all's well
 `)
 
 }

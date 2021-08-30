@@ -2,7 +2,7 @@
 
 Note: The steps below assume you have a working WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+
 
-## 0. Fetch repo & install dependencies
+## 1. Fetch repo & install dependencies
 
 ```
 git clone https://github.com/valgaze/speedybot speedybot
@@ -10,44 +10,24 @@ cd speedybot
 npm run setup
 ```
 
-## 1. Set your bot access token
+## 2. Set your bot access token
 
-- If you have an existing bot, get its token here: https://developer.webex.com/my-apps
+- If you have an existing bot, get its token here: **[https://developer.webex.com/my-apps](https://developer.webex.com/my-apps)**
 
-- If you don't have a bot, create one and save the token from here: https://developer.webex.com/my-apps/new/bot
+- If you don't have a bot, create one and save the token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
 
-Once you have the bot's token, save it to **settings/config.json** under the ```token``` field
+Once you have the bot's token, save it to **[settings/config.json](https://github.com/valgaze/speedybot/blob/master/settings/config.json)** under the ```token``` field
 
-## 2. Set your tunnel's url
+## 3. Boot your Bot
 
-Note this will use nGrok to make your local machine reachable from the public internet, read up on details & alternatives **[here](https://github.com/valgaze/speedybot/blob/master/docs/ngrok.md)**
-
-In a new terminal window, enter the directory with your project and run:
-
-```sh
-npm run tunnel
-```
-
-Leave it running-- by default, the tunnel lasts for 2 hourss
-
-Once you see the tunnel's URL, save it to **settings/config.json** under the ```tunnel``` field 
-
-If all went well, it should look like this:
-
-![image](https://github.com/valgaze/speedybot/blob/master/docs/assets/tunnel_success.png)
-
-
-## 3. Boot the server
-
-In a **another** new terminal enter the following to boot your server
+Enter the directory where speedybot is located and enter:
 
 ```sh
 npm start
 ```
+
 If all went well, it should look something like this:
-
-![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/server_success.png)
-
+![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/framework_success.png)
 
 ## 4. Run a "healthcheck" with the bot
 
@@ -55,10 +35,12 @@ To make sure all is well, add your bot from Step 1 in a 1-1 chat session and tel
 
 ![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/healthcheck.gif)
 
-## 5. Extend & integrate
+## 5. Extend
 
-- [ ] From here, you can edit **settings/handlers.ts** and make your own handlers (& integrate )
+- [ ] From here, you can edit **settings/handlers.ts** and make your own handlers (& integrate with other services)
 
-- [ ] Ask your bot "namegame"
+- [ ] Use the **["special words"](https://github.com/valgaze/speedybot/blob/master/docs/how-to.md#special-words) to intercept file-uploads/attachments, submit data from a card, etc
 
-- [ ] See the **[resources](https://github.com/valgaze/speedybot/blob/master/docs/resources.md)** for further reading & ideas
+- [ ] Look into Adaptive Cards and other rich chat components: https://developer.webex.com/docs/api/guides/cards
+
+- [ ] See the **[resources](https://github.com/valgaze/speedybot/blob/master/docs/resources.md)** for further reading & inspiration
