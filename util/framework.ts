@@ -49,27 +49,26 @@ export interface FrameworkConfig {
 */
 export interface FrameworkInst {
 	on(eventName: string, handler: Function): void;
-	hears(phrase, action: handlerFunc, helpText?:string, preference?: number);
+	hears(phrase, action: handlerFunc, helpText?: string, preference?: number);
 	setWebexToken?(string): Promise<string>;
 	[key: string]: any; // TODO: get the rest-- https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1663
 }
 
 export type handlerFunc = (bot: BotInst, trigger: Trigger) => void;
 
-export type activators = string | RegExp;
-export type AllowedActivators = activators | activators[];
+export type keywords = string | RegExp;
+export type Allowedkeywords = keywords | keywords[];
 
 /**
  * BotHandler
- * 
- * 
+ * https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1632
  * 
  */
- export interface BotHandler {
-	activator: AllowedActivators; // string or regex, or a list of both
+export interface BotHandler {
+	keyword: Allowedkeywords; // string or regex, or a list of both. If regex matches on entire message, if string just on the 1st word
 	handler: handlerFunc;
-	helpText: string; // Help is a reserved name, if you type @botname help, any handlers you write this way will list out their help data
-	preference?: number;
+	helpText: string; // Used by built-in help generator any handlers you write this way will list out their help data
+	preference?: number; // defaults to 0, specifiies preferece of phrase when overlapping handlers match, lower number >> higher match priority
 }
 
 
@@ -80,8 +79,8 @@ export type AllowedActivators = activators | activators[];
  */
 export interface BotInst {
 	say(payload?: any, ...rest: any): void;
-	dm(payload?: any, ...rest:any): void;
-	sendCard(cardJson: any, fallbackText:string): Promise<any>;
+	dm(payload?: any, ...rest: any): void;
+	sendCard(cardJson: any, fallbackText: string): Promise<any>;
 	[key: string]: any; // TODO: get the rest;
 }
 
@@ -99,7 +98,7 @@ export interface BotInst {
  * @property {object} person - Person object associated with user that sent the message or action
  * @property {string} personId - ID of person
  */
- export interface Trigger {
+export interface Trigger {
 	type: string; // message or attachmentAction
 	id: string; // Message or attachentAction ID
 	message?: any; // TODO
@@ -109,20 +108,20 @@ export interface BotInst {
 	person: Person; // TODO: person
 	personId: string;
 	[key: string]: any; // TODO: get the rest-- https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1663
-}    
+}
 export interface Person {
-  id: string;
-  emails?: string[];
-  phoneNumbers?: string;
-  displayName?: string;
-  nickName?: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  orgId: string;
-  created: string;
-  lastModified: string;
-  type: string;
+	id: string;
+	emails?: string[];
+	phoneNumbers?: string;
+	displayName?: string;
+	nickName?: string;
+	firstName: string;
+	lastName: string;
+	avatar: string;
+	orgId: string;
+	created: string;
+	lastModified: string;
+	type: string;
 }
 
 
@@ -133,15 +132,15 @@ export interface FrameworkHandler {
 	handler: handlerFunc;
 }
 
-export async function startBot(config: FrameworkConfig):Promise<FrameworkInst> {
+export async function startBot(config: FrameworkConfig): Promise<FrameworkInst> {
 
 	const inst = new BotFramework(config);
 	try {
 		await inst.start();
 		if (process) {
-			process.on('SIGINT', function() {
+			process.on('SIGINT', function () {
 				inst.debug('stoppping...');
-				inst.stop().then(function() {
+				inst.stop().then(function () {
 					process.exit();
 				});
 			});
@@ -149,10 +148,10 @@ export async function startBot(config: FrameworkConfig):Promise<FrameworkInst> {
 		return new Promise((resolve) => {
 			inst.on("initialized", function (x) {
 				return resolve(inst);
-			});	
+			});
 		})
-			
-	} catch(e) {
+
+	} catch (e) {
 		throw e;
 	}
 }

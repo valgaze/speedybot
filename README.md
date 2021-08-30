@@ -14,7 +14,7 @@ tl:dr; The speedy & easy way to launch a bot
 
 ## In a nutshell
 
-Speedybot is a "toolkit" to take you from zero to a useful bot. Dive in immediately and focus the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
+Speedybot is a "toolkit" to take you from zero to a useful bot. Dive in immediately and focus on the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
 
 Speedybot instruments on top of the incredibly useful **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** and steps through the fastest path to a working bot and provides some convenience features
 
@@ -30,7 +30,7 @@ Example handler:
 
 ```js
 {
-	activator: ['hello', 'hey', 'yo', 'watsup', 'hola'],
+	keyword: ['hello', 'hey', 'yo', 'watsup', 'hola'],
 	handler(bot, trigger) {
 		// bot: https://github.com/WebexSamples/webex-node-bot-framework#bot
 		// trigger: https://github.com/WebexSamples/webex-node-bot-framework#trigger
@@ -43,11 +43,11 @@ Example handler:
 
 ## Special keywords
 
-There are a few "special" activator words you can use to "listen" to special events:
+There are a few "special" keywords you can use to "listen" to special events:
 
 - *<@submit>*: Handler that will run anytime data is submitted from an **[Adaptive Card](https://developer.webex.com/docs/api/guides/cards)**
 
-- *<@catchall>*: Handler that will run on **every** message received from the backend
+- *<@catchall>*: Handler that will run on **every** message received (can be useful to dispatch messages natural language services like **[DialogFlow](https://cloud.google.com/dialogflow)** or **[Lex](https://aws.amazon.com/lex/)**)
 
 - *<@fileupload>*: Handler that will fire on **every** file-upload or file-attachment sent to the bot
 
@@ -61,14 +61,14 @@ ex. Tell the bot "sendcard" to get a card, type into the card & tap submit, catc
 
 ```ts
 export default [{
-        activator: '<@submit>',
+        keyword: '<@submit>',
         handler(bot, trigger) {
             bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
         },
-        helpText: '**<@submit>** Special handler that fires when data is submitted'
+        helpText: 'Special handler that fires when data is submitted'
     },
     {
-        activator: 'sendcard',
+        keyword: 'sendcard',
         handler(bot, trigger) {
             bot.say('One card on the way...')
 
