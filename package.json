@@ -1,6 +1,6 @@
 {
     "name": "speedybot",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "bin": {
         "speedybot": "./dist/src/cli/index.js"
