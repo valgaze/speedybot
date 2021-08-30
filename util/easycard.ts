@@ -1,7 +1,7 @@
 export interface EasyCardPayload {
 	title?: string;
 	url: string;
-	text?:string;
+	text?: string;
 	buttonLabel?: string;
 	image?: string;
 	input?: {
@@ -23,24 +23,24 @@ export const easyCard = (easyCardPayload) => {
 		"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 		"type": "AdaptiveCard",
 		"version": "1.0",
-			"body": [
+		"body": [
+			{
+				"type": "TextBlock",
+				"size": "Medium",
+				"weight": "Bolder",
+				"text": `${easyCardPayload.title}`
+			},
+			{
+				"type": "RichTextBlock",
+				"inlines": [
 					{
-							"type": "TextBlock",
-							"size": "Medium",
-							"weight": "Bolder",
-							"text": `${easyCardPayload.title}`
-					},
-					{
-            "type": "RichTextBlock",
-            "inlines": [
-                {
-                    "type": "TextRun",
-                    "text": `${easyCardPayload.text ? easyCardPayload.text : ''}`
-                }
-            ]
-        }
-			],
-			
+						"type": "TextRun",
+						"text": `${easyCardPayload.text ? easyCardPayload.text : ''}`
+					}
+				]
+			}
+		],
+
 	}
 
 	if (easyCardPayload.image) {
@@ -48,9 +48,9 @@ export const easyCard = (easyCardPayload) => {
 			"type": "Image",
 			"url": `${easyCardPayload.image}`,
 			"horizontalAlignment": "Center",
-			"size":"large"
+			"size": "large"
 		}
-		payload.body.push(imagePayload)	
+		payload.body.push(imagePayload)
 	}
 
 	if (easyCardPayload.url) {
@@ -64,7 +64,7 @@ export const easyCard = (easyCardPayload) => {
 	}
 
 	if (easyCardPayload.input) {
-		const { placeholder="Submit" } = easyCardPayload.input
+		const { placeholder = "Submit" } = easyCardPayload.input
 		const InputPayload = {
 			"type": "Input.Text",
 			"id": "inputData",
@@ -92,7 +92,7 @@ export const easyCard = (easyCardPayload) => {
 	}
 
 	if (easyCardPayload.input || easyCardPayload.choices) {
-		const submitButton = 	{
+		const submitButton = {
 			"type": "Action.Submit",
 			"title": "Submit",
 			"data": { "cardType": "inputForm" }
@@ -190,16 +190,3 @@ export const CardSample = {
 		}
 	]
 }
-
-
-const payload = {
-	title: 'System is 👍',
-	text: 'If you see this card, everything is working',
-	image: 'https://i.imgur.com/SW78JRd.jpg',
-	buttonLabel: `Take a moment to celebrate`,
-	url: `https://www.youtube.com/watch?v=3GwjfUFyY6M`,
-	input: {
-		placeholder: `What's on your mind?`
-	}		
-}
-console.log(JSON.stringify(easyCard(payload)))
