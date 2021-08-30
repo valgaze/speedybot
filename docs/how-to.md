@@ -1,6 +1,6 @@
 ## Special Words
 
-There are a few "special" activator words you can use which have a special meaning in a Speedybot project:
+There are a few "special" keyword words you can use which have a special meaning in a Speedybot project:
 
 - *<@submit>*: Handler that will run anytime data is submitted from an **[Adaptive Card](https://developer.webex.com/docs/api/guides/cards)**
 
@@ -19,46 +19,53 @@ ex.
 ```ts
 export default handlers = [
 	{
-		activator: ['hello', 'hey', 'yo', 'watsup', 'hola'],
+		keyword: ['hello', 'hey', 'yo', 'watsup', 'hola'],
 		handler(bot, trigger) {
 			const reply = `Heya how's it going ${trigger.person.displayName}?`
 			bot.say(reply)
 		},
-		helpText: `**hello** A handler that greets the user`
+		helpText: `A simple handler that greets the user`
 	},
 	{
-		activator: '<@catchall>',
+		keyword: '<@catchall>',
 		handler(bot, trigger) {
 			// This could be used to send to a 3rd-party service like DialogFlow, Lex or GPT3 to extract intent &  parameters
 			// ex. "I want a large strawberry ice cream" >> { intent: 'order_icecream', flavor: 'strawberry', size: 'large', originalQuery: 'I want a large strawberry ice cream"'}
 			console.log('This gets triggered on EVERY message received')
 		},
-		helpText: `**<@catchall>**: A handler triggered on every message`
+		helpText: `A handler triggered on every message`
 	},
 	{
-		activator: '<@submit>',
+		keyword: '<@submit>',
 		handler(bot, trigger) {
 			bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
 
 			// ex. From here, data could be passed to a 3rd-party integration
 
 		},
-		helpText: `**<@submit>** A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
+		helpText: `A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
 	},
 	{
-		activator: '<@fileupload>',
-		handler (bot, trigger) {
+		keyword: '<@fileupload>',
+		handler(bot, trigger) {
 			const files = trigger.message.files || []
-			
+
 			bot.say(`(**Note:** These files are not publicly accessible)\n ${files.length > 1 ? 'These files were' : 'This file was'} uploaded successfully!`)
-			
+
 			files.forEach(async (file, idx) => {
-				await bot.say(`${idx+1}: ${file}`)
+				// Note the URL here will fail for user because they require an Authorization 
+
+				await bot.say(`${idx + 1}: ${file}`)
 			})
 
-			// ex. From here, you could download the files (with an Authorization header)
+			if (files.length === 1) {
+				bot.dm(trigger.person.id, `Sending a file back at ya!`)
+				bot.dm(trigger.person.id, { file: 'https://camo.githubusercontent.com/b846bfa57dd26af4e1526abe1173e0b332b75af5d642564b2ab1d0c12a482290/68747470733a2f2f692e696d6775722e636f6d2f56516f5866486e2e676966' })
+			}
+			// ex. From here, you could download the content of the files (with an Authorization header)
+			// Pass onto another service for analysis/etc
 		},
-		helpText: `**<@fileupload>** A special handler that fires anytime a user submits a file`
-	},
+		helpText: `A special handler that fires anytime a user submits a file`
+	}
 ]
 ```

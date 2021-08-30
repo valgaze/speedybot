@@ -1,6 +1,6 @@
 
 export default {
-	activator: 'sendcard',
+	keyword: 'sendcard',
 	handler(bot, trigger) {
 		bot.say('One card on the way...')
 
@@ -46,5 +46,5 @@ export default {
 
 		bot.sendCard(cardPayload, 'Your client does not currently support Adaptive Cards :(')
 	},
-	helpText: '**sendcard** Sends an Adaptive Card with an input field to the user'
+	helpText: 'Sends an Adaptive Card with an input field to the user'
 }
