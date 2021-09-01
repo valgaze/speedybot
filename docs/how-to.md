@@ -1,3 +1,6 @@
+# How To
+
+
 ## Special Words
 
 There are a few "special" keyword words you can use which have a special meaning in a Speedybot project:
@@ -68,4 +71,86 @@ export default handlers = [
 		helpText: `A special handler that fires anytime a user submits a file`
 	}
 ]
+```
+
+## Get a Bot Access Token
+
+- (Recommended) Create new bot: https://developer.webex.com/my-apps/new/bot
+
+- Get an existing bot's token (tap "regenerate"): https://developer.webex.com/my-apps
+
+
+## Connect to your bot
+
+- Start a 1-1 & ask your bot "healthcheck"-- if all works well you should see something like this:
+
+![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/healthcheck.gif)
+
+
+You can also add a bot to a group space, but note that you or any other human members of the space will need to explicitly "@"-mention the bot to get functionality
+
+## Suggestion Chips
+
+A suggestion "chip" is a button which, when clicked, is the equivalent of the user entering the same text. 
+
+ex. 
+
+![image](./assets/chip_example.gif)
+
+
+Ex. If a button/chip has the label "bongo", when the user taps it, the phrase "bongo" will be processed by chat handlers as if the user typed "bongo" on their own
+
+We can approximate this effect with two handlers-- one to show the card with the "chip" buttons and the other to "catch" the button tap. 
+```ts
+export const handlers = [{
+	keyword: '<@submit>',
+	handler(bot, trigger) {
+		// Check for "chip_action" value to make sure it's a chip tap
+		if (trigger.attachmentAction.inputs.chip_action) {
+			bot.say(`You picked '${trigger.attachmentAction.inputs.chip_action}'`)
+
+			const payload = {
+				roomId: trigger.attachmentAction.roomId,
+				personId: trigger.person.id,
+				text: trigger.attachmentAction.chip_action,
+			}
+			// HACK: pass the button-tap value through the handler system
+			bot.framework.onMessageCreated(payload)
+		}
+	},
+	helpText: 'A special handler for handling user input'
+}, {
+	keyword: 'sendchip',
+	handler(bot, trigger) {
+		// Make a card with 3 chips: 'hello', 'healthcheck', and 'ping'
+		const cardPayload = {
+			"type": "AdaptiveCard",
+			"body": [],
+			"actions": [{
+				"type": "Action.Submit",
+				"title": "hello",
+				"data": {
+					"chip_action": "hello"
+				}
+			}, {
+				"type": "Action.Submit",
+				"title": "healthcheck",
+				"data": {
+					"chip_action": "healthcheck"
+				}
+			}, {
+				"type": "Action.Submit",
+				"title": "ping",
+				"data": {
+					"chip_action": "ping"
+				}
+			}],
+			"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+			"version": "1.2"
+		}
+		bot.sendCard(cardPayload, 'Your client doesnt appear to support adaptive cards')
+
+	},
+	helpText: 'A special handler for handling user input'
+}]
 ```

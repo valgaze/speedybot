@@ -10,11 +10,16 @@ tl:dr; The speedy & easy way to launch a bot
 
 **Note:** To jump right in, go here: **[quickstart.md](https://github.com/valgaze/speedybot/blob/master/quickstart.md)**
 
+OR
+
+```sh
+npx speedybot setup
+```
 ---
 
 ## In a nutshell
 
-Speedybot is a "toolkit" to take you from zero to a useful bot. Dive in immediately and focus on the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
+Speedybot is a "toolkit" to take you from zero to a non-trivial bot as quickly as possible. Dive in immediately and focus on the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
 
 Speedybot instruments on top of the incredibly useful **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** and steps through the fastest path to a working bot and provides some convenience features
 
@@ -47,7 +52,7 @@ There are a few "special" keywords you can use to "listen" to special events:
 
 - *<@submit>*: Handler that will run anytime data is submitted from an **[Adaptive Card](https://developer.webex.com/docs/api/guides/cards)**
 
-- *<@catchall>*: Handler that will run on **every** message received (can be useful to dispatch messages natural language services like **[DialogFlow](https://cloud.google.com/dialogflow)** or **[Lex](https://aws.amazon.com/lex/)**)
+- *<@catchall>*: Handler that will run on **every** message received (can be useful to dispatch messages to natural language services like **[DialogFlow](https://cloud.google.com/dialogflow)** or **[Lex](https://aws.amazon.com/lex/)**)
 
 - *<@fileupload>*: Handler that will fire on **every** file-upload or file-attachment sent to the bot
 
@@ -136,7 +141,10 @@ You can run the commands using npx or install globally (see below):
 |         **Command**         |**Description**                                                                                     |
 | :-------------------------: | :-------------------------------------------------------------------------------------------------- |
 | `npx speedybot setup`  			| scaffold a starter speedybot project (currently requires git) |
+| `npx speedybot setup 1234_tokenhere_4567` 				| scaffold a speedybot project using the value after setup as the token|
+
 | `npx speedybot help` 				| show basic CLI help info |
+
 
 
 <details><summary>(Global install using npm/yarn)</summary>

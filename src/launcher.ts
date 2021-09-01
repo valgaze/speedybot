@@ -1,5 +1,6 @@
 import { startBot, BotHandler, FrameworkInst } from './../util/framework'
 import { bad, loud, ascii_art } from './../util/logger'
+import { placeholder } from './../util'
 import { ingestHandlers, registerHandlers } from './handlers'
 import handlers from './../settings/handlers'
 import Config from './../settings/config.json'
@@ -15,7 +16,7 @@ export interface rootConfig {
 }
 
 export async function launch(config: rootConfig, handlers: BotHandler[]): Promise<FrameworkInst> {
-	if (config.token === '__REPLACE__ME__') {
+	if (config.token === placeholder) {
 		loud('Placeholder detected in config.json!\n\n\nSee here for instructions: https://github.com/valgaze/speedybot/blob/master/quickstart.md\n\nExiting...')
 		process.exit(1)
 	}
@@ -28,6 +29,8 @@ export async function launch(config: rootConfig, handlers: BotHandler[]): Promis
 		const phrase = config.webhookUrl ? `Webhook available here: ${config.webhookUrl}` : 'Connected using websockets'
 		loud(`Bot started
 ${phrase}
+
+Ask your bot "healthcheck" to verify connectionn
 `)
 
 		return frameworkRef;

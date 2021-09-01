@@ -1,3 +1,15 @@
+/**
+ * WARNING: Very much work-in-progress
+ * 
+ * Concept: make zero-knowledge templates for adaptive cards w/
+ * good default styling
+ * ex. 
+ * SimpleCard
+ * Card with chips (row of buttons)
+ * Multiselect
+ * 
+ */
+
 export interface EasyCardPayload {
 	title?: string;
 	url: string;
@@ -101,6 +113,118 @@ export const easyCard = (easyCardPayload) => {
 	}
 
 	return payload;
+}
+
+
+export interface ChipCardPayload {
+	title?: string;
+	options: string[];
+}
+
+export const easyChipCard = (config: ChipCardPayload) => {
+	interface Chip {
+		type: string;
+		title: string;
+		data: any;
+	}
+	interface ChipCard {
+		$schema: string;
+		type: string;
+		version: string;
+		body: any;
+		actions: Chip[];
+	}
+
+
+	const payload: ChipCard = {
+		"type": "AdaptiveCard",
+		"body": [],
+		actions: [],
+		"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+		"version": "1.2"
+	}
+
+	if (config.options.length) {
+		const { options } = config
+		options.forEach(option => {
+			const chip = {
+				"type": "Action.Submit",
+				"title": option,
+				"data": {
+					"chip_action": option
+				}
+			}
+			payload.actions.push(chip)
+		})
+	}
+	return payload;
+}
+
+export interface EasyKeyValueCardPayload {
+	options: string[][],
+	title?: string;
+}
+export const easyKeyValCard = (config: EasyKeyValueCardPayload) => {
+	interface KeyValCard {
+		$schema: string;
+		type: string;
+		version: string;
+		body: any[];
+		actions?: [];
+	}
+
+	const payload: KeyValCard = {
+		"type": "AdaptiveCard",
+		"body": [
+			{
+				"type": "ColumnSet",
+				"columns": [],
+				"spacing": "Padding",
+				"horizontalAlignment": "Center"
+			}
+		],
+		"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+		"version": "1.2"
+	}
+
+	if (config.options.length) {
+		const columnsData: { type: string, width: number, items: any[] }[] = [
+			{
+				"type": "Column",
+				"width": 35,
+				"items": []
+			},
+			{
+				"type": "Column",
+				"width": 65,
+				"items": []
+			}
+		]
+		const buildLabel = (label: string) => {
+			return {
+				"type": "TextBlock",
+				"text": label,
+				"weight": "Bolder",
+				"color": "Light",
+				"spacing": "Small"
+			}
+		}
+		const buildValue = (value: string) => {
+			return {
+				"type": "TextBlock",
+				"text": value,
+				"color": "Light",
+				"weight": "Lighter",
+				"spacing": "Small"
+			}
+		}
+		config.options.forEach(([label, value], i) => {
+			columnsData[0].items.push(buildLabel(label))
+			columnsData[1].items.push(buildValue(value))
+		})
+		payload.body[0].columns = columnsData
+	}
+	return payload
 }
 
 // Kitchen sink example + inputs

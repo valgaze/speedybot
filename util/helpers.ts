@@ -1,14 +1,12 @@
 export interface Base {
-  [key: string]: any;
+	[key: string]: any;
 }
 
 /**
 * @param list 
 * Pick an item from the list
 **/
-export const pickRandom = (list) =>  list[Math.floor(Math.random()*list.length)]
-
-
+export const pickRandom = (list) => list[Math.floor(Math.random() * list.length)]
 
 /**
  *
@@ -44,7 +42,7 @@ export const pickRandom = (list) =>  list[Math.floor(Math.random()*list.length)]
  *
  *
  */
-export const fillTemplate = (utterances: string | string[], template: Base): string  => {
+export const fillTemplate = (utterances: string | string[], template: Base): string => {
 	let payload: string;
 	if (typeof utterances != "string") {
 		payload = pickRandom(utterances) || "";
@@ -72,4 +70,61 @@ export const fillTemplate = (utterances: string | string[], template: Base): str
 		payload = replacer(payload, key, val)
 	}
 	return payload
+}
+
+/**
+ * Bare minimum config needed to "trigger"
+ * another chat item
+ * 
+ */
+export interface TriggerPayload {
+	roomId?: string;
+	personId?: string;
+	text: string;
+}
+
+/**
+ * Helper function to trigger text as if user tapped 
+ * @param triggerPayload 
+ * @param bot instance
+ */
+export const triggerChat = (triggerPayload: TriggerPayload, bot) => {
+	bot.framework.onMessageCreated(triggerPayload)
+}
+
+/**
+ * Helper function to take a submission with "chip_action",
+ * then trigger the chat as if chip_action's value was emitted by the user
+ * @param bot 
+ * @param trigger 
+ * @param suppressLog: boolean, hide echo statemet
+ * 
+ * ex.
+ * ```ts
+ * 
+ * import {handleChip} from './../util
+ * export const handlers = [
+ *	{
+ *		keyword: '<@submit>',
+ *		handler(bot, trigger) {
+ *			handleChip(bot, trigger)
+ *		},
+ *		helpText: 'Handler function that runs whenever a card button sends submit'
+ * }]
+ * ```
+ * 
+ */
+export const handleChip = (bot, trigger, suppressLog = false) => {
+	if (trigger.attachmentAction.inputs && trigger.attachmentAction.inputs.chip_action) {
+		if (!suppressLog) {
+			bot.say(`You picked '${trigger.attachmentAction.inputs.chip_action}'`)
+		}
+		const payload = {
+			roomId: trigger.attachmentAction.roomId,
+			personId: trigger.personId,
+			text: trigger.attachmentAction.inputs.chip_action,
+		}
+		// "trigger" chip tap as if user entered
+		bot.framework.onMessageCreated(payload)
+	}
 }

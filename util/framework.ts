@@ -69,6 +69,9 @@ export interface BotHandler {
 	handler: handlerFunc;
 	helpText: string; // Used by built-in help generator any handlers you write this way will list out their help data
 	preference?: number; // defaults to 0, specifiies preferece of phrase when overlapping handlers match, lower number >> higher match priority
+
+	// // Hacky Extends
+	triggerChat?(msg: { roomId: string }): void;
 }
 
 

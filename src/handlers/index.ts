@@ -23,7 +23,7 @@ export type keywords = string | RegExp | (string | RegExp)[]
  * @param botHandler: well-formed bot handler
  * 
  * 
- * @param frameworkRef: 
+ * @param frameworkRef: instance of framework (with connection type configured, tokens, etc)
  * @returns 
  */
 export function RegisterOneHandler(botHandler: BotHandler, frameworkRef: FrameworkInst) {
