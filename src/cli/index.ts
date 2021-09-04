@@ -6,17 +6,25 @@ npx speedybot <access_token> <dir_name> # sets access token and scaffolds + init
 npx speedybot <access_token>  # sets access token and scaffolds + inits from "speedybot"
 npx speedybot # show help
 */
-import { help, ascii_art, good, bad, askQuestion, loud } from './../../util/logger'
-import { scaffoldGitclone, writeJSON, setupRepo, placeholder } from './../../util'
+import { help, ascii_art, log, good, askQuestion, loud } from './../../util/logger'
+import { scaffoldGitclone, writeJSON, setupRepo, placeholder, fillTemplate } from './../../util'
+import { version } from './../../package.json';
 import { resolve } from 'path';
+import language from './en'
 const [, , rootArg, token = null, directory = null] = process.argv; // Todo: get a proper arg parser
 const command = rootArg;
 
-main(command);
+
+main(command, language);
+
 
 // CLI runner
-export async function main(command) {
+export async function main(command, LANGUAGE) {
 	const normalized = command ? command.toLowerCase() : 'help'
+
+	if (normalized === '-v' || normalized === 'version') {
+		return log(version)
+	}
 
 	if (normalized === 'help') {
 		help()
@@ -30,19 +38,14 @@ export async function main(command) {
 		}
 
 		if (setupConfig.token === placeholder) {
-			const askToken = await askQuestion('What is your bot token? (leave blank to set later)  ')
+			const askToken = await askQuestion(LANGUAGE.askToken)
 			if (askToken) {
 				setupConfig.token = askToken
 			} else {
-				loud(`
-Note: If you need a token, see below
-
-> Create a new bot  (recommended): https://developer.webex.com/my-apps/new/bot
-
-> Regenerate access token from existing bot: https://developer.webex.com/my-apps`)
+				loud(LANGUAGE.needsToken)
 			}
 			if (setupConfig.directory === 'speedybot') {
-				const askDir = await askQuestion(`What directory to install speedybot? (defaults to '${setupConfig.directory}')  `)
+				const askDir = await askQuestion(fillTemplate(LANGUAGE.askDirectory, { directory: setupConfig.directory }))
 				if (askDir) {
 					setupConfig.directory = askDir
 				}
@@ -51,7 +54,14 @@ Note: If you need a token, see below
 
 		// Clone repo
 		try {
-			await scaffoldGitclone(setupConfig.directory)
+			loud(`Installing to '${setupConfig.directory}'...`)
+			try {
+				await scaffoldGitclone(setupConfig.directory)
+			} catch (e) {
+				loud(LANGUAGE.directoryAlreadyExists)
+				log(e.message)
+				return process.exit(1)
+			}
 			const commandList = [
 				`npm run setup`
 			]
@@ -60,11 +70,12 @@ Note: If you need a token, see below
 				commandList.push(`npm run write:json ${setupConfig.token}`)
 				commandList.push('npm start')
 			}
+
 			await setupRepo(setupConfig.directory, commandList)
 
 			finale(setupConfig.directory, setupConfig.token === placeholder)
 		} catch (e) {
-			bad(e)
+			loud(e)
 		}
 	}
 
@@ -85,7 +96,7 @@ Note: If you need a token, see below
 }
 export const finale = (directory: string, setToken?: boolean, setDependencies?: boolean) => {
 
-	good(`SETUP COMPLETE!s
+	good(`SETUP COMPLETE!
 ${setDependencies ? `- Enter the directory (${directory}) and run: npm run setup` : ''}
 ${setToken ? `- Make sure to set the 'token' field in ${directory}/settings/config.json` : ''}
 

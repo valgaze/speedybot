@@ -1,6 +1,5 @@
 import { execSync } from 'child_process'
 import { resolve } from 'path'
-import { bad } from './logger';
 import { writeFileSync } from 'fs';
 export const rootDir = resolve(__dirname, '..', '..') // Tricky: from /dist in CLI
 
@@ -12,12 +11,11 @@ export const scaffoldGitclone = (targetDir: string = 'speedybot') => {
 			cwd: resolve(process.cwd()),
 		});
 	} catch (e) {
-		bad(e)
-		process.exit(1)
+		throw e
 	}
 }
 
-export const setupRepo = (targetDir, commandSequence: string[]) => {
+export const setupRepo = (targetDir: string, commandSequence: string[]) => {
 	const command = `cd ${targetDir} && ${commandSequence.join(' && ')}`
 	try {
 		execSync(command, {
@@ -25,8 +23,7 @@ export const setupRepo = (targetDir, commandSequence: string[]) => {
 			cwd: resolve(process.cwd()),
 		});
 	} catch (e) {
-		bad(e)
-		process.exit(1)
+		throw e
 	}
 }
 

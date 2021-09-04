@@ -6,7 +6,7 @@ test("Should pick a random choice and fill the template", (t) => {
 
 	const payload = {
 		phrases: ["Hey $[name], how's it going?", "Hi $[name], here's your $[flavor]"],
-		 template: {
+		template: {
 			name: 'Joe',
 			flavor: 'mint'
 		}
@@ -19,7 +19,28 @@ test("Should pick a random choice and fill the template", (t) => {
 	if (renderedChoices.includes(res)) {
 		pass = true;
 	}
-	
-  t.deepEqual(true, pass);
+
+	t.deepEqual(true, pass);
+	t.end()
+});
+
+test("Should take a string & fill in the template (& not crash if key name happened to be contaied 😶)", (t) => {
+	let pass = false;
+
+	const payload = {
+		phrases: `What directory to install speedybot ? (defaults to '$[directory]')`,
+		template: {
+			directory: 'speedybot',
+		}
+	}
+	const { phrases, template } = payload
+
+	const renderedChoices = [`What directory to install speedybot ? (defaults to 'speedybot')`];
+	const res = fillTemplate(phrases, template)
+	if (renderedChoices.includes(res)) {
+		pass = true;
+	}
+
+	t.deepEqual(true, pass);
 	t.end()
 });
