@@ -54,7 +54,7 @@ export const fillTemplate = (utterances: string | string[], template: Base): str
 		target: string,
 		replacement: string
 	): string => {
-		if (!utterance.includes(target)) {
+		if (!utterance.includes(`$[${target}]`)) {
 			return utterance
 		} else {
 			return replacer(

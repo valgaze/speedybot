@@ -13,8 +13,9 @@
         "start": "ts-node src/launcher",
         "start:dist": "npm run setup && cd dist && node src/launcher",
         "write:json": "cd dist && node src/cli write:json",
-        "build": "tsc",
-        "setup": "npm i && tsc"
+        "build:global": "tsc",
+        "build": "./node_modules/typescript/bin/tsc",
+        "setup": "npm i && npm run build"
     },
     "keywords": [
         "bot",
@@ -31,6 +32,10 @@
     "files": [
         "dist/**"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/valgaze/speedybot.git"
+    },
     "devDependencies": {
         "@types/node": "^13.13.52",
         "@types/tape": "^4.13.2",
