@@ -3,8 +3,8 @@ import { resolve } from 'path'
 import { writeFileSync } from 'fs';
 export const rootDir = resolve(__dirname, '..', '..') // Tricky: from /dist in CLI
 
-export const scaffoldGitclone = (targetDir: string = 'speedybot') => {
-	const command = `git clone https://github.com/valgaze/speedybot ${targetDir}`
+export const scaffoldGitclone = (targetDir: string = 'speedybot-starter') => {
+	const command = `git clone https://github.com/valgaze/speedybot-starter ${targetDir}`
 	try {
 		execSync(command, {
 			stdio: [0, 1, 2],

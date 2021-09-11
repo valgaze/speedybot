@@ -1,5 +1,5 @@
 import test from "tape";
-import {easyCard } from './../util/easycard'
+import { easyCard } from './../src/easycard'
 
 test("setup", function (t) {
   t.end();

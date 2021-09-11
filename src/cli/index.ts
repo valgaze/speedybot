@@ -6,8 +6,8 @@ npx speedybot <access_token> <dir_name> # sets access token and scaffolds + init
 npx speedybot <access_token>  # sets access token and scaffolds + inits from "speedybot"
 npx speedybot # show help
 */
-import { help, ascii_art, log, good, askQuestion, loud } from './../../util/logger'
-import { scaffoldGitclone, writeJSON, setupRepo, placeholder, fillTemplate } from './../../util'
+import { help, ascii_art, log, good, askQuestion, loud, fillTemplate } from './../'
+import { scaffoldGitclone, writeJSON, setupRepo, placeholder,  } from './../'
 import { version } from './../../package.json';
 import { resolve } from 'path';
 import language from './en'
@@ -34,7 +34,7 @@ export async function main(command, LANGUAGE) {
 		ascii_art()
 		const setupConfig = {
 			token: token ? token : placeholder,
-			directory: directory ? directory : 'speedybot'
+			directory: directory ? directory : 'speedybot-starter'
 		}
 
 		if (setupConfig.token === placeholder) {
@@ -44,7 +44,7 @@ export async function main(command, LANGUAGE) {
 			} else {
 				loud(LANGUAGE.needsToken)
 			}
-			if (setupConfig.directory === 'speedybot') {
+			if (setupConfig.directory === 'speedybot-starter') {
 				const askDir = await askQuestion(fillTemplate(LANGUAGE.askDirectory, { directory: setupConfig.directory }))
 				if (askDir) {
 					setupConfig.directory = askDir

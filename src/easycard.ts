@@ -121,19 +121,19 @@ export interface ChipCardPayload {
 	options: string[];
 }
 
+export interface Chip {
+	type: string;
+	title: string;
+	data: any;
+}
+export interface ChipCard {
+	$schema: string;
+	type: string;
+	version: string;
+	body: any;
+	actions: Chip[];
+}
 export const easyChipCard = (config: ChipCardPayload) => {
-	interface Chip {
-		type: string;
-		title: string;
-		data: any;
-	}
-	interface ChipCard {
-		$schema: string;
-		type: string;
-		version: string;
-		body: any;
-		actions: Chip[];
-	}
 
 
 	const payload: ChipCard = {
@@ -164,15 +164,15 @@ export interface EasyKeyValueCardPayload {
 	options: string[][],
 	title?: string;
 }
-export const easyKeyValCard = (config: EasyKeyValueCardPayload) => {
-	interface KeyValCard {
-		$schema: string;
-		type: string;
-		version: string;
-		body: any[];
-		actions?: [];
-	}
 
+export 	interface KeyValCard {
+	$schema: string;
+	type: string;
+	version: string;
+	body: any[];
+	actions?: [];
+}
+export const easyKeyValCard = (config: EasyKeyValueCardPayload) => {
 	const payload: KeyValCard = {
 		"type": "AdaptiveCard",
 		"body": [

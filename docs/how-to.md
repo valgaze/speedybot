@@ -154,3 +154,81 @@ export const handlers = [{
 	helpText: 'A special handler for handling user input'
 }]
 ```
+
+## Send a message
+
+```ts
+speedybot.webex.messages.create({
+	toPersonEmail: 'joe@bingobongo.com',
+	markdown:"This text will be **bold**",
+})
+
+```
+
+## Mention someone by email
+
+```ts
+<@personEmail:joe@bongo.com>
+```
+
+```ts
+{
+	keyword: ['hello', 'hey', 'yo', 'watsup', 'hola'],
+	handler(bot, trigger) {
+		if (trigger.person.emails) {
+			const [email] = trigger.person.emails;
+			const mentionString = `Hey there, I'll **mention** you here, <@personEmail:${email}>`
+			bot.say(mentionString)
+		}
+	},
+	helpText: `A simple handler that greets the user`
+}
+```
+
+## Send a message to a user
+
+```ts
+{
+	keyword: ['sendmessage'],
+	handler(bot, trigger) {
+		// 1) Send message back to room/person who triggered handler
+		bot.say(`Here's a reply message`)
+
+		// 2) send a direct message
+		bot.dm('joe@bongo.com', 'message goes here')
+
+		// 2) Send message to a particular uer
+		 bot.webex.messages.create({
+			toPersonEmail: 'joe@bongo.com',
+			text: `Here is a message sent right to you`
+		})
+	},
+	helpText: `Example handler to send a message`
+}
+```
+
+## Deployment
+
+
+
+**[expressjs](https://expressjs.com/en/5x/api.html) example
+
+```ts
+
+
+```
+
+Koa Example
+
+```
+// todo 
+```
+
+## Tunneling
+
+**IMPORTANT:**
+
+```sh
+npx speedybot-tunnel
+```
+ 

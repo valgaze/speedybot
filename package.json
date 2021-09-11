@@ -2,6 +2,7 @@
     "name": "speedybot",
     "version": "1.0.2",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
+    "main": "./dist/src/index.js",
     "bin": {
         "speedybot": "./dist/src/cli/index.js"
     },
@@ -13,6 +14,7 @@
         "start": "ts-node src/launcher",
         "start:dist": "npm run setup && cd dist && node src/launcher",
         "write:json": "cd dist && node src/cli write:json",
+        "write:json:local": "ts-node src/cli write:json",
         "build:global": "tsc",
         "build": "./node_modules/typescript/bin/tsc",
         "setup": "npm i && npm run build"
@@ -26,8 +28,10 @@
     "author": "valgaze@gmail.com",
     "license": "MIT",
     "dependencies": {
-        "chalk": "^4.1.2",
-        "webex-node-bot-framework": "^2.3.7"
+        "simple-log-colors": "^1.1.0"
+    },
+    "peerDependencies": {
+        "webex-node-bot-framework": "*"
     },
     "files": [
         "dist/**"
@@ -42,6 +46,7 @@
         "nodemon": "^2.0.4",
         "tape": "^5.3.1",
         "ts-node": "^8.10.1",
-        "typescript": "^3.8.3"
+        "typescript": "^3.8.3",
+        "webex-node-bot-framework": "^2.3.7"
     }
 }

@@ -9,7 +9,7 @@
     "sourceMap": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "noUnusedLocals": true,
     "outDir": "dist",
     "baseUrl": ".",

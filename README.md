@@ -142,7 +142,6 @@ You can run the commands using npx or install globally (see below):
 | :-------------------------: | :-------------------------------------------------------------------------------------------------- |
 | `npx speedybot setup`  			| scaffold a starter speedybot project (currently requires git) |
 | `npx speedybot setup 1234_tokenhere_4567` 				| scaffold a speedybot project using the value after setup as the token|
-
 | `npx speedybot help` 				| show basic CLI help info |
 
 

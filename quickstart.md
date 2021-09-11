@@ -44,3 +44,5 @@ To make sure all is well, add your bot from Step 1 in a 1-1 chat session and tel
 - [ ] Look into Adaptive Cards and other rich chat components: https://developer.webex.com/docs/api/guides/cards
 
 - [ ] See the **[resources](https://github.com/valgaze/speedybot/blob/master/docs/resources.md)** for further reading & inspiration
+
+- [ ] See **[code samples](https://github.com/valgaze/speedybot/blob/master/docs/singlefile.md)**
