@@ -1,5 +1,5 @@
 // See here: https://www.youtube.com/watch?v=NeF7jqf0GU4
-import { pickRandom, easyCard, Trigger, BotInst } from './../../../util'
+import { pickRandom, easyCard, Trigger, BotInst } from './../src'
 export default {
 	keyword: ['namegame', 'namegame:start'],
 	handler(bot: BotInst, trigger: Trigger) {
@@ -31,8 +31,7 @@ export default {
 	},
 	helpText: `🎶🎶 Come on everybody, let's play the name game! 🎶🎶 Start a game with 'namegame:start' or enter it directly, ex 'namegame Lincoln'`
 }
-// Props: https://github.com/valgaze/aws-ecr/blob/master/app/lyrics_generator.js
-
+// https://github.com/valgaze/aws-ecr/blob/master/app/lyrics_generator.js
 const isVowel = (letter: string): Boolean => {
 	const vowels = {
 		'a': true,

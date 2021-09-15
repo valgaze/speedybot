@@ -1,28 +1,29 @@
-import chalk from 'chalk';
+import colors from 'simple-log-colors';
+import { pickRandom } from './index'
 import { createInterface } from 'readline';
 
 export function log(...payload) { console.log.apply(console, payload as [any?, ...any[]]); }
 
 export function warning(...payload) {
-	log(chalk.yellow(...payload))
+	log(colors.yellow(...payload))
 }
 
 export function bad(...payload) {
 	color('red', `\n\n# ----------------PROBLEM!------------------- #\n\n`)
-	log(chalk.red(...payload))
+	log(colors.red(...payload))
 	color('red', `\n\n# ------------------------------------------- #\n\n`)
 
 }
 
 export function good(...payload) {
-	log(chalk.green(...payload))
+	log(colors.green(...payload))
 }
 
 export function color(color = "red", ...payload) {
 	try {
-		log(chalk[color](...payload))
+		log(colors[color](...payload))
 	} catch {
-		log(chalk['red'](...payload))
+		log(colors['red'](...payload))
 	}
 }
 
@@ -30,7 +31,7 @@ export function red(...payload) { return color('red', ...payload) }
 
 export function loud(...payload) {
 	color('red', `\n\n# ---------------------------------------- #\n\n`)
-	log(chalk.yellow(...payload))
+	log(colors.yellow(...payload))
 	color('red', `\n\n# ---------------------------------------- #\n\n`)
 }
 
@@ -54,8 +55,14 @@ export async function yesNo(question): Promise<boolean> {
 	return yay.includes(res.toLowerCase());
 }
 
-export const ascii_art = (colorSelect = 'green') => {
-	color(colorSelect, `
+export const ascii_art = (colorChoice?:string) => {
+	let colorFallback = colorChoice
+	if (!colorFallback) {
+		const opts = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
+		colorFallback = pickRandom(opts)
+		console.log("#>>", colorFallback)
+	}
+	color(colorFallback, `
 ███████╗██████╗ ███████╗███████╗██████╗ ██╗   ██╗██████╗  ██████╗ ████████╗
 ██╔════╝██╔══██╗██╔════╝██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝
 ███████╗██████╔╝█████╗  █████╗  ██║  ██║ ╚████╔╝ ██████╔╝██║   ██║   ██║   
@@ -89,8 +96,8 @@ $ npx speedybot setup xxxxyyyyzzz_bot_token_here_xxxxyyyyzzz
 ## [Git] Setup & boot
 Or alteratively, run
 
-$ git clone https://github.com/valgaze/speedybot speedybot
-$ cd speedybot
+$ git clone https://github.com/valgaze/speedybot-starter speedybot
+$ cd speedybot-starter
 $ npm run setup
 # Save your bot token to speedybot/settings/config.json under the "token" field
 $ npm start

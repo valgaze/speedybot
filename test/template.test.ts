@@ -1,5 +1,5 @@
 import test from "tape";
-import { fillTemplate } from './../util'
+import { fillTemplate } from './../src'
 
 test("Should pick a random choice and fill the template", (t) => {
 	let pass = false;

@@ -1,4 +1,5 @@
-import { BotHandler } from './../util'
+import { BotHandler } from './../src' // import { BotHandler } from 'speedybot'
+import Namegamehandler from './namegame'
 
 /**
  * Add a "handler" below to control your bot's responses to a user-- just add to the list
@@ -37,7 +38,7 @@ const handlers: BotHandler[] = [
 		helpText: `A handler that attaches a file in a direct message`
 	},
 	{
-		keyword: ['ping', 'pong'],
+		keyword: ['ping', 'pong', 'x'],
 		handler(bot, trigger) {
 			const normalized = trigger.text.toLowerCase()
 			if (normalized === 'ping') {
@@ -57,6 +58,7 @@ const handlers: BotHandler[] = [
 		},
 		helpText: `A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
 	},
+	Namegamehandler, // You can also include single-file handlers in your list
 ]
 
 export default handlers;
