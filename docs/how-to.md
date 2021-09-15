@@ -207,28 +207,72 @@ speedybot.webex.messages.create({
 }
 ```
 
-## Deployment
+## Deploy
 
+```sh
+npm install body-parser express speedybot webex-node-bot-framework
+```
 
-
-**[expressjs](https://expressjs.com/en/5x/api.html) example
+Deploy the agent (it must be publicly-reachable for webhooks to work) and set the server's host under webhookUrl appended with the route ```/speedybotwebhook```
 
 ```ts
+import { SpeedybotWebhook } from 'speedybot'
+import { BotHandler, SpeedybotConfig } from 'speedybot'
+import express from 'express'
+import bodyParser from 'body-parser'
 
+const app = express()
+const port = process.env.PORT || 8000
+app.use(bodyParser.json());
+app.post('/ping', (req, res) => res.send('pong!'))
 
-```
+// handler list
+const handlers: BotHandler[] = [
+    {
+        keyword: ['hello', 'hey', 'yo', 'watsup', 'hola'],
+        handler(bot, trigger) {
+            const reply = `Heya how's it going ${trigger.person.displayName}?`
+            bot.say(reply)
+        },
+        helpText: `A handler that greets the user`
+    }
+]
 
-Koa Example
+// webhook
+const config: SpeedybotConfig = {
+    token: '__REPLACE__ME__',
+    webhookUrl: 'https://123-45-678-910-987.ngrok.io/speedybotwebhook'
+}
 
-```
-// todo 
+app.post('/speedybotwebhook', SpeedybotWebhook(config, handlers))
+
+app.listen(port, () => {
+    console.log(`Listening + tunneled on port ${port}`)
+})
+
 ```
 
 ## Tunneling
 
-**IMPORTANT:**
+Speedybot can stand up a tunnel using nGrok tunneling software. This eliminates many implementation details, however, running tunneling software is not without risk. Read this on using nGrok and similiar services to "tunnel" before proceeding:  https://github.com/valgaze/speedyhelper/blob/master/docs/ngrok.md
+
+### 1. Start tunnel
 
 ```sh
-npx speedybot-tunnel
+npx speedyhelper tunnel
 ```
- 
+
+If all went well it should look like this:
+
+![image](./assets/tunnel.png)
+
+### 2. Set value in config
+
+Set the value under ```webhookUrl``` in config and append ```/speedybotwebhook``` webhook route you need
+
+```json
+{
+	"token":"aaa-bbb-ccc-ddd",
+	"webhookUrl":"http://9044-47-144-173-232.ngrok.io/speedybotwebhook"
+}
+```

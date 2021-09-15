@@ -13,7 +13,7 @@ tl:dr; The speedy & easy way to launch a bot
 OR
 
 ```sh
-npx speedybot setup
+npx speedyhelper setup
 ```
 ---
 
@@ -134,32 +134,32 @@ export default [{
 
 ## CLI Instructions
 
-This repo itself is also a lightweight CLI with exactly two commands.
-
-You can run the commands using npx or install globally (see below):
-
 |         **Command**         |**Description**                                                                                     |
 | :-------------------------: | :-------------------------------------------------------------------------------------------------- |
-| `npx speedybot setup`  			| scaffold a starter speedybot project (currently requires git) |
-| `npx speedybot setup 1234_tokenhere_4567` 				| scaffold a speedybot project using the value after setup as the token|
-| `npx speedybot help` 				| show basic CLI help info |
+| `npx speedyhelper setup`  			    | scaffold a starter speedybot project (requires git) |
+| `npx speedyhelper setup -t aaa-bbb-ccc-ddd` 				| scaffold a speedybot project using the value after setup as the token|
+| `npx speedyhelper help` 				   | show basic CLI help info |
+| `npx speedyhelper web -q`                | Kick off a web-based chat interface (use -q flag to interactively add token + roomId)  |
+| `npx speedyhelper sendmsg`               | Send a message to a room using bot access token  |
+| `npx speedyhelper tunnel -p 8000`        | Start an nGrok tunnel, defaults to port 8000|
+
 
 
 
 <details><summary>(Global install using npm/yarn)</summary>
 
-Rather than using **[npx](https://docs.npmjs.com/cli/v7/commands/npx)**, you can perform a global install which install speedybot to your path
+Rather than using **[npx](https://docs.npmjs.com/cli/v7/commands/npx)**, you can perform a global install which install speedyhelper to your path
 
 ```sh
-npm i -g speedybot
+npm i -g speedyhelper
 
-yarn global add speedybot
+yarn global add speedyhelper
 ```
 
-Make sure all works well by opening a new terminal and entering:
+Make sure all worked well by opening a new terminal and entering:
 
 ```sh
-speedybot help
+speedyhelper help
 ```
 
 </details>
