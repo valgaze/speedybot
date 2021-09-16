@@ -1,4 +1,4 @@
-export { Speedybot, SpeedybotWebhook, devLauncher, Speedytunnel, Launch } from './speedybot'
+export { Speedybot, SpeedybotWebhook, Speedytunnel, Launch } from './speedybot'
 export { SpeedybotConfig } from './speedybot'
 
 // Types: framework
