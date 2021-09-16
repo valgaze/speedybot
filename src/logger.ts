@@ -60,7 +60,6 @@ export const ascii_art = (colorChoice?:string) => {
 	if (!colorFallback) {
 		const opts = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
 		colorFallback = pickRandom(opts)
-		console.log("#>>", colorFallback)
 	}
 	color(colorFallback, `
 ███████╗██████╗ ███████╗███████╗██████╗ ██╗   ██╗██████╗  ██████╗ ████████╗

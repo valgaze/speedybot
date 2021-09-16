@@ -241,6 +241,9 @@ export class Speedybot {
 export const SpeedybotWebhook = (config: SpeedybotConfig, handlers: BotHandler[]) => {
     const { webhookUrl = ''} = config;
     ValidatewebhookUrl(webhookUrl)
+    if (config.token === placeholder) {
+        throw new Error(`Placeholder detected under 'token' in config.json! See here for instructions: https://github.com/valgaze/speedybot-starter/blob/master/quickstart.md Exiting...`)
+	}
     const speedybot = new Speedybot(config)
     speedybot.loadHandlers(handlers)
     speedybot.start()

@@ -2,11 +2,17 @@
 
 Note: The steps below assume you have a working WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+
 
+Steps below can be automated using the cli
+
+```sh
+npx speedyhelper setup
+```
+
 ## 1. Fetch repo & install dependencies
 
 ```
-git clone https://github.com/valgaze/speedybot speedybot
-cd speedybot
+git clone https://github.com/valgaze/speedybot-starter
+cd speedybot-starter
 npm run setup
 ```
 
@@ -16,11 +22,9 @@ npm run setup
 
 - If you don't have a bot, create one and save the token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
 
-Once you have the bot's token, save it to **[settings/config.json](https://github.com/valgaze/speedybot/blob/master/settings/config.json)** under the ```token``` field
+Once you have the bot's token, save it to **[settings/config.json](./settings/config.json)** under the ```token``` field
 
 ## 3. Boot your Bot
-
-Enter the directory where speedybot is located and enter:
 
 ```sh
 npm start
@@ -44,5 +48,3 @@ To make sure all is well, add your bot from Step 1 in a 1-1 chat session and tel
 - [ ] Look into Adaptive Cards and other rich chat components: https://developer.webex.com/docs/api/guides/cards
 
 - [ ] See the **[resources](https://github.com/valgaze/speedybot/blob/master/docs/resources.md)** for further reading & inspiration
-
-- [ ] See **[code samples](https://github.com/valgaze/speedybot/blob/master/docs/singlefile.md)**

@@ -31,13 +31,13 @@ It looks like your config's webhookUrl does not end with a route
 Ex. (expresjs) If your server's route handler look like this:
 
 const config = {
-    webhookUrl: '${webhookUrl}',
-    'token': 'aaa-bbb-ccc
+    "webhookUrl": "${webhookUrl}",
+    "token": "aaa-bbb-ccc"
 }
 
 app.post('my_webhook', SpeedybotWebhook(config, handlerList))
 
-Change config.webhookUrl to ${webhookUrl}${webhookUrl.slice(-1) === '/' ? 'path_goes_here' : '/path_goes_here'}
+Change config.webhookUrl to ${webhookUrl}${webhookUrl.slice(-1) === '/' ? 'my_webhook' : '/my_webhook'}
 
 See here for more details: https://github.com/valgaze/speedybot/blob/master/docs/how-to.md#deploy`)
         const errMsg = `Error: webhookUrl in should end with a path, ex ${webhookUrl}${webhookUrl.slice(-1) === '/' ? 'my_webhook' : '/my_webhook'}`
@@ -111,6 +111,3 @@ See here for more details: https://github.com/valgaze/speedybot/blob/master/docs
 	}
 	return payload
 }
-
-export const placeholder = '__REPLACE__ME__'
-

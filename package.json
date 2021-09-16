@@ -3,9 +3,6 @@
     "version": "1.0.3",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "main": "./dist/src/index.js",
-    "bin": {
-        "speedybot": "./dist/src/cli/index.js"
-    },
     "scripts": {
         "test": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
         "patch": "npx np patch",
@@ -13,8 +10,6 @@
         "dev": "nodemon",
         "start": "ts-node src/launcher",
         "start:dist": "npm run setup && cd dist && node src/launcher",
-        "write:json": "cd dist && node src/cli write:json",
-        "write:json:local": "ts-node src/cli write:json",
         "build:global": "tsc",
         "build": "./node_modules/typescript/bin/tsc",
         "setup": "npm i && npm run build"
