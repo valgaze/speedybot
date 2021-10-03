@@ -1,4 +1,4 @@
-import { FrameworkInst,  BotHandler, ToMessage, BotInst, Trigger } from './framework'
+import { FrameworkInst,  BotHandler, ToMessage, BotInst, Trigger, WebhookHandler } from './framework'
 import { ValidatewebhookUrl, pickRandom } from './helpers'
 import { placeholder, ascii_art } from './'
 // TODO: make peer dependency
@@ -26,6 +26,7 @@ export class Speedybot {
     Magickeywords = {
         '<@help>': ['help'],
         '<@catchall>': /(.*?)/,
+
     }
 
     MagicFrameworkkeywords = {
@@ -35,17 +36,40 @@ export class Speedybot {
         '<@fileupload>': 'files',
     }
 
+    WebhookKeyword = '<@webhook>'
+
     constructor(config: SpeedybotConfig) {
         const inst:FrameworkInst = new Botframework(config);
         this.frameworkRef = inst;
     }
 
-    sendMessage(payload: ToMessage) {
+    send(payload: ToMessage) {
         this.frameworkRef.webex.messages.create(payload)
     }
 
-    _send(payload: ToMessage) {
-        this.frameworkRef.webex.messages.create(payload)
+    // Send card is a bit tricky in the <@webhook> case since we don't have any
+    // existing room binding
+    // For now, just make 2 different methods
+    sendCardToRoom(roomId, cardPayload: any, fallbackText= 'Your client does not appear to support rendering adaptive cards') {
+        const card = {
+            roomId,
+            markdown: fallbackText,
+            attachments: [{
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: cardPayload}]
+        }
+        this.frameworkRef.webex.messages.create(card)
+    }
+
+    sendCardToPerson(email, cardPayload: any, fallbackText= 'Your client does not appear to support rendering adaptive cards') {
+        const card = {
+            toPersonEmail: email,
+            markdown: fallbackText,
+            attachments: [{
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: cardPayload}]
+        }
+        this.frameworkRef.webex.messages.create(card)    
     }
 
     async start():Promise<FrameworkInst> {
@@ -238,15 +262,43 @@ export class Speedybot {
  * @param handlers: Bothandler[]  
  * @returns Promise<unknown>
  */
-export const SpeedybotWebhook = (config: SpeedybotConfig, handlers: BotHandler[]) => {
+export const SpeedybotWebhook = (config: SpeedybotConfig, handlers: (BotHandler | WebhookHandler)[], app?:any) => {
     const { webhookUrl = ''} = config;
     ValidatewebhookUrl(webhookUrl)
     if (config.token === placeholder) {
         throw new Error(`Placeholder detected under 'token' in config.json! See here for instructions: https://github.com/valgaze/speedybot-starter/blob/master/quickstart.md Exiting...`)
 	}
     const speedybot = new Speedybot(config)
-    speedybot.loadHandlers(handlers)
+    const webhookHandlers: WebhookHandler[] = []
+    const standardHandlers = handlers.filter((handler) => { 
+        const { keyword } = handler
+        if (typeof keyword === 'string') {
+            const isWebhook = keyword.includes(speedybot.WebhookKeyword)
+            if (isWebhook) {
+                webhookHandlers.push(handler as WebhookHandler)
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return true // regex | (string|regex)[]
+        }
+    })
+
+    speedybot.loadHandlers(standardHandlers)
     speedybot.start()
+
+    // TODO: support other route handler schemas-- koa, hapi, sails, etc
+    if (app) {
+        webhookHandlers.forEach(webhook => {
+            const { method = 'post', route, handler } = webhook
+            app[method](route, async (req, res) => {
+                return handler.call(speedybot, req, res)
+            })
+        })
+    }
+
+    // Main webhook specifically for incoming chat webhooks
     return async (req, res) => {
         return speedybot.webhook()(req)
     }
@@ -308,7 +360,9 @@ export const Launch = async (config: SpeedybotConfig, handlerList: BotHandler[])
 	}
     ascii_art()
     const speedybot = new Speedybot(config);
-    speedybot.loadHandlers(handlerList)
+    // Filterout webhooks
+    const tidyHandlerList = handlerList.filter(({keyword}) => !(typeof keyword === 'string' && keyword === speedybot.WebhookKeyword))
+    speedybot.loadHandlers(tidyHandlerList)
     const frameworkRef = await speedybot.start()
     return frameworkRef
 }

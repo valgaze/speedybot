@@ -17,6 +17,8 @@ There are a few "special" keyword words you can use which have a special meaning
 
 - *<@despawn>*: Opposite of spawn, see **[here](https://github.com/WebexSamples/webex-node-bot-framework/#despawn)** for details
 
+
+- *<@webhook>*: Put your webhook handlers alongside your handlers, see the **["Handling Webhooks"](#handling-webhooks)** section below for an example or video instruction here: https://share.descript.com/view/bnyupJvNJcx
 ex.
 
 ```ts
@@ -84,7 +86,7 @@ export default handlers = [
 
 - Start a 1-1 & ask your bot "healthcheck"-- if all works well you should see something like this:
 
-![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/healthcheck.gif)
+![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/healthcheck.gif)
 
 
 You can also add a bot to a group space, but note that you or any other human members of the space will need to explicitly "@"-mention the bot to get functionality
@@ -95,7 +97,7 @@ A suggestion "chip" is a button which, when clicked, is the equivalent of the us
 
 ex. 
 
-![image](./assets/chip_example.gif)
+![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/chip_example.gif)
 
 
 Ex. If a button/chip has the label "bongo", when the user taps it, the phrase "bongo" will be processed by chat handlers as if the user typed "bongo" on their own
@@ -244,7 +246,7 @@ const config: SpeedybotConfig = {
     webhookUrl: 'https://123-45-678-910-987.ngrok.io/speedybotwebhook'
 }
 
-app.post('/speedybotwebhook', SpeedybotWebhook(config, handlers))
+app.post('/speedybotwebhook', SpeedybotWebhook(config, handlers, app))
 
 app.listen(port, () => {
     console.log(`Listening + tunneled on port ${port}`)
@@ -264,7 +266,7 @@ npx speedyhelper tunnel
 
 If all went well it should look like this:
 
-![image](./assets/tunnel.png)
+![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/tunnel.png)
 
 ### 2. Set value in config
 
@@ -275,4 +277,52 @@ Set the value under ```webhookUrl``` in config and append ```/speedybotwebhook``
 	"token":"aaa-bbb-ccc-ddd",
 	"webhookUrl":"http://9044-47-144-173-232.ngrok.io/speedybotwebhook"
 }
+```
+
+
+## Handling Webhooks
+
+If you deploy your agent using a server (rather than websockets, ie webhookUrl is set blank in **[settings/config.json](./../settings/config.json)**), you can write your webhook handlers using the <@webhook> keyword. Note that the bot & trigger parameters are not available, however, 
+
+Ex. Process incoming webhooks that post to your agent:
+
+```ts
+	{
+		keyword: '<@webhook>',
+		route: '/my_test_webhook',
+		handler(req, res) {
+			// Note this is a special handler unlike all the others
+			// Webhook/alert handlers don't have 
+			const { body } = req
+			const msg = `Webhook alert for /my_test_route, data received: ${JSON.stringify(body)}`
+			
+			const cardJson = {
+				"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+				"type": "AdaptiveCard",
+				"version": "1.0",
+				"body": [
+					{
+						"type": "TextBlock",
+						"size": "Medium",
+						"weight": "Bolder",
+						"text": "Data"
+					},
+					{
+						"type": "RichTextBlock",
+						"inlines": [
+							{
+								"type": "TextRun",
+								"text": JSON.stringify(body, null, 2)
+							}
+						]
+					}
+				],
+			}
+
+			this.send({toPersonEmail: 'valgaze+botexperiments@gmail.com', text: msg})
+			this.sendCardToPerson('valgaze+botexperiments@gmail.com', cardJson)
+
+			res.send('Thanks') // optional, in case server needs acknowledgement
+		}
+	}
 ```

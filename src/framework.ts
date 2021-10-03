@@ -8,7 +8,7 @@
 /**
  * Framework instance: https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L25-L34
  *
- */
+*/
 export interface FrameworkInst {
     options: FrameworkOptions;
     id: string;
@@ -234,3 +234,25 @@ export interface BotHandler {
 	helpText: string; // Used by built-in help generator any handlers you write this way will list out their help data
 	preference?: number; // defaults to 0, specifies preference of phrase when overlapping handlers match, lower number >> higher match priority
 }
+
+export type AlertFunc = (req: any, res: any) => void;
+
+export type ValidMethods = 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE'
+export interface WebhookHandler {
+    keyword: '<@webhook>';
+    route: string;
+    handler: AlertFunc;
+    method?: ValidMethods; // default to post
+}
+/**
+ * const alerter = {
+ * keyword: '<@webhook>'
+ * route: '/my_webhook_route'
+ * handler(req, res) {
+ *     const {body} = req
+ *     this.send({toPersonEmail: 'joe@joeys.com', text:`Webhook alert!, `}) 
+ * }
+ * }
+ * 
+ * 
+ */
