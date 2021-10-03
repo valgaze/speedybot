@@ -1,6 +1,6 @@
 {
     "name": "speedybot",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "main": "./dist/src/index.js",
     "scripts": {
