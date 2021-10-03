@@ -1,12 +1,17 @@
 ## Quickstart
 
-Note: The steps below assume you have a working WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+
+Note: The steps below assume you have a function WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+ available on your system
 
-Steps below can be automated using the cli
+Steps below can be automated using the cli 
+
 
 ```sh
 npx speedyhelper setup
 ```
+
+Video instructions available here: https://share.descript.com/view/ds3UA1kUb9z
+
+-----
 
 ## 1. Fetch repo & install dependencies
 
@@ -31,13 +36,13 @@ npm start
 ```
 
 If all went well, it should look something like this:
-![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/framework_success.png)
+![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/framework_success.png)
 
 ## 4. Run a "healthcheck" with the bot
 
 To make sure all is well, add your bot from Step 1 in a 1-1 chat session and tell it "healthcheck"-- if everything is configured properly you should see something like this:
 
-![image](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/healthcheck.gif)
+![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/healthcheck.gif)
 
 ## 5. Extend
 

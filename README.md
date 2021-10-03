@@ -4,7 +4,8 @@
 tl:dr; The speedy & easy way to launch a bot
 ```
 
-![j5](https://i.imgur.com/VQoXfHn.gif)
+[![sb](https://i.imgur.com/VQoXfHn.gif)](https://share.descript.com/view/ds3UA1kUb9z)
+
 
 ---
 
@@ -17,11 +18,18 @@ npx speedyhelper setup
 ```
 ---
 
+## Video instructions
+
+- 101: https://share.descript.com/view/ds3UA1kUb9z
+
+- Webhooks/3rd-party integrations: https://share.descript.com/view/bnyupJvNJcx
+
 ## In a nutshell
 
 Speedybot is a "toolkit" to take you from zero to a non-trivial bot as quickly as possible. Dive in immediately and focus on the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
 
 Speedybot instruments on top of the incredibly useful **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** and steps through the fastest path to a working bot and provides some convenience features
+
 
 ## Adding a new chat handler
 
@@ -126,11 +134,6 @@ export default [{
 
 </details>
 
-## Video instructions
-
-```
-// todo
-```
 
 ## CLI Instructions
 
