@@ -10,6 +10,11 @@
  * 
  */
 
+
+
+
+
+// legacy
 export interface EasyCardPayload {
 	title?: string;
 	url: string;

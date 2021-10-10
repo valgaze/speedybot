@@ -3,6 +3,7 @@
     "version": "1.0.6",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
         "test": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
         "patch": "npx np patch",

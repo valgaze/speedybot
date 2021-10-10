@@ -32,6 +32,7 @@ export interface FrameworkInst {
     setAuthorizer(func: any); boolean;
     clearAuthorizer(): void;
     on(eventName: string, handler: unknown): void;
+    onMessageCreated(payload: Message): void
 }
 
 export interface FrameworkOptions {
@@ -244,6 +245,12 @@ export interface WebhookHandler {
     handler: AlertFunc;
     method?: ValidMethods; // default to post
 }
+
+export const passThru = (bot: BotInst, trigger: Trigger) => {
+    // HACK: pass the button-tap value through the handler system
+    return bot.framework.onMessageCreated(trigger.message)
+}
+
 /**
  * const alerter = {
  * keyword: '<@webhook>'

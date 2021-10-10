@@ -1,3 +1,4 @@
+import { Trigger } from './framework'
 import { loud } from './logger'
 /**
 * @param list 
@@ -110,4 +111,63 @@ See here for more details: https://github.com/valgaze/speedybot/blob/master/docs
 		payload = replacer(payload, key, val)
 	}
 	return payload
+}
+
+
+export const jsonSnippet = (payload) => {
+	const escaped = `
+\`\`\`json
+${JSON.stringify(payload, null, 2)}
+\`\`\``
+	return { markdown: escaped }
+}
+
+// Alias store/recall
+export class Storage {
+	static async get(bot, key:string) {
+		let res = null
+		try {
+			res = await bot.recall(key)
+		} catch(e) {
+
+		}
+		return res
+	}
+	
+	static async save(bot, key:string, val: any) {
+		return bot.store(key, val)
+	}
+
+	static async delete(bot, key) {
+		return bot.forget(key)
+	}
+}
+
+
+export class Locker<T> {
+	constructor(public state: T = {} as T) {}
+
+	save(trigger:Trigger, key: string, value: unknown) {
+		const { personId } = trigger
+		if (!this.state[personId]) {
+			this.state[personId] = {}
+		}
+		this.state[personId][key] = value
+	}
+
+	get(trigger:Trigger, key: string) {
+		const { personId } = trigger
+		return this.state[personId] ? (this.state[personId][key] || null) : null
+	}
+
+	delete(trigger: Trigger, key: string) {
+		const { personId } = trigger
+		if (this.state[personId]) {
+			delete this.state[personId][key]
+		}
+	}
+
+	snapShot() {
+		return JSON.parse(JSON.stringify(this.state))
+	}
 }
