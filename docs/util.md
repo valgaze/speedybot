@@ -66,9 +66,9 @@ const cardJson = new SpeedyCard().setTitle('System is 👍', {st})
                                 .setImage('https://i.imgur.com/SW78JRd.jpg')
                                 .setInput(`What's on your mind?`)
                                 .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
+								.setData({mySpecialData: {a:1, b:2}})
 
 bot.sendCard(cardJson.render(), 'Your client does not currently support Adaptive Cards')
-
 ```
 
 </details>

@@ -93,6 +93,7 @@ export default [{
                                      .setInput(`What's on your mind?`)
                                      .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
                                      .setTable([[`Bot's Date`, new Date().toDateString()], ["Bot's Uptime", `${String(process.uptime())}s`]])
+                                     .setData({mySpecialData: {a:1, b:2}})
             bot.sendCard(myCard.render(), 'Your client does not currently support Adaptive Cards')
         },
         helpText: 'Sends an Adaptive Card with an input field to the user'

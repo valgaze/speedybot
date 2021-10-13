@@ -1,4 +1,4 @@
-
+import {bad} from './index'
 export interface BaseConfig {
     title?: string;
     titleConfig?: Partial<TextBlock>;
@@ -52,6 +52,17 @@ export interface inputConfig {
     placeholder?: string;
 }
 
+export interface Fact {
+    title: string;
+    value: string
+}
+export interface FactSet {
+    type: 'FactSet', 
+    facts: Fact[]
+}
+export interface AttachmentData {
+    [key: string]: any
+}
 
 /**
  * SpeedyCard
@@ -91,6 +102,8 @@ export class SpeedyCard {
     public url = ''
     public urlLabel = 'Go'
     public tableData: string[][] = []
+    public attachedData: AttachmentData = {}
+    public needsSubmit = false
 
     public json:EasyCardSpec = {
         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -166,8 +179,15 @@ export class SpeedyCard {
         return this
     }
 
+    setData(payload:AttachmentData) {
+        if (payload) {
+            this.attachedData = payload
+            this.needsSubmit = true
+        }
+        return this
+    }
+
     render() {
-        let needsSubmit = false
         if (this.title) {
             const payload:TextBlock = {
                 type: 'TextBlock',
@@ -194,52 +214,18 @@ export class SpeedyCard {
         }
 
         if (this.tableData && this.tableData.length) {
-            const payload = {
-				"type": "ColumnSet",
-				"columns": [],
-				"spacing": "Padding",
-				"horizontalAlignment": "Center"
-			}
-
-            const columnsData: { type: string, width: number, items: any[] }[] = [
-                {
-                    "type": "Column",
-                    "width": 35,
-                    "items": []
-                },
-                {
-                    "type": "Column",
-                    "width": 65,
-                    "items": []
-                }
-            ]
-
-            const buildLabel = (label: string) => {
-                return {
-                    "type": "TextBlock",
-                    "text": label,
-                    "weight": "Bolder",
-                    "color": "Light",
-                    "spacing": "Small"
-                }
-            }
-            const buildValue = (value: string) => {
-                return {
-                    "type": "TextBlock",
-                    "text": value,
-                    "color": "Light",
-                    "weight": "Lighter",
-                    "spacing": "Small"
-                }
+            const payload: FactSet = {
+                "type": "FactSet",
+                "facts": []
             }
 
             this.tableData.forEach(([label, value], i) => {
-                columnsData[0].items.push(buildLabel(label))
-                columnsData[1].items.push(buildValue(value))
+                const fact:Fact = {
+                    title: label,
+                    value
+                }
+                payload.facts.push(fact)
             })
-
-            // @ts-ignore
-            payload.columns = columnsData
             
             this.json.body.push(payload)
         }
@@ -256,7 +242,7 @@ export class SpeedyCard {
         }
 
         if (this.choices.length) {
-            needsSubmit = true
+            this.needsSubmit = true
             const payload: ChoiceBlock = {
                 type: 'Input.ChoiceSet',
                 id: 'choiceSelect',
@@ -270,7 +256,7 @@ export class SpeedyCard {
         }
 
         if (this.inputPlaceholder) {
-            needsSubmit = true
+            this.needsSubmit = true
             const payload = {
                 "type": "Input.Text",
                 placeholder: this.inputPlaceholder,
@@ -280,15 +266,24 @@ export class SpeedyCard {
         }
 
 
-        if (needsSubmit) {
-            const payload = {
+        if (this.needsSubmit) {
+            interface SubmitPayload {
+                type: string;
+                title: string;
+                data?: unknown
+            }
+            const payload:SubmitPayload = {
                 type: "Action.Submit",
                 title: this.buttonLabel,
-                "data": {
-                    "cardType": "inputForm"
-                }
+            }
+            if (this.attachedData) {
+                payload.data = this.attachedData
             }
             this.json.actions = [payload]
+        } else {
+            if (this.attachedData && Object.keys(this.attachedData).length) {
+                bad(`attachedData ignore, you must call at least either .setInput() or .setChoices to pass through data with an adaptive card`)
+            }
         }
 
         if (this.url) {
