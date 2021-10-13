@@ -1,6 +1,6 @@
 import { FrameworkInst,  BotHandler, ToMessage, BotInst, Trigger, WebhookHandler } from './framework'
 import { ValidatewebhookUrl, pickRandom } from './helpers'
-import { placeholder, ascii_art } from './'
+import { placeholder, ascii_art, SpeedyCard } from './'
 // TODO: make peer dependency
 import Botframework from 'webex-node-bot-framework'
 import BotWebhook from 'webex-node-bot-framework/webhook'
@@ -24,7 +24,7 @@ export class Speedybot {
 
     // Chat/framework handler mappings
     Magickeywords = {
-        '<@help>': ['help'],
+        '<@help>': 'help',
         '<@catchall>': /(.*?)/,
 
     }
@@ -203,46 +203,51 @@ export class Speedybot {
                 bot.say(pickRandom(choices))
         
                 // Adapative Card: https://developer.webex.com/docs/api/guides/cards
-                // Card with n buttons, each emits "chip_action" with their label value
-                const cardPayload = {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.0",
-                    "body": [{
-                        "type": "TextBlock",
-                        "size": "Medium",
-                        "weight": "Bolder",
-                        "text": "System is 👍"
-                    }, {
-                        "type": "RichTextBlock",
-                        "inlines": [{
-                            "type": "TextRun",
-                            "text": "If you see this card, everything is working"
-                        }]
-                    }, {
-                        "type": "Image",
-                        "url": "https://i.imgur.com/SW78JRd.jpg",
-                        "horizontalAlignment": "Center",
-                        "size": "large"
-                    }, {
-                        "type": "Input.Text",
-                        "id": "inputData",
-                        "placeholder": "What's on your mind?"
-                    }],
-                    "actions": [{
-                        "type": "Action.OpenUrl",
-                        "title": "Take a moment to celebrate",
-                        "url": "https://www.youtube.com/watch?v=3GwjfUFyY6M",
-                        "style": "positive"
-                    }, {
-                        "type": "Action.Submit",
-                        "title": "Submit",
-                        "data": {
-                            "cardType": "inputForm"
-                        }
-                    }]
-                }
-                return bot.sendCard(cardPayload, 'Your client does not currently support Adaptive Cards :(')
+                const cardPayload = new SpeedyCard().setTitle('System is 👍')
+                                                .setSubtitle('If you see this card, everything is working')
+                                                .setImage('https://i.imgur.com/SW78JRd.jpg')
+                                                .setInput(`What's on your mind?`)
+                                                .setUrl(pickRandom(['https://www.youtube.com/watch?v=3GwjfUFyY6M', 'https://www.youtube.com/watch?v=d-diB65scQU']), 'Take a moment to celebrate')
+                                                .setTable([[`Bot's Date`, new Date().toDateString()], ["Bot's Uptime", `${String(process.uptime()).substring(0, 25)}s`]])
+                // const cardPayload = {
+                //     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                //     "type": "AdaptiveCard",
+                //     "version": "1.0",
+                //     "body": [{
+                //         "type": "TextBlock",
+                //         "size": "Medium",
+                //         "weight": "Bolder",
+                //         "text": "System is 👍"
+                //     }, {
+                //         "type": "RichTextBlock",
+                //         "inlines": [{
+                //             "type": "TextRun",
+                //             "text": "If you see this card, everything is working"
+                //         }]
+                //     }, {
+                //         "type": "Image",
+                //         "url": "https://i.imgur.com/SW78JRd.jpg",
+                //         "horizontalAlignment": "Center",
+                //         "size": "large"
+                //     }, {
+                //         "type": "Input.Text",
+                //         "id": "inputData",
+                //         "placeholder": "What's on your mind?"
+                //     }],
+                //     "actions": [{
+                //         "type": "Action.OpenUrl",
+                //         "title": "Take a moment to celebrate",
+                //         "url": "https://www.youtube.com/watch?v=3GwjfUFyY6M",
+                //         "style": "positive"
+                //     }, {
+                //         "type": "Action.Submit",
+                //         "title": "Submit",
+                //         "data": {
+                //             "cardType": "inputForm"
+                //         }
+                //     }]
+                // }
+                return bot.sendCard(cardPayload.render(), 'Your client does not currently support Adaptive Cards :(')
             },
             helpText: 'Test the health of your bot. Otherwise there may be an issue with your tunnel, server, or network)'
         }

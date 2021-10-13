@@ -19,7 +19,11 @@ There are a few "special" keyword words you can use which have a special meaning
 
 
 - *<@webhook>*: Put your webhook handlers alongside your handlers, see the **["Handling Webhooks"](#handling-webhooks)** section below for an example or video instruction here: https://share.descript.com/view/bnyupJvNJcx
-ex.
+
+
+
+
+ex. Kitchen sink handler list
 
 ```ts
 export default handlers = [
@@ -319,8 +323,8 @@ Ex. Process incoming webhooks that post to your agent:
 				],
 			}
 
-			this.send({toPersonEmail: 'valgaze+botexperiments@gmail.com', text: msg})
-			this.sendCardToPerson('valgaze+botexperiments@gmail.com', cardJson)
+			this.send({toPersonEmail: 'joe@joe.com', text: msg})
+			this.sendCardToPerson('joe@joe.com', cardJson)
 
 			res.send('Thanks') // optional, in case server needs acknowledgement
 		}

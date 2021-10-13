@@ -1,5 +1,5 @@
 // See here: https://www.youtube.com/watch?v=NeF7jqf0GU4
-import { pickRandom, easyCard, Trigger, BotInst } from './../src'
+import { pickRandom, Trigger, BotInst, SpeedyCard} from './../src'
 export default {
 	keyword: ['namegame', 'namegame:start'],
 	handler(bot: BotInst, trigger: Trigger) {
@@ -16,14 +16,18 @@ export default {
 			ex. namegame Lincoln
 			🎶🎶🎸🎶🎶
 			`
-			return bot.sendCard(easyCard({ title: 'The Name Game by Shirley Ellis', text, url: 'https://www.youtube.com/watch?v=NeF7jqf0GU4', buttonLabel: 'Boogie!', image: 'https://i3.ytimg.com/vi/NeF7jqf0GU4/hqdefault.jpg' }), 'The Name Game by Shirley Ellis: https://www.youtube.com/watch?v=NeF7jqf0GU4')
+
+			const myCard = new SpeedyCard().setTitle('The Name Game by Shirley Ellis').setSubtitle(text).setUrl('https://www.youtube.com/watch?v=NeF7jqf0GU4').setImage('https://i3.ytimg.com/vi/NeF7jqf0GU4/hqdefault.jpg')
+			return bot.sendCard(myCard.render(), 'It appears your client does not support adaptive cards')
 		}
 
 		const firstName = name ? name : trigger.person.firstName;
 		const res = lyricsGenerator(firstName)
 		const warmup = ['Alright,', 'Here we go', 'Ready?', 'Deep breath...']
 		const output = `${pickRandom(warmup)} ${res}`
-		bot.sendCard(easyCard({ title: 'The Name Game by Shirley Ellis', text: output, url: 'https://www.youtube.com/watch?v=NeF7jqf0GU4', buttonLabel: 'Go!', image: 'https://i3.ytimg.com/vi/NeF7jqf0GU4/hqdefault.jpg' }), 'The Name Game by Shirley Ellis: https://www.youtube.com/watch?v=NeF7jqf0GU4')
+
+		const myCard = new SpeedyCard().setTitle('The Name Game by Shirley Ellis').setSubtitle(output).setUrl('https://www.youtube.com/watch?v=NeF7jqf0GU4').setImage('https://i3.ytimg.com/vi/NeF7jqf0GU4/hqdefault.jpg')
+		bot.sendCard(myCard.render(), 'The Name Game by Shirley Ellis: https://www.youtube.com/watch?v=NeF7jqf0GU4')
 		if (!name) {
 			bot.say('Psst, try adding a name, like this: @botname namegame Shirley')
 		}
