@@ -85,6 +85,11 @@ export interface AttachmentData {
     bot.sendCard(cardPayload.render(), 'Your client doesnt appear to support adaptive cards')
  * ```
  */
+export interface SelectorPayload {
+    id: string;
+    type: string;
+    label?: string;
+}
 export class SpeedyCard {
     public title = ''
     public subtitle = ''
@@ -104,6 +109,8 @@ export class SpeedyCard {
     public tableData: string[][] = []
     public attachedData: AttachmentData = {}
     public needsSubmit = false
+    public dateData: Partial<SelectorPayload> = {}
+    public timeData: Partial<SelectorPayload> = {}
 
     public json:EasyCardSpec = {
         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -187,6 +194,26 @@ export class SpeedyCard {
         return this
     }
 
+    setDate(id="selectedDate", label: string='Select a date') {
+        const payload = {
+            "type": "Input.Date",
+            id,
+            label
+        }
+        this.dateData = payload
+        return this
+    }
+
+    setTime(id="selectedTime", label: string = 'Select a time') {
+        const payload = {
+            "type": "Input.Time",
+            id,
+            label
+        }
+        this.timeData = payload
+        return this
+    }
+
     render() {
         if (this.title) {
             const payload:TextBlock = {
@@ -204,7 +231,7 @@ export class SpeedyCard {
             const payload:TextBlock = {
                 type: 'TextBlock',
                 text: this.subtitle,
-                size: "Small",
+                size: "Medium",
                 isSubtle: true,
                 wrap:true,
                 weight: 'Lighter',
@@ -265,6 +292,37 @@ export class SpeedyCard {
             this.json.body.push(payload)
         }
 
+        if (Object.keys(this.dateData).length) {
+            const { id, type, label} = this.dateData
+            if (label) {
+                this.json.body.push({
+                    "type": "TextBlock",
+                    "text": label,
+                    "wrap": true
+                })
+            }
+            if (id && type) {
+                this.json.body.push({id, type})
+            }
+            this.needsSubmit = true
+         }
+
+
+        if (Object.keys(this.timeData).length) {
+            const { id, type, label} = this.timeData
+            if (label) {
+                this.json.body.push({
+                    "type": "TextBlock",
+                    "text": label,
+                    "wrap": true
+                })
+            }
+            if (id && type) {
+                this.json.body.push({id, type})
+            }
+            this.needsSubmit = true
+        }
+
 
         if (this.needsSubmit) {
             interface SubmitPayload {
@@ -282,7 +340,7 @@ export class SpeedyCard {
             this.json.actions = [payload]
         } else {
             if (this.attachedData && Object.keys(this.attachedData).length) {
-                bad(`attachedData ignore, you must call at least either .setInput() or .setChoices to pass through data with an adaptive card`)
+                bad(`attachedData ignore, you must call at least either .setInput(), .setChoices, .setDate, .setTime, to pass through data with an adaptive card`)
             }
         }
 

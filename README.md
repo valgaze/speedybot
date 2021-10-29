@@ -26,11 +26,14 @@ npx speedyhelper setup
 
 ## In a nutshell
 
-Speedybot is a "toolkit" to take you from zero to a non-trivial bot as quickly as possible. Dive in immediately and focus on the stuff that matters-- features, workflows/integrations, content, & interactivity, etc
+Speedybot is a "toolkit" to take you from zero to a non-trivial bot as quickly as possible w/ a buttery-smooth developer experience (live-reload, intelli-sense, etc). Dive in immediately and focus on the stuff that matters-- content, workflows/integrations, processing files, etc
 
 Speedybot instruments on top of the incredibly useful **[webex-node-bot-framework](https://github.com/WebexSamples/webex-node-bot-framework)** and steps through the fastest path to a working bot and provides some convenience features
 
-Even if you don't use all of speedybot's features, if nothing else there are several helper utillties that are useful for crafting a rich conversation agent-- more details **[here](https://github.com/valgaze/speedybot/blob/master/docs/util.md)** Speedybot has one required dependency
+Speedybot also makes it easy to get up and running fast without worrying about tunneling, webhooks, etc.
+
+Speedybot can also give your bot $uperpowers-- **[see here for details on $uperpowers](https://github.com/valgaze/speedybot/blob/master/docs/superpowers.md)**
+
 
 ## Adding a new chat handler
 
@@ -55,6 +58,124 @@ Example handler:
 }
 ```
 
+## $uperpowers
+
+Speedybot can also give your bot $uperpowers-- **[see here for details on $uperpowers](https://github.com/valgaze/speedybot/blob/master/docs/superpowers.md)**
+
+<details><summary>$uperpowers sample</summary>
+
+```ts
+import { $ } from 'speedybot'
+
+export default 	{
+    keyword: ['$', '$uperpowers', '$uperpower', '$superpower'],
+    async handler(bot, trigger) {
+
+        // ## 0) Wrap the bot object in $ to give it $uperpowers, ex $(bot)
+        const $bot = $(bot)
+
+        // ## 1) Contexts: set, remove, and list
+        // Contexts persist between "turns" of chat
+        // Note: contexts can optionally store data
+        // If you just need to stash information attached to a user, see "$(bot).saveData" below
+        await $bot.saveContext('mycontext1')
+        await $bot.saveContext('mycontext2', { data: new Date().toISOString()})
+
+        const mycontext2 = await $bot.getContext('mycontext2')
+        $bot.log('# mycontext2', mycontext2) // { data: '2021-11-05T05:03:58.755Z'}
+
+        // Contexts: list active contexts
+        const allContexts = await $bot.getAllContexts() // ['mycontext1', 'mycontext2']
+        bot.say(`Contexts: ${JSON.stringify(allContexts)}`)
+
+        // Contexts: check if context is active
+        const isActive = await $bot.contextActive('mycontext1')
+        $bot.log(`mycontext1 is active, ${isActive}`) // 'mycontext1 is active, true'
+
+        // Contexts: remove context
+        await $bot.deleteContext('mycontext1')
+
+        const isStillActive = await $bot.contextActive('mycontext1')
+        $bot.log(`mycontext1 is active, ${isStillActive}`) // 'mycontext1 is active, false'
+
+        // ## 2) Helpers to add variation and rich content
+
+        // sendRandom: Sends a random string from a list
+        $bot.sendRandom(['Hey!','Hello!!','Hiya!'])
+
+        // sendTemplate: like sendRandom but replace $[variable_name] with a value
+        const utterances = ['Hey how are you $[name]?', `$[name]! How's it going?`, '$[name]']
+        const template = { name: 'Joey'}
+        $bot.sendTemplate(utterances, template)
+
+        // sendURL: Sends a URL in a clickable card
+        $bot.sendURL('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Go Celebrate')
+
+        // snippet: Generate a snippet that will render data in markdown-friendly format
+        const JSONData = {a: 1, b:2, c:3, d:4}
+
+        $bot.sendSnippet(JSONData, `**Here's some JSON, you'll love it**`) // send to room
+
+        // Snippet to a specifc room or specific email
+        // const snippet = $bot.snippet(JSONData)
+        // $bot.send({markdown: snippet, roomId:trigger.message.roomId, text: 'Your client does not render markdown :('}) // send to a specific room
+        // $bot.send({markdown: snippet, toPersonEmail:'joe@joe.com', text: 'Your client does not render markdown :('}) // send to a specific person
+
+
+        // ## 3) Save data between conversation "runs"
+
+        interface SpecialUserData {
+            specialValue: string;
+            userId: String;
+        }
+        const specialData:SpecialUserData = {
+            specialValue: Math.random().toString(36).slice(2),
+            userId: trigger.personId,
+        }
+        
+        // Save the data
+        await $bot.saveData<SpecialUserData>('userData', specialData)
+        
+        // Retrieve the data (returns null if does not exist)
+        const dataRes = await $bot.getData<SpecialUserData>('userData')
+
+        if (dataRes) {
+            // These are now "typed"
+            const theValue = dataRes.specialValue
+            const id = dataRes.userId
+            $bot.log(`Your specal value was ${theValue} and your id is ${id}`)
+
+            // destroy data
+            $bot.deleteData('userData')
+        }
+
+        // ## 4) Integrate with 3rd-parties: $bot.get, $bot.post, etc
+
+        // ex. get external data
+        // Opts are axios request config (for bearer tokens, proxies, unique config, etc)
+        const res = await $bot.get('https://randomuser.me/api/')
+        bot.say({markdown: $bot.snippet(res.data)})
+
+        // ## 4) Files & attachments
+
+        // Send a local file
+        // Provide a path/filename, will be attached to message
+        $bot.sendFile(__dirname, 'assets', 'speedybot.pdf')
+
+        // Send a publicly accessible URL file
+        // Supported filetypes: ['doc', 'docx' , 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
+        $bot.sendDataFromUrl('https://drive.google.com/uc?export=download&id=1VI4I4pYVVdMnB6YOQuSejVcrSwN0cotd')
+
+        // // experimental (fileystem write): send arbitrary JSON back as a file
+        // $bot.sendDataAsFile(JSON.stringify({a:1,b:2}), '.json')
+
+        // For an example involving parse'able spreadsheets (.xlsx), see here: https://github.com/valgaze/speedybot-superpowers
+    },
+    helpText: 'A demo of $uperpowers'
+}
+```
+</details>
+
 ## Special keywords
 
 There are a few "special" keywords you can use to "listen" to special events:
@@ -74,7 +195,7 @@ There are a few "special" keywords you can use to "listen" to special events:
 ex. Tell the bot "sendcard" to get a card, type into the card & tap submit, catch submission using *<@submit>* and echo back to user
 
 ```ts
-import { Card } from 'speedybot'
+import { SpeedyCard } from 'speedybot'
 export default [{
         keyword: '<@submit>',
         handler(bot, trigger) {
