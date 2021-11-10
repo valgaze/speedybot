@@ -5,7 +5,7 @@ export { SpeedybotConfig } from './speedybot'
 export { FrameworkInst, BotHandler,WebhookHandler, Message, ToMessage, BotInst, Trigger, passThru } from './framework'
 export { bad, help, ascii_art, log, good, askQuestion, loud } from './logger'
 // helpers
-export { fillTemplate, pickRandom, jsonSnippet, Storage, Locker } from './helpers'
+export { fillTemplate, pickRandom, snippet, Storage, Locker, $ } from './helpers'
 // make adaptive cards less painful w/ base templates
 export { SpeedyCard } from './cards'
 export const placeholder = '__REPLACE__ME__'

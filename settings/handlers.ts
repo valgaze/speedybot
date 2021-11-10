@@ -1,4 +1,4 @@
-import { BotHandler } from './../src' // import { BotHandler } from 'speedybot'
+import { $, BotHandler } from './../src' // import { BotHandler } from 'speedybot'
 import Namegamehandler from './namegame'
 
 /**
@@ -27,6 +27,13 @@ const handlers: BotHandler[] = [
 		helpText: `A handler that greets the user`
 	},
 	{
+		keyword: '<@fileupload>',
+		handler(bot, trigger) {
+
+		},
+		helpText: `Special handler that's fired when the user uploads a file to your bot (by default supports json/csv/txt)`
+	},
+	{
 		keyword: ['sendfile'],
 		handler(bot, trigger) {
 			const fileUrl = 'https://camo.githubusercontent.com/b846bfa57dd26af4e1526abe1173e0b332b75af5d642564b2ab1d0c12a482290/68747470733a2f2f692e696d6775722e636f6d2f56516f5866486e2e676966'
@@ -38,7 +45,7 @@ const handlers: BotHandler[] = [
 		helpText: `A handler that attaches a file in a direct message`
 	},
 	{
-		keyword: ['ping', 'pong', 'x'],
+		keyword: ['ping', 'pong'],
 		handler(bot, trigger) {
 			const normalized = trigger.text.toLowerCase()
 			if (normalized === 'ping') {
@@ -57,6 +64,28 @@ const handlers: BotHandler[] = [
 
 		},
 		helpText: `A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
+	},
+	{
+		keyword: '<@fileupload>',
+		async handler(bot, trigger) {
+			const supportedFiles = ['json', 'txt', 'csv']
+
+            // take 1st file uploaded, note this is just a URL & not authenticated
+            const [file] = trigger.message.files
+
+            // Retrieve file data
+			const fileData = await $(bot).getFile(file)
+			const { extension } = fileData
+
+            if (supportedFiles.includes(extension)) {
+                const {data} = fileData
+                // bot.snippet will format json or text data into markdown format
+                bot.say({markdown: $(bot).snippet(data)})
+            } else {
+                bot.say(`Sorry, somebody needs to add support to handle *.${extension} files`)
+            }
+		},
+		helpText: 'A special handler that will activate whenever a file is uploaded'
 	},
 	Namegamehandler, // You can also include single-file handlers in your list
 ]

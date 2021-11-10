@@ -1,5 +1,13 @@
-import { Trigger } from './framework'
-import { loud } from './logger'
+import axios, { Method, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { createReadStream, unlink, writeFileSync } from 'fs'
+import { SpeedyCard } from './index'
+import { BotInst, Trigger, ToMessage, Message } from './framework'
+import { log, loud } from './logger'
+import { resolve } from 'path'
+
+
+
+
 /**
 * @param list 
 * Pick an item from the list
@@ -114,12 +122,17 @@ See here for more details: https://github.com/valgaze/speedybot/blob/master/docs
 }
 
 
-export const jsonSnippet = (payload) => {
-	const escaped = `
-\`\`\`json
-${JSON.stringify(payload, null, 2)}
+export const snippet = (data: string | object, dataType='json'): string => {
+    const msg = `
+\`\`\`${dataType}
+${dataType === 'json' ? JSON.stringify(data, null, 2) : data}
 \`\`\``
-	return { markdown: escaped }
+    return msg
+}
+
+
+export const htmlSnippet = (data: string | object): string => {
+    return snippet(data, 'html')
 }
 
 // Alias store/recall
@@ -170,4 +183,293 @@ export class Locker<T> {
 	snapShot() {
 		return JSON.parse(JSON.stringify(this.state))
 	}
+}
+
+
+// Get uploaded files
+export interface SpeedyFileData<T=any> {
+	data: T;
+	extension: string;
+	fileName: string;
+	type: string;
+	markdownSnippet: string;
+}
+
+
+export const extractFileData = (contentDisposition: string): { fileName: string, extension: string }  => {
+	// header >> 'content-disposition': 'attachment; filename="a.json"',      
+	const fileName = contentDisposition.split(';')[1].split('=')[1].replace(/\"/g, '')
+	const extension = fileName.split('.').pop() || ''
+	return {
+		fileName,
+		extension
+	}
+}
+
+export class $Botutils {
+	public token:string
+	public botRef: BotInst;
+	public request: (payload: any) => Promise<any>;
+	public ContextKey = '_context_'
+	// https://developer.webex.com/docs/basics
+	public supportedExtensions = ['doc', 'docx' , 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
+	constructor(botRef: BotInst | any){
+		this.botRef = botRef
+		this.token = botRef.framework.options.token
+		this.request = axios
+	}
+
+	snippet(ref: (string | object)): string {
+		return snippet(ref)
+	}
+
+	htmlSnippet(ref: (string | object), dataType='html'): string {
+		return snippet(ref, dataType)
+	}
+
+	public async get<T=any>(url:string, config:AxiosRequestConfig={}):Promise<AxiosResponse<T>> {
+		return this.request({url, method: 'GET', ...config})
+	}
+
+	public async post<T=any>(url, config:AxiosRequestConfig={}):Promise<T> {
+		return this.request({url, method: 'POST', ...config})
+	}
+
+	public async getFile<T=any>(fileUrl: string, opts:AxiosRequestConfig={}): Promise<SpeedyFileData<T>> {
+		/**
+		 * Bummer: need to add additional dependency :/
+		 * "request" is available in framework, however painful to get streams + deprecated: https://github.com/request/request/issues/3142
+		 * 
+		 */
+		let requestOpts = {
+			method: 'GET' as Method,
+			url: fileUrl,
+			headers: {
+				Authorization: `Bearer ${this.token}`,
+			},
+			...opts
+		}
+		try {
+			const res = await axios(requestOpts)			
+			const { headers, data } = res
+			const { fileName, extension } = extractFileData(headers['content-disposition'])
+			const type = headers['content-type']
+
+			const payload = {
+				data,
+				extension,
+				fileName,
+				type,
+				markdownSnippet: (type === 'application/json' || (typeof data === 'string' && data.length < 900)) ? this.snippet(data) : '' 
+			}
+
+			return payload
+
+		} catch(e) {
+			throw e
+		}
+	}
+
+	// public markdownTable(data: any) {
+	// 	// todo
+	// 	return data
+	// }
+
+	public async send(payload: ToMessage) {
+		return this.botRef.webex.messages.create(payload)
+	}
+
+	public genContextName(key:string) {
+		return `${this.ContextKey}_${key}`
+	}
+
+	public degenContextName(key:string) {
+		return key.replace(`${this.ContextKey}_`,'')
+	}
+
+	public async saveContext<T=any>(key: string, data?:T): Promise<void>{
+		let writeData = data ? data : { _active: true }
+		return this.saveData(`${this.genContextName(key)}`, writeData)
+	}
+
+	public async getContext<T=any>(key:string):Promise<T | null> {
+		const res = await this.getData(this.genContextName(key))
+		return res
+	}
+
+	public async contextActive(key:string):Promise<boolean> {
+		const ctx = await this.getContext(key)
+		return ctx ? true : false 
+	}
+
+	public async deleteContext<T=any>(key:string):Promise<void> {
+		const res = await this.deleteData(this.genContextName(key))
+		return res
+	}
+
+	public async getAllContexts(): Promise<string[]> {
+		const fullRef = await this.botRef.recall()
+		const keys = Object.keys(fullRef) || []
+		const actives = keys.filter(key => key.includes(this.ContextKey))
+							.map(key => this.degenContextName(key))
+		return actives
+	}
+
+	public async sendURL(url: string, title?:string) {
+		const card = new SpeedyCard()
+		if (title) {
+			card.setTitle(title).setUrl(url)
+		} else {
+			card.setSubtitle(url).setUrl(url, 'Open')
+		}
+		this.botRef.sendCard(card.render(), url)
+	}
+
+	public async saveData<T=any>(key: string, data): Promise<T>{
+		return this.botRef.store(key, data)
+	}
+
+	public async deleteData<T=any>(key: string): Promise<T | null>{
+		return new Promise(async resolve => {
+			try {
+				const res = await this.botRef.forget(key)
+				resolve(res)
+			} catch(e) {
+				resolve(null)
+			}
+		})
+	}
+	
+		/**
+	 * 
+	 * Storage aliases
+	 * getData: bot.recall 
+	 * deleteData: bot.forget don't throw, resolve to null
+	 * 
+	 */
+	public async getData<T=any>(key:string): Promise<T | null> {
+			return new Promise(async resolve => {
+				try {
+					const res = await this.botRef.recall(key)
+					resolve(res)
+				} catch(e) {
+					resolve(null)
+				}
+			})
+		}
+	public resolveFilePath(...filePieces: string[]) {
+		return resolve(...filePieces)
+	}
+	
+	public prepareLocalFile(...filePieces: string[]) {
+		const target = resolve(...filePieces)
+		const stream = createReadStream(target)
+		return stream
+	}
+
+	public sendFile(...filePieces: string[]) {
+		try {
+			const stream = this.prepareLocalFile(...filePieces)
+			this.botRef.uploadStream(stream)
+		} catch(e) {
+			throw e
+		}
+	}
+
+	public async sendDataAsFile<T=any>(data: T, extensionOrFileName: string, config: FileConfig ={}, fallbackText=' ') {
+		// 🦆: HACK HACK HACK for "files": https://developer.webex.com/docs/basics
+		// todo: get rid of filesystem write
+		const fullFileName = this.handleExt(extensionOrFileName)
+		try {
+			writeFileSync(fullFileName, data)
+			const stream = createReadStream(fullFileName)
+			await this.botRef.webex.messages.create({roomId: this.botRef.room.id, files: [stream], text:fallbackText})
+			this.killFile(fullFileName)
+		} catch(e) {
+			throw e
+		}
+	}
+
+	public killFile(path:string) {
+		return new Promise((resolve, reject) => {
+			unlink(path, (err) => {
+				if (err) {
+					resolve(err)
+				} else {
+					resolve({})
+				}
+			})
+		}) 
+	}
+
+	public async sendDataFromUrl(resourceUrl: string, fallbackText=' ') {
+		return this.botRef.webex.messages.create({roomId: this.botRef.room.id, files: [resourceUrl], text:fallbackText})
+	}
+
+	public async sendSnippet(data: string | object, label='', dataType='json', fallbackText='It appears your client does not support markdown') {
+		let markdown
+		if (dataType === 'json') {
+			markdown = this.snippet(data)
+		} else {
+			markdown = this.htmlSnippet(data)
+		}
+
+		if (label) {
+			markdown = label + ' \n ' + markdown
+		}
+		return this.botRef.webex.messages.create({roomId: this.botRef.room.id, markdown, text: fallbackText})
+	}
+
+	public handleExt(input: string):string {
+		const hasDot = input.indexOf('.') > -1
+		let fileName = ''
+		const [prefix, ext] = input.split('.')
+
+		if (hasDot) {
+			if (!prefix) {
+				// '.json' case, generate prefix
+				fileName = `${this.generateFileName()}.${ext}`
+			} else {
+				// 'a.json' case, pass through
+				fileName = input
+			}
+		} else {
+			// 'json' case, generate prefix, add .
+			fileName = `${this.generateFileName()}.${prefix}`
+		}
+		return fileName
+	}
+
+	public generateFileName(): string {
+		return `${this.rando()}_${this.rando()}`
+	}
+
+	public rando(): string {
+		return `${Math.random().toString(36).slice(2)}`
+	}
+
+	// Alias to other helpers
+
+	public sendTemplate(utterances: string | string[], template:  { [key: string]: any }): Promise<Message> {
+		const res = fillTemplate(utterances, template)
+		return this.botRef.webex.messages.create({roomId: this.botRef.room.id, text: res})
+	}
+
+	public sendRandom(utterances: string[]) {
+		const res = pickRandom(utterances)
+		return this.botRef.webex.messages.create({roomId: this.botRef.room.id, text: res})
+	}
+
+	public log(...payload) {
+		return log(...payload)
+	}
+}
+
+export interface FileConfig {
+	type?: 'json' | 'buffer' | 'text'
+}
+
+export const $ = (botRef: BotInst | any):$Botutils => {
+	// memo?
+	return new $Botutils(botRef)
 }

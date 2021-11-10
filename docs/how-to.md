@@ -56,25 +56,23 @@ export default handlers = [
 	},
 	{
 		keyword: '<@fileupload>',
-		handler(bot, trigger) {
-			const files = trigger.message.files || []
+		async handler(bot, trigger) {
+			const [file] = trigger.message.files
+			const fileData = await $(bot).getFile(file) // "getFile" $uperpower 
+			const {extension, type, fileName, data, markdownSnippet} = fileData
 
-			bot.say(`(**Note:** These files are not publicly accessible)\n ${files.length > 1 ? 'These files were' : 'This file was'} uploaded successfully!`)
+			bot.say(`You uploaded '${fileName}'`)
 
-			files.forEach(async (file, idx) => {
-				// Note the URL here will fail for user because they require an Authorization 
-
-				await bot.say(`${idx + 1}: ${file}`)
-			})
-
-			if (files.length === 1) {
-				bot.dm(trigger.person.id, `Sending a file back at ya!`)
-				bot.dm(trigger.person.id, { file: 'https://camo.githubusercontent.com/b846bfa57dd26af4e1526abe1173e0b332b75af5d642564b2ab1d0c12a482290/68747470733a2f2f692e696d6775722e636f6d2f56516f5866486e2e676966' })
+			if (type === 'application/json') {
+				bot.say({markdown: markdownSnippet})
+			} else if (type === 'text/plain' || type === 'text/csv') {
+				bot.say(data)
+				console.log("#", data)
+			} else {
+				bot.say(`// todo: add *.${extension} support`)
 			}
-			// ex. From here, you could download the content of the files (with an Authorization header)
-			// Pass onto another service for analysis/etc
 		},
-		helpText: `A special handler that fires anytime a user submits a file`
+		helpText: `A special handler that fires anytime a user submits data (you can only trigger this handler by tapping Submit in a card)`
 	}
 ]
 ```

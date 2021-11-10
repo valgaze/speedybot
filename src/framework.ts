@@ -68,6 +68,8 @@ export interface BotInst {
     // methods
     implode(): Promise<boolean>;
     say(format:string, msg?: string | object): Promise<Message>
+    say(object): Promise<Message>
+    say({markdown: string}): Promise<Message>
     sayWithLocalFile(message: string | object, filename: string): Promise<Message>
     reply(replyTo: string | object, message: string | object, format?: string): Promise<Message>
 	dm(person: string, format: string | object, ...rest: any): void;
@@ -84,15 +86,17 @@ export interface BotInst {
     exit(): Promise<boolean>;
     
     // storage
-    store(key: string, val: any): Promise<unknown>;
-    recall(key: string): Promise<unknown>;
-    forget(key: string): Promise<unknown>
+    store<T=any>(key: string, val: any): Promise<T>;
+    recall<T=any>(key?: string): Promise<T>;
+    forget<T=any>(key: string): Promise<T>;
 }
 
-export interface ToMessage extends Message {
+export interface ToMessage extends Partial<Message> {
     toPersonId?: string;
     toPersonEmail?: string;
+    files?: string[] | any[]
 }
+
 export interface Message {
     id?: string;
     roomId?: string;
@@ -103,6 +107,7 @@ export interface Message {
     markdown?: string;
     html?: string;
     created?: string;
+    files: string[];
 }
 
 export interface Room {
@@ -187,6 +192,8 @@ export interface WebexInst {
         remove(membership: (Message | string | number)): Promise<unknown>,
         update(membership: (Message | string | number)): Promise<Membership>,
     },
+
+    request(payload: any): Promise<any>; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/request/index.d.ts
     // catch-all
     [key: string]: any
 }
@@ -250,16 +257,3 @@ export const passThru = (bot: BotInst, trigger: Trigger) => {
     // HACK: pass the button-tap value through the handler system
     return bot.framework.onMessageCreated(trigger.message)
 }
-
-/**
- * const alerter = {
- * keyword: '<@webhook>'
- * route: '/my_webhook_route'
- * handler(req, res) {
- *     const {body} = req
- *     this.send({toPersonEmail: 'joe@joeys.com', text:`Webhook alert!, `}) 
- * }
- * }
- * 
- * 
- */

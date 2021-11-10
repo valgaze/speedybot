@@ -1,5 +1,5 @@
 import { FrameworkInst,  BotHandler, ToMessage, BotInst, Trigger, WebhookHandler } from './framework'
-import { ValidatewebhookUrl, pickRandom } from './helpers'
+import { ValidatewebhookUrl, pickRandom, snippet} from './helpers'
 import { placeholder, ascii_art, SpeedyCard } from './'
 // TODO: make peer dependency
 import Botframework from 'webex-node-bot-framework'
@@ -194,6 +194,11 @@ export class Speedybot {
             helpText: `Get help info`
         }
     }
+
+    public snippet(data: object | string):string {
+        return snippet(data)
+    }
+
     defaultHealthcheck() {
        return {
             keyword: ['healthcheck'],
