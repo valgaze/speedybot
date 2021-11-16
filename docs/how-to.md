@@ -93,6 +93,29 @@ export default handlers = [
 
 You can also add a bot to a group space, but note that you or any other human members of the space will need to explicitly "@"-mention the bot to get functionality
 
+## Suggestion Chips (easy way)
+
+- Use a $uperpower called ```sendChips``` to create a list of tappable buttons. If you provide only a string, when tapped the handler system will react as if it was entered by the entered.
+
+- If you provide a ```handler``` and a ```label``` field, when the chip is tapped the custom handler will fire
+
+```ts
+import { $ } from 'speedybot'
+export const handlers = [{
+	keyword: 'sendchips',
+	handler(bot, trigger) {
+		const $bot = $(bot)
+		$bot.sendChips(['hello', 'ping', { 
+			label: 'custom chip', 
+			handler(bot, trigger) {
+				bot.say(`The 'custom chip' was tapped ${JSON.stringify(trigger, null, 2)}`)
+			}
+		}])
+	},
+	helpText: 'A special handler for handling user input'
+	}]
+
+```
 ## Suggestion Chips
 
 A suggestion "chip" is a button which, when clicked, is the equivalent of the user entering the same text. 
@@ -116,7 +139,7 @@ export const handlers = [{
 			const payload = {
 				roomId: trigger.attachmentAction.roomId,
 				personId: trigger.person.id,
-				text: trigger.attachmentAction.chip_action,
+				text: trigger.attachmentAction.inputs.chip_action,
 			}
 			// HACK: pass the button-tap value through the handler system
 			bot.framework.onMessageCreated(payload)

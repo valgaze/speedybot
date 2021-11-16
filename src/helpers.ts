@@ -1,6 +1,6 @@
 import axios, { Method, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { createReadStream, unlink, writeFileSync } from 'fs'
-import { SpeedyCard } from './index'
+import {  SpeedyCard, chipLabel } from './index'
 import { BotInst, Trigger, ToMessage, Message } from './framework'
 import { log, loud } from './logger'
 import { resolve } from 'path'
@@ -212,7 +212,7 @@ export class $Botutils {
 	public request: (payload: any) => Promise<any>;
 	public ContextKey = '_context_'
 	// https://developer.webex.com/docs/basics
-	public supportedExtensions = ['doc', 'docx' , 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
+	public supportedExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
 	constructor(botRef: BotInst | any){
 		this.botRef = botRef
 		this.token = botRef.framework.options.token
@@ -463,6 +463,81 @@ export class $Botutils {
 	public log(...payload) {
 		return log(...payload)
 	}
+
+	public checkMatch(candidate, list:(RegExp | string)[]): boolean {
+		const checkRegex = (regex:RegExp, text: string) => regex.test(text)
+		return list.some((element) => {
+			if (typeof element === 'string') {
+				if (candidate === element) {
+					return true
+				}
+			}
+			if (typeof element === 'object') {
+				checkRegex(element, candidate)
+			}
+		})
+	}
+
+ 	public async sendChips(chipPayload: ChipPayload, heading?:string) {
+		 // Register 'n Render chips
+		 const newChips:Chip[] = []
+		if (Array.isArray(chipPayload)) {
+			chipPayload.forEach(chip => {
+				if (typeof chip === 'string') {
+					const payload = {
+						label: chip
+					}
+					newChips.push(payload)
+				}
+				const {label, handler} = chip as Chip
+				if (label) {
+					if (typeof handler === 'function') {
+						newChips.push({label, handler})
+					} else {
+						newChips.push({label})
+					}
+				}
+			})
+		}
+
+		 if (typeof chipPayload === 'string') {
+			let candidate: Chip = {label: ''}
+			 candidate = {
+				 label: chipPayload.split(' ').join('_')
+			 }
+			 newChips.push(candidate)
+		 }
+
+		const chips = await this.getData(chipLabel) || []
+		const keys = newChips.map(({label}) => label)
+		const writeChips = chips.filter(chip => !keys.includes(chip.label)).concat(newChips)
+		await this.saveData(chipLabel, writeChips)
+
+		// Render chips in chat
+		const labels = newChips.map(({label}) => {
+			return label
+		})
+		 const card = new SpeedyCard().setChips(labels)
+		 if (heading) {
+			 card.setSubtitle(heading)
+			 this.sendTemplate([heading], { time: new Date().toString()})
+		 }
+
+		 this.botRef.sendCard(card.render(), heading ? heading : ' ')
+	}
+
+	public async $trigger(text: string, trigger: Trigger) {
+		const payload = {
+			text,
+			personId: trigger.person.id,
+			roomId:  trigger.attachmentAction ? trigger.attachmentAction.roomId : trigger.message.roomId, 
+		}
+		this.botRef.framework.onMessageCreated(payload as Message)
+	}
+
+	public _auth(fn: Function) {
+		return fn.call(this, this.token)
+	}
 }
 
 export interface FileConfig {
@@ -473,3 +548,11 @@ export const $ = (botRef: BotInst | any):$Botutils => {
 	// memo?
 	return new $Botutils(botRef)
 }
+
+export interface Chip {
+	label: string;
+	handler?: (bot: BotInst, trigger: Trigger) => void;
+	// args?: () => Promise<string[]>
+}
+
+export type ChipPayload = string | string[] | Chip[] | (string | Chip)[]

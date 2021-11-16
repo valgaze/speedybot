@@ -9,3 +9,4 @@ export { fillTemplate, pickRandom, snippet, Storage, Locker, $ } from './helpers
 // make adaptive cards less painful w/ base templates
 export { SpeedyCard } from './cards'
 export const placeholder = '__REPLACE__ME__'
+export const chipLabel = '___$CHIPS'
