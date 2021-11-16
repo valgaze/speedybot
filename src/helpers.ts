@@ -1,6 +1,6 @@
 import axios, { Method, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { createReadStream, unlink, writeFileSync } from 'fs'
-import {  SpeedyCard, chipLabel } from './index'
+import {  SpeedyCard, chipLabel, chipConfigLabel } from './index'
 import { BotInst, Trigger, ToMessage, Message } from './framework'
 import { log, loud } from './logger'
 import { resolve } from 'path'
@@ -478,7 +478,7 @@ export class $Botutils {
 		})
 	}
 
- 	public async sendChips(chipPayload: ChipPayload, heading?:string) {
+ 	public async sendChips(chipPayload: ChipPayload, title = '') {
 		 // Register 'n Render chips
 		 const newChips:Chip[] = []
 		if (Array.isArray(chipPayload)) {
@@ -499,7 +499,6 @@ export class $Botutils {
 				}
 			})
 		}
-
 		const chips = await this.getData(chipLabel) || []
 		const keys = newChips.map(({label}) => label)
 		const writeChips = chips.filter(chip => !keys.includes(chip.label)).concat(newChips)
@@ -510,10 +509,14 @@ export class $Botutils {
 			return label
 		})
 		 const card = new SpeedyCard().setChips(labels)
-		 if (heading) {
-			 card.setSubtitle(heading)
+		 if (title) {
+			 card.setSubtitle(title)
 		 }
-		 this.botRef.sendCard(card.render(), heading ? heading : ' ')
+		 this.botRef.sendCard(card.render(), title)
+	}
+
+	public async setChipsConfig(config: ChipConfig) {
+		return this.saveData(chipConfigLabel, config)
 	}
 
 	public async $trigger(text: string, trigger: Trigger) {
@@ -546,3 +549,6 @@ export interface Chip {
 }
 
 export type ChipPayload = string[] | Chip[] | (string | Chip)[]
+export interface ChipConfig {
+	disappearOnTap?: boolean;
+}

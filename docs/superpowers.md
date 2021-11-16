@@ -70,8 +70,25 @@ export default 	{
         // $bot.send({markdown: snippet, roomId:trigger.message.roomId, text: 'Your client does not render markdown :('}) // send to a specific room
         // $bot.send({markdown: snippet, toPersonEmail:'joe@joe.com', text: 'Your client does not render markdown :('}) // send to a specific person
 
+        // ## 3) Conversation "chips"
 
-        // ## 3) Save data between conversation "runs"
+        // Set all chips to disappear after tap (defaults to false)
+        $bot.setChipsConfig({disappearOnTap: true})
+
+        // Send chip with custom handler
+        const customChip = { 
+            label: 'custom chip', 
+            handler(bot:BotInst, trigger: Trigger) {
+                $bot.sendSnippet(trigger, `**The 'custom chip' was tapped**	`)
+                $bot.$trigger('chips', trigger) // re-render chips
+            }
+        }
+
+        // Add optional title to chips
+        $bot.sendChips(['hey', 'ping', '$', 'pong', customChip], 'These chips will disappear on tap')
+
+
+        // ## 4) Save data between conversation "runs"
 
         interface SpecialUserData {
             specialValue: string;
@@ -98,14 +115,14 @@ export default 	{
             $bot.deleteData('userData')
         }
 
-        // ## 4) Integrate with 3rd-parties: $bot.get, $bot.post, etc
+        // ## 5) Integrate with 3rd-parties: $bot.get, $bot.post, etc
 
         // ex. get external data
         // Opts are axios request config (for bearer tokens, proxies, unique config, etc)
         const res = await $bot.get('https://randomuser.me/api/')
         bot.say({markdown: $bot.snippet(res.data)})
 
-        // ## 4) Files & attachments
+        // ## 6) Files & attachments
 
         // Send a local file
         // Provide a path/filename, will be attached to message
@@ -186,3 +203,13 @@ export default {
     helpText: `Special handler that's fired when the user uploads a file to your bot (by default supports json/csv/txt)`
 }
 ```
+
+## Chips Disappear
+
+
+![image](./assets/chip_tap_persist.gif)
+
+![image](./assets/chip_tap_disappear.gif)
+
+
+## Chips Persist
