@@ -214,6 +214,21 @@ export class SpeedyCard {
         return this
     }
 
+    setChips(chips: string[]) {
+        const chipPayload = chips.map(chip => {
+            const payload = {
+				"type": "Action.Submit",
+				"title": chip,
+				"data": {
+					"chip_action": chip
+				}
+			}
+            return payload
+        })
+        this.json.actions = this.json.actions ? this.json.actions.push(chipPayload) : chipPayload
+        return this
+    }
+
     render() {
         if (this.title) {
             const payload:TextBlock = {
@@ -337,7 +352,7 @@ export class SpeedyCard {
             if (this.attachedData) {
                 payload.data = this.attachedData
             }
-            this.json.actions = [payload]
+            this.json.actions = this.json.actions ? this.json.actions.push(payload) : [payload]
         } else {
             if (this.attachedData && Object.keys(this.attachedData).length) {
                 bad(`attachedData ignore, you must call at least either .setInput(), .setChoices, .setDate, .setTime, to pass through data with an adaptive card`)

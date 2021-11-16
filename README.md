@@ -70,7 +70,6 @@ import { $ } from 'speedybot'
 export default 	{
     keyword: ['$', '$uperpowers', '$uperpower', '$superpower'],
     async handler(bot, trigger) {
-
         // ## 0) Wrap the bot object in $ to give it $uperpowers, ex $(bot)
         const $bot = $(bot)
 
@@ -104,7 +103,7 @@ export default 	{
         $bot.sendRandom(['Hey!','Hello!!','Hiya!'])
 
         // sendTemplate: like sendRandom but replace $[variable_name] with a value
-        const utterances = ['Hey how are you $[name]?', `$[name]! How's it going?`, '$[name]']
+        const utterances = ['Hey how are you $[name]?', `$[name]! How's it going?`, `$[name], it's been too long!`]
         const template = { name: 'Joey'}
         $bot.sendTemplate(utterances, template)
 
@@ -121,8 +120,16 @@ export default 	{
         // $bot.send({markdown: snippet, roomId:trigger.message.roomId, text: 'Your client does not render markdown :('}) // send to a specific room
         // $bot.send({markdown: snippet, toPersonEmail:'joe@joe.com', text: 'Your client does not render markdown :('}) // send to a specific person
 
-
-        // ## 3) Save data between conversation "runs"
+        // ## 3) Conversation "chips"
+        // These are like conversation shortcuts-- if you provide a handler function that will be invoked
+        // rather than passing on the text as if the user uttered it
+        
+        $bot.sendChips(['hey','ping','pong', { label: 'my custom chip', handler(bot, trigger) { 
+                bot.say(`Hello from 'my custom chip' handler: ${JSON.stringify(trigger, null, 2)}`)
+            }
+        }])
+        
+        // ## 4) Save data between conversation "runs"
 
         interface SpecialUserData {
             specialValue: string;
@@ -160,16 +167,15 @@ export default 	{
 
         // Send a local file
         // Provide a path/filename, will be attached to message
-        $bot.sendFile(__dirname, 'assets', 'speedybot.pdf')
+        // $bot.sendFile(__dirname, 'assets', 'speedybot.pdf') // settings/assets/speedybot.pdf will be sent to user
 
-        // Send a publicly accessible URL file
+        // Send a publically accessible URL file
         // Supported filetypes: ['doc', 'docx' , 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
-        $bot.sendDataFromUrl('https://drive.google.com/uc?export=download&id=1VI4I4pYVVdMnB6YOQuSejVcrSwN0cotd')
+        $bot.sendDataFromUrl('https://speedybot.valgaze.com')
 
-        // // experimental (fileystem write): send arbitrary JSON back as a file
-        // $bot.sendDataAsFile(JSON.stringify({a:1,b:2}), '.json')
 
-        // For an example involving parse'able spreadsheets (.xlsx), see here: https://github.com/valgaze/speedybot-superpowers
+        // For an example involving fileuploads + spreadsheets (.xlsx), see here: https://github.com/valgaze/speedybot-superpowers
+
     },
     helpText: 'A demo of $uperpowers'
 }
