@@ -5,9 +5,10 @@ import {
     BotInst,
     Trigger,
     WebhookHandler,
+    Message
   } from "./framework";
   import { ValidatewebhookUrl, pickRandom, snippet } from "./helpers";
-  import { placeholder, chipLabel, ascii_art, SpeedyCard } from "./";
+  import { placeholder, chipLabel, chipConfigLabel, ChipConfig, ascii_art, SpeedyCard } from "./";
   // TODO: make peer dependency
   import Botframework from "webex-node-bot-framework";
   import BotWebhook from "webex-node-bot-framework/webhook";
@@ -185,8 +186,8 @@ import {
         this.addHandler(this.defaultHealthcheck());
       }
   
-      const rootSubmitHandler = async (bot, trigger) => {
-        const getData = async (key: string): Promise<any | null> => {
+      const rootSubmitHandler = async (bot: BotInst, trigger: Trigger) => {
+        const getData = async <T extends unknown = any>(key: string): Promise<T | null> => {
           return new Promise(async (resolve) => {
             try {
               const res = await bot.recall(key);
@@ -196,6 +197,13 @@ import {
             }
           });
         };
+
+        const { disappearOnTap } = await getData<ChipConfig>(chipConfigLabel) || { disappearOnTap: false }
+        if (disappearOnTap) {
+            const msgId = trigger.attachmentAction.messageId
+            await bot.censor(msgId as string)
+        }
+
         const registeredChips = (await getData(chipLabel)) || [];
         const { chip_action } = trigger.attachmentAction
           ? trigger.attachmentAction.inputs
@@ -213,7 +221,7 @@ import {
                 text: trigger.attachmentAction.inputs.chip_action,
               }
                 // HACK: pass the button-tap value through the handler system
-                bot.framework.onMessageCreated(payload);
+                bot.framework.onMessageCreated(payload as Message);
             }
           }
         }
