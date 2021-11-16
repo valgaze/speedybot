@@ -239,7 +239,6 @@ import {
         const submit = {
             keyword: "<@submit>",
             handler(bot, trigger) {
-                bot.say('fRAZZLESLOLOLOLOLOLOLOL')
               const isChip = trigger.attachmentAction.inputs
                 ? Boolean(trigger.attachmentAction.inputs.chip_action)
                 : false;
