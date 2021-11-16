@@ -500,14 +500,6 @@ export class $Botutils {
 			})
 		}
 
-		 if (typeof chipPayload === 'string') {
-			let candidate: Chip = {label: ''}
-			 candidate = {
-				 label: chipPayload.split(' ').join('_')
-			 }
-			 newChips.push(candidate)
-		 }
-
 		const chips = await this.getData(chipLabel) || []
 		const keys = newChips.map(({label}) => label)
 		const writeChips = chips.filter(chip => !keys.includes(chip.label)).concat(newChips)
@@ -520,9 +512,7 @@ export class $Botutils {
 		 const card = new SpeedyCard().setChips(labels)
 		 if (heading) {
 			 card.setSubtitle(heading)
-			 this.sendTemplate([heading], { time: new Date().toString()})
 		 }
-
 		 this.botRef.sendCard(card.render(), heading ? heading : ' ')
 	}
 
@@ -555,4 +545,4 @@ export interface Chip {
 	// args?: () => Promise<string[]>
 }
 
-export type ChipPayload = string | string[] | Chip[] | (string | Chip)[]
+export type ChipPayload = string[] | Chip[] | (string | Chip)[]
