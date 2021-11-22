@@ -4,6 +4,7 @@ import {  SpeedyCard, chipLabel, chipConfigLabel } from './index'
 import { BotInst, Trigger, ToMessage, Message } from './framework'
 import { log, loud } from './logger'
 import { resolve } from 'path'
+import FormData from 'form-data'
 
 
 
@@ -213,6 +214,10 @@ export class $Botutils {
 	public ContextKey = '_context_'
 	// https://developer.webex.com/docs/basics
 	public supportedExtensions = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'jpg', 'jpeg', 'bmp', 'gif', 'png']
+	
+	private API = {
+        messages: 'https://webexapis.com/v1/messages',
+	}
 	constructor(botRef: BotInst | any){
 		this.botRef = botRef
 		this.token = botRef.framework.options.token
@@ -376,7 +381,22 @@ export class $Botutils {
 		}
 	}
 
-	public async sendDataAsFile<T=any>(data: T, extensionOrFileName: string, config: FileConfig ={}, fallbackText=' ') {
+	public async sendDataAsFile<T=any>(data: T, extensionOrFileName: string, fallbackText=' ') {
+		const fullFileName = this.handleExt(extensionOrFileName)
+
+		const formData = new FormData();
+		formData.append('files', data, fullFileName)
+		formData.append('roomId', this.botRef.room.id)
+		formData.append('text', fallbackText)
+		const formDataHeaders = formData.getHeaders()
+		const headers = {
+			...formDataHeaders,
+			Authorization: `Bearer ${this.token}`,
+		}
+		return axios.post(this.API.messages, formData, { headers })
+	}
+
+	public async _FSsendDataAsFile<T=any>(data: T, extensionOrFileName: string, config: FileConfig ={}, fallbackText=' ') {
 		// 🦆: HACK HACK HACK for "files": https://developer.webex.com/docs/basics
 		// todo: get rid of filesystem write
 		const fullFileName = this.handleExt(extensionOrFileName)
@@ -426,7 +446,7 @@ export class $Botutils {
 		const [prefix, ext] = input.split('.')
 
 		if (hasDot) {
-			if (!prefix) {
+			if (!prefix || prefix === '*') {
 				// '.json' case, generate prefix
 				fileName = `${this.generateFileName()}.${ext}`
 			} else {
