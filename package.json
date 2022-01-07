@@ -9,6 +9,7 @@
         "patch": "npx np patch",
         "prepublish": "npm run build",
         "dev": "nodemon",
+        "superdev": "npm link && npm run dev",
         "start": "ts-node src/launcher",
         "start:dist": "npm run setup && cd dist && node src/launcher",
         "build:global": "tsc",

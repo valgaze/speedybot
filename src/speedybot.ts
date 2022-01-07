@@ -1,3 +1,15 @@
+/**
+ * 
+███████╗██████╗ ███████╗███████╗██████╗ ██╗   ██╗██████╗  ██████╗ ████████╗
+██╔════╝██╔══██╗██╔════╝██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝
+███████╗██████╔╝█████╗  █████╗  ██║  ██║ ╚████╔╝ ██████╔╝██║   ██║   ██║   
+╚════██║██╔═══╝ ██╔══╝  ██╔══╝  ██║  ██║  ╚██╔╝  ██╔══██╗██║   ██║   ██║   
+███████║██║     ███████╗███████╗██████╔╝   ██║   ██████╔╝╚██████╔╝   ██║   
+╚══════╝╚═╝     ╚══════╝╚══════╝╚═════╝    ╚═╝   ╚═════╝  ╚═════╝    ╚═╝
+* 
+**/
+
+
 import {
     FrameworkInst,
     BotHandler,
@@ -8,8 +20,8 @@ import {
     Message
   } from "./framework";
   import { ValidatewebhookUrl, pickRandom, snippet } from "./helpers";
-  import { placeholder, chipLabel, chipConfigLabel, ChipConfig, ascii_art, SpeedyCard } from "./";
-  // TODO: make peer dependency
+  import { placeholder, chipLabel, chipConfigLabel, ChipConfig, ascii_art, SpeedyCard, $} from "./";
+  // TODO: make peer dependency or option to "pass-in" as parameter
   import Botframework from "webex-node-bot-framework";
   import BotWebhook from "webex-node-bot-framework/webhook";
   
@@ -33,6 +45,7 @@ import {
     Magickeywords = {
       "<@help>": "help",
       "<@catchall>": /(.*?)/,
+      "<@nomatch>": '__INTERNAL__'
     };
   
     MagicFrameworkkeywords = {
@@ -151,42 +164,59 @@ import {
         );
       }
     }
-  
+
     registerHandlersWithHelp(
       handlers: BotHandler[],
       helpHandler?: (handlers: BotHandler[]) => BotHandler
     ) {
-      let addHelp = true;
-      let addHealthcheck = true;
-      let submitter: BotHandler | null = null;
-      handlers.forEach((botHandler) => {
-        const { keyword } = botHandler;
-        if (keyword === "<@help>") {
-          addHelp = false;
-        }
-        if (keyword === "<@healthcheck>") {
-          addHealthcheck = false;
-        }
-  
-        if (keyword === "<@submit>") {
-          submitter = botHandler;
+      let submitter: BotHandler | null = null
+      let catchall_er: BotHandler | null = null
+      let noMatch_er: BotHandler | null = null
+      let helper: BotHandler | null = null
+      let healthcheck_er: BotHandler | null = null
+      const magicKeywords = ['<@spawn>', '<@despawn>', '<@fileupload>',]
+      const tidyHandlers = handlers.filter((botHandler: BotHandler) => {
+        const { keyword } = botHandler
+
+        if (typeof keyword === 'string') {
+          if (keyword === '<@submit>') {
+            submitter = botHandler
+            return false
+          }
+
+          if (keyword === '<@catchall>') {
+            catchall_er = botHandler
+            return false
+          }
+
+          if (keyword === '<@nomatch>') {
+            noMatch_er = botHandler
+            return false
+          }
+
+          if (keyword === '<@help>' || keyword === 'help') {
+            helper = botHandler
+            return false
+          }
+
+          if (keyword === '<@healthcheck>' || keyword === 'healthcheck') {
+            healthcheck_er = botHandler
+            return false
+          }
+ 
+          if (magicKeywords.includes(keyword)) {
+            this.addHandler(botHandler)
+            return false
+          }
+
+          return true
         } else {
-          this.addHandler(botHandler);
+          return true // special keywords should be a string
         }
-      });
-  
-      if (addHelp) {
-        const helpDefault = helpHandler
-          ? helpHandler(handlers)
-          : this.defaultHelpHandler(handlers);
-        // add help handler
-        this.addHandler(helpDefault);
-      }
-      if (addHealthcheck) {
-        this.addHandler(this.defaultHealthcheck());
-      }
-  
-      const rootSubmitHandler = async (bot: BotInst, trigger: Trigger) => {
+      })
+
+      // "chips" handler
+      const rootChipHandler = async (bot: BotInst, trigger: Trigger) => {
         const getData = async <T extends unknown = any>(key: string): Promise<T | null> => {
           return new Promise(async (resolve) => {
             try {
@@ -198,6 +228,18 @@ import {
           });
         };
 
+        // HACK: pass the button-tap value through the handler system
+        const sendMsg = (trigger: Trigger) => {
+          const payload = {
+            roomId: trigger.attachmentAction.roomId,
+            personId: trigger.person.id,
+            text: trigger.attachmentAction.inputs.chip_action,
+          }
+            bot.framework.onMessageCreated(payload as Message);
+        }
+
+
+        // Vanish "card" element on tap
         const { disappearOnTap } = await getData<ChipConfig>(chipConfigLabel) || { disappearOnTap: false }
         if (disappearOnTap) {
             const msgId = trigger.attachmentAction.messageId
@@ -209,56 +251,133 @@ import {
           ? trigger.attachmentAction.inputs
           : { chip_action: "" };
 
+
+        if (!registeredChips.length) {
+            return sendMsg(trigger)
+        }
+
+        // Check for stashed handlers associated with a chip
         for (const chip of registeredChips) {
-          const { label, handler } = chip;
-          if (chip_action === label) {
+          const { label, handler, keyword } = chip;
+          if (chip_action === label || chip_action === keyword) {
             if (typeof handler === "function") {
               handler.call(this, bot, trigger);
             } else {
-              const payload = {
-                roomId: trigger.attachmentAction.roomId,
-                personId: trigger.person.id,
-                text: trigger.attachmentAction.inputs.chip_action,
-              }
-                // HACK: pass the button-tap value through the handler system
-                bot.framework.onMessageCreated(payload as Message);
+              sendMsg(trigger)
             }
           }
         }
       }
-      // if <@submit> alias present, combine
-      if (submitter) { 
-        const submit = {
-          keyword: "<@submit>",
-          handler(bot, trigger) {
-            const isChip = trigger.attachmentAction.inputs
-              ? Boolean(trigger.attachmentAction.inputs.chip_action)
-              : false;
-            if (!isChip) {
-              return submitter?.handler(bot, trigger);
-            } else {
-              return rootSubmitHandler(bot, trigger);
+
+      const Speedybot = this
+      const rootHandlers: BotHandler[] = [
+      {
+        keyword: '<@catchall>',
+        async handler(bot, trigger) {
+          const $bot = $(bot)
+
+          // todo: opt flag to disable this?
+
+          // if the user enters "$clear"
+          if (trigger.text === '$clear') {
+            return $bot.clearScreen()
+          }
+
+          // check if $prompt input is expected
+          const promptActive = await $bot.promptActive()
+          // if the user enters "$exit"
+          if (trigger.text === '$exit') {
+            if (promptActive) {
+              // return $bot.deactivatePrompt()
+              return $bot.promptActive(false)
             }
-          },
-          helpText: "<@submit>",
-        };
-        this.addHandler(submit);
-      } else {
-        const submit = {
-            keyword: "<@submit>",
-            handler(bot, trigger) {
-              const isChip = trigger.attachmentAction.inputs
-                ? Boolean(trigger.attachmentAction.inputs.chip_action)
-                : false;
-                if (isChip) {
-                    return rootSubmitHandler(bot, trigger);
+          }
+
+          // help is special, don't run catchall & nomatch
+          if (trigger.text === 'help' || trigger.text === 'healthcheck') {
+            return
+          }
+
+          if (promptActive) {
+            // fetch active prompts
+            const promptObj = await $bot.getPrompt()
+            if (promptObj) {
+
+              const res = trigger.text
+              const { success, validate = (val) => true, retry} = promptObj
+              const isValid = await validate(res)
+
+              if (isValid) {
+                await $bot.endPrompt()
+                success(bot, trigger, res)
+              } else {
+                // Ideas:
+                // - Tell user they can use the "$exit" keyword to bail out
+                // - Maybe re-run the initial prompt?
+                if (typeof retry === 'string') {
+                  return bot.say(retry)
+                } else if(Array.isArray(retry)) {
+                  return $bot.sendRandom(retry)
                 }
-            },
-            helpText: "<@submit>",
-          };
-          this.addHandler(submit);
+              }
+            }
+          } else {
+            // if user has a custom catchall, run it here 1st
+            if (catchall_er && catchall_er.handler && !Speedybot.isChip(trigger)) {
+              const {handler} = catchall_er
+              handler(bot, trigger)
+            }
+
+            if (noMatch_er) {
+              $bot.matchInvokeHandlers(tidyHandlers, trigger, noMatch_er)
+            } else {
+              $bot.matchInvokeHandlers(tidyHandlers, trigger)
+            }
+
+          }
+        },
+        helpText: '_internal'
+      },
+      {
+        keyword: '<@submit>',
+        handler(bot, trigger) {
+          if (!Speedybot.isChip(trigger)) {
+            return submitter?.handler(bot, trigger)
+          } else {
+            return rootChipHandler(bot, trigger);
+          }
+        },
+        helpText: '_internal'
+      }]
+
+      if (!helper) {
+        helper = this.defaultHelpHandler(tidyHandlers)
+        this.addHandler(helper)
+      } else {
+        const { handler } = helper
+        this.addHandler({
+          keyword: 'help',
+          handler,
+          helpText: '_internal_Help_function'
+        })
       }
+
+      if (!healthcheck_er) {
+          healthcheck_er = this.defaultHealthcheck()        
+      }
+      this.addHandler(healthcheck_er)
+
+      rootHandlers.forEach(handler => {
+        this.addHandler(handler)
+      })
     }
+
+    isChip(trigger: Trigger) {
+      return trigger?.attachmentAction?.inputs
+      ? Boolean(trigger.attachmentAction.inputs.chip_action)
+      : false;
+    }
+  
   
     loadHandlers(...handlers: unknown[]) {
       return this.registerHandlersWithHelp(this.flatten(...handlers));
@@ -271,7 +390,7 @@ import {
   
     defaultHelpHandler(handlerList: BotHandler[]) {
       return {
-        keyword: ["help", "helpme", "?"],
+        keyword: 'help',
         handler(bot: BotInst, trigger: Trigger) {
           const text = handlerList
             .map((handler) => {
@@ -293,7 +412,7 @@ import {
                 type: "TextBlock",
                 size: "Medium",
                 weight: "Bolder",
-                text: "Available Handlers",
+                text: "Commands available to you",
               },
               {
                 type: "RichTextBlock",
@@ -318,7 +437,7 @@ import {
     public snippet(data: object | string): string {
       return snippet(data);
     }
-  
+
     defaultHealthcheck() {
       return {
         keyword: ["healthcheck"],
@@ -335,8 +454,7 @@ import {
           const cardPayload = new SpeedyCard()
             .setTitle("System is 👍")
             .setSubtitle("If you see this card, everything is working")
-            .setImage("https://i.imgur.com/SW78JRd.jpg")
-            .setInput(`What's on your mind?`)
+            .setImage("https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/chocolate_chip_cookies.png") // Cookie image courtesy of Daniel Lopez: https://unsplash.com/photos/aT7CE57EZL8 & https://unsplash.com/@soydanielwolf
             .setUrl(
               pickRandom([
                 "https://www.youtube.com/watch?v=3GwjfUFyY6M",
@@ -348,44 +466,6 @@ import {
               [`Bot's Date`, new Date().toDateString()],
               ["Bot's Uptime", `${String(process.uptime()).substring(0, 25)}s`],
             ]);
-          // const cardPayload = {
-          //     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-          //     "type": "AdaptiveCard",
-          //     "version": "1.0",
-          //     "body": [{
-          //         "type": "TextBlock",
-          //         "size": "Medium",
-          //         "weight": "Bolder",
-          //         "text": "System is 👍"
-          //     }, {
-          //         "type": "RichTextBlock",
-          //         "inlines": [{
-          //             "type": "TextRun",
-          //             "text": "If you see this card, everything is working"
-          //         }]
-          //     }, {
-          //         "type": "Image",
-          //         "url": "https://i.imgur.com/SW78JRd.jpg",
-          //         "horizontalAlignment": "Center",
-          //         "size": "large"
-          //     }, {
-          //         "type": "Input.Text",
-          //         "id": "inputData",
-          //         "placeholder": "What's on your mind?"
-          //     }],
-          //     "actions": [{
-          //         "type": "Action.OpenUrl",
-          //         "title": "Take a moment to celebrate",
-          //         "url": "https://www.youtube.com/watch?v=3GwjfUFyY6M",
-          //         "style": "positive"
-          //     }, {
-          //         "type": "Action.Submit",
-          //         "title": "Submit",
-          //         "data": {
-          //             "cardType": "inputForm"
-          //         }
-          //     }]
-          // }
           return bot.sendCard(
             cardPayload.render(),
             "Your client does not currently support Adaptive Cards :("

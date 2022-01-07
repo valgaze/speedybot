@@ -1,16 +1,16 @@
 ## Quickstart
 
-Note: The steps below assume you have a function WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+ available on your system
-
-Steps below can be automated using the cli 
-
+Note: The steps below assume you have a function WebEx account & **[Nodejs](https://nodejs.org/en/download/)** 12+ available on your system. The Steps below can be automated using the cli, ex
 
 ```sh
 npx speedyhelper setup
 ```
 
-Video instructions available here: https://share.descript.com/view/ds3UA1kUb9z
+## Video instructions
 
+- 101: https://share.descript.com/view/ds3UA1kUb9z
+
+- Webhooks/3rd-party integrations: https://share.descript.com/view/bnyupJvNJcx
 -----
 
 ## 1. Fetch repo & install dependencies

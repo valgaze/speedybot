@@ -1,13 +1,10 @@
 import axios, { Method, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { createReadStream, unlink, writeFileSync } from 'fs'
-import {  SpeedyCard, chipLabel, chipConfigLabel } from './index'
-import { BotInst, Trigger, ToMessage, Message } from './framework'
+import { createReadStream, unlink } from 'fs'
+import {  SpeedyCard, chipLabel, chipConfigLabel, $promptActiveKey, $prompts } from './index'
+import { BotInst, Trigger, ToMessage, Message, BotHandler } from './framework'
 import { log, loud } from './logger'
 import { resolve } from 'path'
 import FormData from 'form-data'
-
-
-
 
 /**
 * @param list 
@@ -38,7 +35,7 @@ export const ValidatewebhookUrl = (webhookUrl: string) => {
         loud(`
 It looks like your config's webhookUrl does not end with a route
 
-Ex. (expresjs) If your server's route handler look like this:
+Ex. (expresjs) If your server's route handler looks like this:
 
 const config = {
     "webhookUrl": "${webhookUrl}",
@@ -158,33 +155,33 @@ export class Storage {
 }
 
 
-export class Locker<T> {
-	constructor(public state: T = {} as T) {}
+export class Locker<T=unknown> {
+	public state = new Map()
+	constructor() {}
 
-	save(trigger:Trigger, key: string, value: unknown) {
-		const { personId } = trigger
-		if (!this.state[personId]) {
-			this.state[personId] = {}
-		}
-		this.state[personId][key] = value
+	exists(key:string) {
+		return this.state.has(key)
 	}
 
-	get(trigger:Trigger, key: string) {
-		const { personId } = trigger
-		return this.state[personId] ? (this.state[personId][key] || null) : null
+	save<T=unknown>(key: string, value: T): T {
+		this.state.set(key, value)
+		return value
 	}
 
-	delete(trigger: Trigger, key: string) {
-		const { personId } = trigger
-		if (this.state[personId]) {
-			delete this.state[personId][key]
-		}
+	get(key: string) {
+		return this.state.get(key)
+	}
+
+	delete(key: string) {
+		return this.state.delete(key)
 	}
 
 	snapShot() {
 		return JSON.parse(JSON.stringify(this.state))
 	}
 }
+
+export const globoStore = <T = unknown>() => new Locker<T>();
 
 
 // Get uploaded files
@@ -207,6 +204,14 @@ export const extractFileData = (contentDisposition: string): { fileName: string,
 	}
 }
 
+
+export interface PromptConfig {
+	prompt?: string;
+	retry: string | string[];
+	validate?: (val: string | number) => boolean | Promise<boolean>;
+	success: (bot: BotInst, trigger: Trigger, result?: string | number) => void | Promise<any>;
+}
+
 export class $Botutils {
 	public token:string
 	public botRef: BotInst;
@@ -222,6 +227,170 @@ export class $Botutils {
 		this.botRef = botRef
 		this.token = botRef.framework.options.token
 		this.request = axios
+		if (!this.botRef.framework._$storage) {
+			this.botRef.framework._$storage = globoStore()
+		}
+	}
+
+
+	globalSave<T=any>(key: string, val: T): T {
+		return this.botRef.framework._$storage.save<T>(key, val)
+	}
+
+	globalGet<T=any>(key: string): T {
+		return this.botRef.framework._$storage.get(key)
+	}
+
+	globalDelete(key: string) {
+		return this.botRef.framework._$storage.delete(key)
+	}
+
+	globalExists(key: string) {
+		return this.botRef.framework._$storage.exists(key)
+	}
+	
+	/**
+	 * Take user data and validate their responses-- don't give up until the uer completes the task or they type "$exit"
+	 * @param label: string
+	 * @param config: PromptConfig
+	 * 
+	 * $bot.prompt has (1) retry (list of message to encourage the user to try again), (2) success (handler when validation passes), (3) validate (function that accepts the user-provided value as a parameter)
+
+	 * ex. Here's a prompt that wants the user to provide a number whose digits add up to 6
+	 
+	```ts
+	 	import { BotHandler, $ } from 'speedybot'
+		export const handlers: BotHandler[] = [
+			{
+				keyword: 'promptme',
+				handler(bot) {
+					const $bot = $(bot)
+					bot.say('Sending you a prompt...')
+					$bot.prompt('Enter a number whose digits that add up to 6 (ex 51, 60, 33, 501, etc)', {
+						retry: [`Sorry, doesn't add up to 6`, `Whoops that value doesn't work try again`, `That value doesn't work`, `Type $exit to abandon this`],
+						async success(bot, trigger, answer) {
+							bot.say('You did it!!! Good job! <3 <3')
+							bot.say(JSON.stringify(answer))
+							// Ex. Submit data to a 3rd-party service/integration
+							const res = await $bot.post('https://jsonplaceholder.typicode.com/posts', { data: { title: 'my special value that adds to 6', userValue: answer } })
+							$(bot).sendSnippet(res.data, 'Posted response to https://jsonplaceholder.typicode.com/posts')
+						},
+						validate(val=0) {
+							// Make sure digits add to 6
+							const sum = String(val).split('')
+							.map(Number)
+							.reduce(function (a, b) {
+								return a + b;
+							}, 0)
+							if (sum === 6) {
+								return true
+							} else {
+								return false
+							}
+						}
+					})
+				},
+				helpText: 'x'
+		}]
+		```
+	 *
+	 */
+	async prompt(label: string, config: PromptConfig) {
+		let { prompt } = config
+		if (!prompt && label) {
+			prompt = label
+		}
+		await this.promptActive(true)
+		await this.savePrompts({...config, prompt})
+		this.botRef.say(prompt)
+	}
+
+	async promptActive(flag?: boolean): Promise<boolean> {
+		if (flag !== undefined) {
+			return this.saveData<boolean>($promptActiveKey, flag)
+		} else {
+			return await this.getData<boolean>($promptActiveKey) as boolean
+		} 
+	}
+
+	async endPrompt() {
+		return Promise.all([this.promptActive(false), this.deleteData($prompts)])
+	}
+
+	async savePrompts(prompts: PromptConfig): Promise<any[]> {
+		return this.saveData($prompts, prompts)
+	}
+
+	async getPrompt(): Promise<PromptConfig | null> {
+		return this.getData<PromptConfig>($prompts)
+	}
+
+	/**
+	 * Utility: Given a (pre-cleaned) list of handlers and an activating trigger
+	 * 
+	 *
+	 * 
+	 * @param handlerList 
+	 * @param trigger 
+	 */
+	matchInvokeHandlers(handlerList: BotHandler[], trigger: Trigger, noMatch?: BotHandler) {
+		const checkHandler = (handler: BotHandler, trigger: Trigger):boolean => {
+			/**
+			* Per "https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1625"
+			* 	- "If regex, matches on entire message. If string, matches on first word."
+			*/
+
+			if (handler.keyword instanceof RegExp && handler.keyword.test(trigger.text as string)) {
+                // trigger.phrase = handler.keyword
+                return true;
+            }
+            if (typeof handler.keyword === 'string') {
+                const { args } = trigger
+                const [triggerCandidate] = args as string[]
+                if (handler.keyword === triggerCandidate?.toLowerCase()) {
+                    trigger.phrase = handler.keyword;
+                    return true
+                }
+            }
+			return false
+		}
+	
+		let matchedHandlers = handlerList.filter(handler => {
+			const {keyword} = handler
+			if (Array.isArray(keyword)) {
+				let flag = false
+				keyword.forEach(kw => {
+					const res = checkHandler({...handler, keyword:kw}, trigger)
+					if (res) {
+						flag = true
+					}
+				})
+				return flag
+			} else {
+				return checkHandler(handler, trigger)
+			}
+         }).sort((a,b) => Number(a.preference) > Number(b.preference) ? 1 : -1)
+		// https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1155
+		// Sort by preference
+		// Check highest & lowest preference
+		// filter out any items that don't have preference
+		 const [low] = matchedHandlers
+		 const lowPref = low?.preference
+		 const highPref = matchedHandlers[matchedHandlers.length - 1]?.preference
+
+		 if (lowPref !== highPref) {
+			matchedHandlers = matchedHandlers.filter(handler => handler.preference === lowPref) 
+		 }
+		
+        matchedHandlers.forEach(match => {
+            const { handler } = match
+            handler(this.botRef, trigger)
+        })
+
+		if (!matchedHandlers.length && noMatch && noMatch.handler) {
+			const {handler} = noMatch
+			handler(this.botRef, trigger)
+		}
 	}
 
 	snippet(ref: (string | object)): string {
@@ -319,13 +488,13 @@ export class $Botutils {
 							.map(key => this.degenContextName(key))
 		return actives
 	}
-
-	public async sendURL(url: string, title?:string) {
+	
+	public async sendURL(url: string, title?:string, buttonTitle='Go') {
 		const card = new SpeedyCard()
 		if (title) {
-			card.setTitle(title).setUrl(url)
+			card.setTitle(title).setUrl(url, buttonTitle)
 		} else {
-			card.setSubtitle(url).setUrl(url, 'Open')
+			card.setSubtitle(url).setUrl(url, buttonTitle)
 		}
 		this.botRef.sendCard(card.render(), url)
 	}
@@ -345,7 +514,7 @@ export class $Botutils {
 		})
 	}
 	
-		/**
+	/**
 	 * 
 	 * Storage aliases
 	 * getData: bot.recall 
@@ -396,22 +565,8 @@ export class $Botutils {
 		return axios.post(this.API.messages, formData, { headers })
 	}
 
-	public async _FSsendDataAsFile<T=any>(data: T, extensionOrFileName: string, config: FileConfig ={}, fallbackText=' ') {
-		// 🦆: HACK HACK HACK for "files": https://developer.webex.com/docs/basics
-		// todo: get rid of filesystem write
-		const fullFileName = this.handleExt(extensionOrFileName)
-		try {
-			writeFileSync(fullFileName, data)
-			const stream = createReadStream(fullFileName)
-			await this.botRef.webex.messages.create({roomId: this.botRef.room.id, files: [stream], text:fallbackText})
-			this.killFile(fullFileName)
-		} catch(e) {
-			throw e
-		}
-	}
-
 	public killFile(path:string) {
-		return new Promise((resolve, reject) => {
+		return new Promise(resolve => {
 			unlink(path, (err) => {
 				if (err) {
 					resolve(err)
@@ -468,6 +623,18 @@ export class $Botutils {
 		return `${Math.random().toString(36).slice(2)}`
 	}
 
+	public dmCard(personId: string, jsonData: unknown, fallback?: string) {
+		return this.botRef.dm(personId as string, {      
+			// Fallback text for clients that don't render cards is required
+			markdown: fallback ? fallback : "If you see this message your client cannot render buttons and cards.",
+			attachments: [{
+			"contentType": "application/vnd.microsoft.card.adaptive",
+			"content": jsonData
+			}]
+		});
+	}
+
+
 	// Alias to other helpers
 
 	public sendTemplate(utterances: string | string[], template:  { [key: string]: any }): Promise<Message> {
@@ -509,12 +676,16 @@ export class $Botutils {
 					}
 					newChips.push(payload)
 				}
-				const {label, handler} = chip as Chip
+				const {label, keyword, handler} = chip as Chip
 				if (label) {
 					if (typeof handler === 'function') {
 						newChips.push({label, handler})
 					} else {
-						newChips.push({label})
+						if (keyword) {
+							newChips.push({label, keyword})
+						} else {
+							newChips.push({label})
+						}
 					}
 				}
 			})
@@ -522,13 +693,17 @@ export class $Botutils {
 		const chips = await this.getData(chipLabel) || []
 		const keys = newChips.map(({label}) => label)
 		const writeChips = chips.filter(chip => !keys.includes(chip.label)).concat(newChips)
+
 		await this.saveData(chipLabel, writeChips)
 
 		// Render chips in chat
-		const labels = newChips.map(({label}) => {
-			return label
+		const labelsKeywords = newChips.map(({label, keyword}) => {
+			return {
+				label,
+				keyword
+			}
 		})
-		 const card = new SpeedyCard().setChips(labels)
+		 const card = new SpeedyCard().setChips(labelsKeywords)
 		 if (title) {
 			 card.setSubtitle(title)
 		 }
@@ -548,6 +723,14 @@ export class $Botutils {
 		this.botRef.framework.onMessageCreated(payload as Message)
 	}
 
+	public clearScreen(repeatCount=50) {
+		const newLine = '\n'
+		const repeatClamp = repeatCount > 7000 ? 5000 : repeatCount// 7439 char limit
+		const clearScreen = `${newLine.repeat(repeatClamp)}`	
+		return this.botRef.webex.messages.create({roomId: this.botRef.room.id, markdown: clearScreen, text: clearScreen,})
+	}
+
+
 	public _auth(fn: Function) {
 		return fn.call(this, this.token)
 	}
@@ -564,6 +747,7 @@ export const $ = (botRef: BotInst | any):$Botutils => {
 
 export interface Chip {
 	label: string;
+	keyword?: string; // Trigger a specific "keyword"/handler
 	handler?: (bot: BotInst, trigger: Trigger) => void;
 	// args?: () => Promise<string[]>
 }

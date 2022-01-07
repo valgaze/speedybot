@@ -94,83 +94,14 @@ test("Kitchen sink", (t) => {
 });
 
 test("Date and Time Pickers", (t) => {
-  const expected = {
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "type": "AdaptiveCard",
-  "version": "1.0",
-  "body": [
-    {
-      "type": "TextBlock",
-      "text": "xxx",
-      "weight": "Bolder",
-      "size": "Large",
-      "wrap": true
-    },
-    {
-      "type": "TextBlock",
-      "text": "Hi subtlte",
-      "size": "Medium",
-      "isSubtle": true,
-      "wrap": true,
-      "weight": "Lighter"
-    },
-    {
-      "type": "Input.ChoiceSet",
-      "id": "selectedChoice",
-      "value": "0",
-      "isMultiSelect": false,
-      "isVisible": true,
-      "choices": [
-        {
-          "title": "a",
-          "value": "0"
-        },
-        {
-          "title": "b",
-          "value": "1"
-        },
-        {
-          "title": "c",
-          "value": "2"
-        }
-      ]
-    },
-    {
-      "type": "TextBlock",
-      "text": "Choose yer date",
-      "wrap": true
-    },
-    {
-      "id": "selectedDate",
-      "type": "Input.Date"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Select a time",
-      "wrap": true
-    },
-    {
-      "id": "selectedTime",
-      "type": "Input.Time"
-    }
-  ],
-  "actions": [
-    {
-      "type": "Action.Submit",
-      "title": "Submit",
-      "data": {
-        "a": 1
-      }
-    }
-  ]
-}
+  const expected = { $schema: 'http://adaptivecards.io/schemas/adaptive-card.json', type: 'AdaptiveCard', version: '1.0', body: [ { type: 'TextBlock', text: 'xxx', weight: 'Bolder', size: 'Large', wrap: true }, { type: 'TextBlock', text: 'Hi subtlte', size: 'Medium', isSubtle: true, wrap: true, weight: 'Lighter' }, { type: 'Input.ChoiceSet', id: 'selectedChoice', value: '0', isMultiSelect: false, isVisible: true, choices: [ { title: 'a', value: 'a' }, { title: 'b', value: 'b' }, { title: 'c', value: 'c' } ] }, { type: 'TextBlock', text: 'Choose yer date', wrap: true }, { id: 'selectedDate', type: 'Input.Date' }, { type: 'TextBlock', text: 'Select a time', wrap: true }, { id: 'selectedTime', type: 'Input.Time' } ], actions: [ { type: 'Action.Submit', title: 'Submit', data: { a: 1 } } ] }
 
-const myCard = new SpeedyCard().setTitle('xxx')
-                                .setSubtitle('Hi subtlte')
-                                .setData({a:1})
-                                .setTime('selectedTime')
-                                .setDate('selectedDate', 'Choose yer date')
-                                .setChoices(['a','b','c'], {id: 'selectedChoice'})
+  const myCard = new SpeedyCard().setTitle('xxx')
+                                  .setSubtitle('Hi subtlte')
+                                  .setData({a:1})
+                                  .setTime('selectedTime')
+                                  .setDate('selectedDate', 'Choose yer date')
+                                  .setChoices(['a','b','c'], {id: 'selectedChoice'})
 
   const actual = myCard.render()
   t.deepEqual(actual, expected);
