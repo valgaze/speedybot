@@ -1,8 +1,8 @@
 ## Speedybot
 
-- **[Various Helpers (cards, add variation, templating, storage, etc)](./util.md)**
+- **[Common patterns (cards, add variation, templating, files storage, etc)](./singlefile.md)**
 
-- **[Common Patterns & How-To](./how-to.md)**
+- **[Various How-To](./how-to.md)**
 
 ### Bot Token
 

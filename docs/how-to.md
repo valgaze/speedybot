@@ -3,24 +3,23 @@
 
 ## Special Words
 
-There are a few "special" keyword words you can use which have a special meaning in a Speedybot project:
+There are a few "special" keywords you can use to "listen" to special events:
 
 - *<@submit>*: Handler that will run anytime data is submitted from an **[Adaptive Card](https://developer.webex.com/docs/api/guides/cards)**
 
-- *<@catchall>*: Handler that will run on **every** message received from the backend
+- *<@nomatch>*: Handler that will run if there are no handlers which will match the input
+
+- *<@catchall>*: Handler that will run on **every** message received (in a real agent you probably will not write hard-coded handlers and instead use this handler to dispatch user messages to natural language processing services like **[DialogFlow](https://cloud.google.com/dialogflow)** or **[Lex](https://aws.amazon.com/lex/)**)
 
 - *<@fileupload>*: Handler that will fire on **every** file-upload or file-attachment sent to the bot
 
-- *<@help>*: There is a built-in help handler by default (it will print out all of your custom handler's helpTexts from settings/handlers.ts), but use this if you want to make your own
+- *<@help>*: There is a built-in help handler by default (it will print out all of your custom handler's helpTexts from settings/handlers.ts), but use this keyword if you want to roll your own help
 
 - *<@spawn>*: Gets called whenever a user adds your bot to a new space-- there are some caveats, however, to its behavior, so if you think you'll need this, see **[here](https://github.com/WebexSamples/webex-node-bot-framework/blob/master/README.md#spawn)**, **[here](https://developer.webex.com/blog/a-deeper-dive-into-the-webex-bot-framework-for-node-js)** or the **[resources page](https://github.com/valgaze/speedybot/blob/master/docs/resources.md)** for all the details
 
 - *<@despawn>*: Opposite of spawn, see **[here](https://github.com/WebexSamples/webex-node-bot-framework/#despawn)** for details
 
-
 - *<@webhook>*: Put your webhook handlers alongside your handlers, see the **["Handling Webhooks"](#handling-webhooks)** section below for an example or video instruction here: https://share.descript.com/view/bnyupJvNJcx
-
-
 
 
 ex. Kitchen sink handler list
@@ -116,70 +115,136 @@ export const handlers = [{
 	}]
 
 ```
-## Suggestion Chips
 
-A suggestion "chip" is a button which, when clicked, is the equivalent of the user entering the same text. 
+## Utilities and Helper Functions
 
-ex. 
+## SpeedyCard
 
-![image](https://raw.githubusercontent.com/valgaze/speedybot-starter/master/docs/assets/chip_example.gif)
+- Getting started with AdaptiveCards (https://developer.webex.com/docs/api/guides/cards) can be a bit cumbersome and error-prone
 
+- SpeedyCard is a limited subset of AdaptiveCards with basic features with a focus on user interaction & simplicity (title, text, input box, menu-select, no "collapsable" sections, etc)
 
-Ex. If a button/chip has the label "bongo", when the user taps it, the phrase "bongo" will be processed by chat handlers as if the user typed "bongo" on their own
+- Inspired a bit by SwiftUI: https://developer.apple.com/xcode/swiftui/
 
-We can approximate this effect with two handlers-- one to show the card with the "chip" buttons and the other to "catch" the button tap. 
+- Make sure you call ```.render()``` and use the ```.sendCard``` method
+
+<details><summary>Before/After</summary>
+
+## Before 
+
 ```ts
+const cardJson = {
+	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+	"type": "AdaptiveCard",
+	"version": "1.0",
+	"body": [{
+		"type": "TextBlock",
+		"text": "System is 👍",
+		"weight": "Bolder",
+		"size": "Large",
+		"wrap": true
+	}, {
+		"type": "TextBlock",
+		"text": "If you see this card, everything is working",
+		"size": "Small",
+		"isSubtle": true,
+		"wrap": true,
+		"weight": "Lighter"
+	}, {
+		"type": "Image",
+		"url": "https://i.imgur.com/SW78JRd.jpg",
+		"horizontalAlignment": "Center",
+		"size": "Large"
+	}, {
+		"type": "Input.Text",
+		"placeholder": "What's on your mind?",
+		"id": "inputData"
+	}],
+	"actions": [{
+		"type": "Action.Submit",
+		"title": "Submit",
+		"data": {
+			"cardType": "inputForm"
+		}
+	}, {
+		"type": "Action.OpenUrl",
+		"title": "Take a moment to celebrate",
+		"url": "https://www.youtube.com/watch?v=3GwjfUFyY6M"
+	}]
+}
+
+bot.sendCard(cardJson, 'Your client does not currently support Adaptive Cards')
+```
+
+## After
+
+```ts
+const cardJson = new SpeedyCard().setTitle('System is 👍', {st})
+                                .setSubtitle('If you see this card, everything is working')
+                                .setImage('https://i.imgur.com/SW78JRd.jpg')
+                                .setInput(`What's on your mind?`)
+                                .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
+								.setData({mySpecialData: {a:1, b:2}})
+
+bot.sendCard(cardJson.render(), 'Your client does not currently support Adaptive Cards')
+```
+
+</details>
+
+
+```ts
+import { SpeedyCard } from 'speedybot' 
 export const handlers = [{
-	keyword: '<@submit>',
-	handler(bot, trigger) {
-		// Check for "chip_action" value to make sure it's a chip tap
-		if (trigger.attachmentAction.inputs.chip_action) {
-			bot.say(`You picked '${trigger.attachmentAction.inputs.chip_action}'`)
+    keyword: ['go!'],
+    handler(bot, trigger) {
+        // Adapative Card: https://developer.webex.com/docs/api/guides/cards
+        const myCard = new SpeedyCard().setTitle('System is 👍', {st})
+                                       .setSubtitle('If you see this card, everything is working')
+                                       .setImage('https://i.imgur.com/SW78JRd.jpg')
+                                       .setInput(`What's on your mind?`)
+                                       .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
+									   .setChoices(['Abraham Lincoln','Adlai Stevenson','Connie Rice', 'Monty'], {id:})
+									   .setTable([[`Bot's Time`, new Date().toTimeString()], ['Bot running duration', process.uptime()]])
+        bot.sendCard(myCard.render(), 'Your client does not currently support Adaptive Cards')
 
-			const payload = {
-				roomId: trigger.attachmentAction.roomId,
-				personId: trigger.person.id,
-				text: trigger.attachmentAction.inputs.chip_action,
-			}
-			// HACK: pass the button-tap value through the handler system
-			bot.framework.onMessageCreated(payload)
-		}
-	},
-	helpText: 'A special handler for handling user input'
-}, {
-	keyword: 'sendchip',
-	handler(bot, trigger) {
-		// Make a card with 3 chips: 'hello', 'healthcheck', and 'ping'
-		const cardPayload = {
-			"type": "AdaptiveCard",
-			"body": [],
-			"actions": [{
-				"type": "Action.Submit",
-				"title": "hello",
-				"data": {
-					"chip_action": "hello"
-				}
-			}, {
-				"type": "Action.Submit",
-				"title": "healthcheck",
-				"data": {
-					"chip_action": "healthcheck"
-				}
-			}, {
-				"type": "Action.Submit",
-				"title": "ping",
-				"data": {
-					"chip_action": "ping"
-				}
-			}],
-			"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-			"version": "1.2"
-		}
-		bot.sendCard(cardPayload, 'Your client doesnt appear to support adaptive cards')
+    }
+    helpText: 'A demo handler invoked when the user types go!'
+},
+{
+    keyword: '<@submit>',
+    handler(bot, trigger) {
+        bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
+    },
+    helpText: 'Special handler that fires when data is submitted'
+}
 
-	},
-	helpText: 'A special handler for handling user input'
-}]
+```
+
+## fillTemplate & pickRandom
+
+- Variation in responses is a low-investment, high-payoff way to make conversation agents more appealing and less robotic
+
+- pickRandom does exactly what it sounds like-- randomly return an item from a list
+
+- fillTemplate will randomly pick an item from a list and replace ```$[template_name]``` with a specified value
+
+```ts
+import { fillTemplate } from 'speedybot'
+
+const handler = {
+    keyword: ['go!'],
+    async handler(bot, trigger) {
+		const phrases = ["Hey $[name], how's it going? Here is one $[flavor] ice cream", "Hiya $[name], here's your $[flavor]", "Here's one $[flavor] for ya, $[name]"]
+		const myTemplate = {
+			name: trigger.person.displayName,
+			flavor: 'mint'
+		}
+
+		bot.say(fillTemplate(phrases, myTemplate))
+
+    }
+    helpText: 'A demo handler invoked when the user types go!'
+}
 ```
 
 ## Send a message
@@ -351,3 +416,78 @@ Ex. Process incoming webhooks that post to your agent:
 		}
 	}
 ```
+
+
+## ExpressJS Server
+
+<details><summary>ExpressJS server, webhooks</summary>
+
+Two notes:
+- You'll need to inject the server's publically-available host into config
+- The webhook routes need to match in config's webhookUrl
+
+```sh
+npm install body-parser express speedybot webex-node-bot-framework
+```
+
+```ts
+import { SpeedybotWebhook } from 'speedybot'
+import { BotHandler, SpeedybotConfig } from 'speedybot'
+import express from 'express'
+import bodyParser from 'body-parser'
+
+const app = express()
+const port = process.env.PORT || 8000
+app.use(bodyParser.json());
+app.post('/ping', (req, res) => res.send('pong!'))
+
+// handler list
+const handlers: BotHandler[] = [
+    {
+        keyword: ['hello', 'hey', 'yo', 'watsup', 'hola'],
+        handler(bot, trigger) {
+            const reply = `Heya how's it going ${trigger.person.displayName}?`
+            bot.say(reply)
+        },
+        helpText: `A handler that greets the user`
+    }
+]
+
+// webhook
+const config: SpeedybotConfig = {
+    token: `__REPLACE__ME__`,
+    webhookUrl: `https://123-45-678-910-987.ngrok.io/speedybotwebhook`
+}
+
+app.post('/speedybotwebhook', SpeedybotWebhook(config, handlers))
+
+app.listen(port, () => {
+    console.log(`Listening + tunneled on port ${port}`)
+})
+
+```
+
+</details >
+If you need a tunnel, you can use **[speedyhelper](https://github.com/valgaze/speedyhelper#readme)** See here for **[important information](https://github.com/valgaze/speedyhelper/blob/master/docs/ngrok.md)**
+
+```sh
+npx speedyhelper 8000
+```
+
+<details><summary>yarn/npm</summary>
+
+## npm
+
+```
+npm i speedyhelper -g
+speedyhelper tunnel 8000
+```
+
+## yarn 
+
+```sh
+yarn global all speedyhelper
+speedyhelper tunnel 8000
+```
+
+</details>

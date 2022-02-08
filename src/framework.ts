@@ -9,6 +9,7 @@
  * Framework instance: https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L25-L34
  *
 */
+import { Locker } from './' 
 export interface FrameworkInst {
     options: FrameworkOptions;
     id: string;
@@ -32,7 +33,8 @@ export interface FrameworkInst {
     setAuthorizer(func: any); boolean;
     clearAuthorizer(): void;
     on(eventName: string, handler: unknown): void;
-    onMessageCreated(payload: Message): void
+    onMessageCreated(payload: Message): void;
+    _$storage: Locker; // extend w/ storage for all users
 }
 
 export interface FrameworkOptions {

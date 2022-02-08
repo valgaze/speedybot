@@ -141,7 +141,7 @@ export class SpeedyCard {
         this.choices = choices.map((choice: string, idx) => {
 			return {
 				title: choice,
-				value: String(idx)
+				value: choice
 			}
 		})
         if (config) {
@@ -163,7 +163,7 @@ export class SpeedyCard {
         return this
     }
 
-    setInput(placeholder, config?) {
+    setInput(placeholder: string, config?:inputConfig) {
         this.inputPlaceholder = placeholder
         if (config) {
             this.inputConfig = config
@@ -214,13 +214,29 @@ export class SpeedyCard {
         return this
     }
 
-    setChips(chips: string[]) {
+    setChips(chips: (string | {label: string, keyword?:string})[]) {
         const chipPayload = chips.map(chip => {
+            let chipLabel = ''
+            let chipAction = ''
+            if (typeof chip === 'string') {
+                chipLabel = chip
+                chipAction = chip
+            } else {
+                const {label, keyword=''} = chip
+                chipLabel = label
+                if (keyword) {
+                    chipAction = keyword
+                } else {
+                    chipAction = label
+                }
+            }
+
+
             const payload = {
 				"type": "Action.Submit",
-				"title": chip,
+				"title": chipLabel,
 				"data": {
-					"chip_action": chip
+					"chip_action": chipAction
 				}
 			}
             return payload
@@ -303,7 +319,7 @@ export class SpeedyCard {
                 "type": "Input.Text",
                 placeholder: this.inputPlaceholder,
                 ...this.inputConfig,
-            }
+            }    
             this.json.body.push(payload)
         }
 
@@ -352,7 +368,12 @@ export class SpeedyCard {
             if (this.attachedData) {
                 payload.data = this.attachedData
             }
-            this.json.actions = this.json.actions ? this.json.actions.push(payload) : [payload]
+
+            if (this.json.actions?.length) {
+                this.json.actions.push(payload)
+            } else {
+                this.json.actions = [payload]
+            }
         } else {
             if (this.attachedData && Object.keys(this.attachedData).length) {
                 bad(`attachedData ignore, you must call at least either .setInput(), .setChoices, .setDate, .setTime, to pass through data with an adaptive card`)

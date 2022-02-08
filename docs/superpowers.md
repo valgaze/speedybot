@@ -16,12 +16,15 @@ Speedybot $uperpowers: various helper utilities to give your bot $uperpowers whe
 ```ts
 import { $ } from 'speedybot'
 
-export default 	{
+export default 	[{
     keyword: ['$', '$uperpowers', '$uperpower', '$superpower'],
     async handler(bot, trigger) {
 
         // ## 0) Wrap the bot object in $ to give it $uperpowers, ex $(bot)
         const $bot = $(bot)
+
+        // Provide some space
+        $bot.clearScreen()
 
         // ## 1) Contexts: set, remove, and list
         // Contexts persist between "turns" of chat
@@ -85,10 +88,10 @@ export default 	{
         }
 
         // Add optional title to chips
-        $bot.sendChips(['hey', 'ping', '$', 'pong', customChip], 'These chips will disappear on tap')
+        $bot.sendChips(['hey', 'ping', 'pong', '$', {label:`Trigger the 'hey' handler`, keyword: 'hey'}, customChip], 'These chips will disappear on tap')
 
 
-        // ## 4) Save data between conversation "runs"
+        // ## 4) Save data between conversation "runs" (scoped to user, async)
 
         interface SpecialUserData {
             specialValue: string;
@@ -115,6 +118,15 @@ export default 	{
             $bot.deleteData('userData')
         }
 
+        // ## 4a) Stash "global" values between runs (don't use a lot, short snippets like counters or other data)
+        // Note: not persistent storage if using default storage provider
+        const globalVal = $bot.globalGet('myKey')
+
+        if (!globalVal) {
+            $bot.globalSave('myKey', { dateAdded: new Date().toISOString() })
+        }
+
+
         // ## 5) Integrate with 3rd-parties: $bot.get, $bot.post, etc
 
         // ex. get external data
@@ -138,7 +150,7 @@ export default 	{
         // For an example involving parse'able spreadsheets (.xlsx), see here: https://github.com/valgaze/speedybot-superpowers
     },
     helpText: 'A demo of $uperpowers'
-}
+}]
 ```
 
 ## Get uploaded file details
