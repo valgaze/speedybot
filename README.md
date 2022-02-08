@@ -102,11 +102,100 @@ speedyhelper help
 
 # Some Demos
 
+## Prompt
+
+ex. When the user says 'prompt', the agent will continue asking the user for a number whose digits sum to 10 (can quit by saying ```$exit```)
+
+![sb](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/prompt_demo.gif)
+
+```ts
+import { $ } from 'speedybot'
+
+// $(bot).prompt has 3 components
+// - (1) retry (list of message to provide feedback or encourage the user to modify their)
+// - (2) success (handler when validation passes, the final parameter is the value)
+// - (3) validate (function that accepts the user-provided value as a parameter)
+
+export default [
+    {
+		keyword: 'prompt',
+		async handler(bot) {
+
+			const $bot = $(bot)
+			await bot.say('Sending you a prompt...')
+			$bot.prompt('Enter a number whose digits that add up to 6 (ex 51, 60, 33, 501, etc)', {
+				retry: [`Sorry, doesn't add up to 6`, 
+                        `Whoops that value doesn't work try again`, 
+                        `That value doesn't work`, 
+                        `Whoops, that input is not valid. You can type '$exit' to abandon this`
+                        ],
+				async success(bot, trigger, answer) {
+					bot.say('You did it!!! Good job! <3 <3')
+					bot.say(answer)
+
+					// Ex. Submit data to a 3rd-party service/integration
+					const res = await $bot.post('https://jsonplaceholder.typicode.com/posts', { data: { title: 'my special value that adds to 6', userValue: answer } })
+					$(bot).sendSnippet(res.data, 'Posted response to https://jsonplaceholder.typicode.com/posts')
+				},
+				validate(val=0) {
+					// Make sure digits add to 6
+					const sum = String(val).split('')
+											.map(Number)
+											.reduce(function (prev, next) {
+												return prev + next;
+											}, 0)
+					if (sum === 6) {
+						return true
+					} else {
+						return false
+					}
+				}
+			})
+		},
+		helpText: 'A handler which will ask the user for a number whose digits sum to 6'
+	}
+]
+```
+
+## SpeedyCard
+
+ex. Tell the bot "sendcard" to get a card, type into the card & tap submit, catch submission using *<@submit>* and echo back to user
+
+![sb](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/send_card.gif)
+
+```ts
+import { SpeedyCard } from 'speedybot'
+export default [{
+        keyword: '<@submit>',
+        handler(bot, trigger) {
+            bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
+        },
+        helpText: 'Special handler that fires when data is submitted'
+    },
+    {
+        keyword: 'sendcard',
+        handler(bot, trigger) {
+            bot.say('One card on the way...')
+            // Adapative Card: https://developer.webex.com/docs/api/guides/cards
+            const myCard = new SpeedyCard().setTitle('System is 👍')
+                                     .setSubtitle('If you see this card, everything is working')
+                                     .setImage('https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/chocolate_chip_cookies.png')
+                                     .setInput(`What's on your mind?`)
+                                     .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
+                                     .setTable([[`Bot's Date`, new Date().toDateString()], ["Bot's Uptime", `${String(process.uptime())}s`]])
+                                     .setData({mySpecialData: {a:1, b:2}})
+            bot.sendCard(myCard.render(), 'Your client does not currently support Adaptive Cards')
+        },
+        helpText: 'Sends an Adaptive Card with an input field to the user'
+    }
+]
+```
+
 ## Suggestion Chips
 
-Suggestion "chips" are a shortcut to trigger other handlers as if the user uttered it themselves-- useful for quizzing or providing suggestions of what to say next
-
 ![sb](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/chip_tap_persist.gif)
+
+Suggestion "chips" are a shortcut to trigger other handlers as if the user uttered it themselves-- useful for quizzing or providing suggestions of what to say next
 
 ex. When the user enters the text 'chips' or 'chip', they can select an item and trigger another handler
 
@@ -158,94 +247,6 @@ export default [
 ]
 ```
 
-## Prompt
-
-![sb](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/prompt_demo.gif)
-
-ex. When the user says 'prompt', the agent will continue asking the user for a number whose digits sum to 10 (can quit by saying ```$exit```)
-
-```ts
-import { $ } from 'speedybot'
-
-// $(bot).prompt has 3 components
-// - (1) retry (list of message to provide feedback or encourage the user to modify their)
-// - (2) success (handler when validation passes, the final parameter is the value)
-// - (3) validate (function that accepts the user-provided value as a parameter)
-
-export default [
-    {
-		keyword: 'prompt',
-		async handler(bot) {
-
-			const $bot = $(bot)
-			await bot.say('Sending you a prompt...')
-			$bot.prompt('Enter a number whose digits that add up to 6 (ex 51, 60, 33, 501, etc)', {
-				retry: [`Sorry, doesn't add up to 6`, 
-                        `Whoops that value doesn't work try again`, 
-                        `That value doesn't work`, 
-                        `Whoops, that input is not valid. You can type '$exit' to abandon this`
-                        ],
-				async success(bot, trigger, answer) {
-					bot.say('You did it!!! Good job! <3 <3')
-					bot.say(answer)
-
-					// Ex. Submit data to a 3rd-party service/integration
-					const res = await $bot.post('https://jsonplaceholder.typicode.com/posts', { data: { title: 'my special value that adds to 6', userValue: answer } })
-					$(bot).sendSnippet(res.data, 'Posted response to https://jsonplaceholder.typicode.com/posts')
-				},
-				validate(val=0) {
-					// Make sure digits add to 6
-					const sum = String(val).split('')
-											.map(Number)
-											.reduce(function (prev, next) {
-												return prev + next;
-											}, 0)
-					if (sum === 6) {
-						return true
-					} else {
-						return false
-					}
-				}
-			})
-		},
-		helpText: 'x'
-	}
-]
-```
-
-## SpeedyCard
-
-ex. Tell the bot "sendcard" to get a card, type into the card & tap submit, catch submission using *<@submit>* and echo back to user
-
-```ts
-import { SpeedyCard } from 'speedybot'
-export default [{
-        keyword: '<@submit>',
-        handler(bot, trigger) {
-            bot.say(`Submission received! You sent us ${JSON.stringify(trigger.attachmentAction.inputs)}`)
-        },
-        helpText: 'Special handler that fires when data is submitted'
-    },
-    {
-        keyword: 'sendcard',
-        handler(bot, trigger) {
-            bot.say('One card on the way...')
-            // Adapative Card: https://developer.webex.com/docs/api/guides/cards
-            const myCard = new SpeedyCard().setTitle('System is 👍')
-                                     .setSubtitle('If you see this card, everything is working')
-                                     .setImage('https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/chocolate_chip_cookies.png')
-                                     .setInput(`What's on your mind?`)
-                                     .setUrl('https://www.youtube.com/watch?v=3GwjfUFyY6M', 'Take a moment to celebrate')
-                                     .setTable([[`Bot's Date`, new Date().toDateString()], ["Bot's Uptime", `${String(process.uptime())}s`]])
-                                     .setData({mySpecialData: {a:1, b:2}})
-            bot.sendCard(myCard.render(), 'Your client does not currently support Adaptive Cards')
-        },
-        helpText: 'Sends an Adaptive Card with an input field to the user'
-    }
-]
-```
-
-
 ## Adding a new chat handler
 
 With Speedybot, all you need to worry about is the **[settings directory](https://github.com/valgaze/speedybot-starter/tree/master/settings)** directory with two files:
@@ -283,7 +284,7 @@ Speedybot can also give your bot $uperpowers-- **[see here for details on $uperp
 
 <details><summary>$uperpowers sample</summary>
 
-```ts
+```ts 
 import { $ } from 'speedybot'
 
 export default 	{
@@ -422,3 +423,9 @@ export default 	{
 }
 ```
 </details>
+
+## Credits/Attribution
+
+- Cookie image courtesy of Daniel Lopez: https://unsplash.com/photos/aT7CE57EZL8 & https://unsplash.com/@soydanielwolf
+
+- Robot icon (not included in this repo) created by Freepik - Flaticon, https://www.flaticon.com/free-icons/robot
