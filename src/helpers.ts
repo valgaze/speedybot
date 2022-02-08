@@ -334,6 +334,7 @@ export class $Botutils {
 	 * @param trigger 
 	 */
 	matchInvokeHandlers(handlerList: BotHandler[], trigger: Trigger, noMatch?: BotHandler) {
+		const triggerPayload = trigger
 		const checkHandler = (handler: BotHandler, trigger: Trigger):boolean => {
 			/**
 			* Per "https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1625"
@@ -354,20 +355,35 @@ export class $Botutils {
             }
 			return false
 		}
+
+
+		if (trigger.message.roomType === 'group' && trigger['args'].length) {
+			// In group rooms, return text includes bot @mention
+			// if a group, slice off 1st element
+			// Ain't pretty or elegant, but resolving this "here" is a big win
+			// Another approach: https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1193-L1194
+			const args = trigger['args'].slice(1)
+			Object.assign(triggerPayload, {args})
+			Object.assign(triggerPayload, {text: args.join(' ')})
+
+			// Adjust original message too
+			// triggerPayload.message.html will contain the rich markup for a mention
+			triggerPayload.message.text = triggerPayload.text
+		}		
 	
 		let matchedHandlers = handlerList.filter(handler => {
 			const {keyword} = handler
 			if (Array.isArray(keyword)) {
 				let flag = false
 				keyword.forEach(kw => {
-					const res = checkHandler({...handler, keyword:kw}, trigger)
+					const res = checkHandler({...handler, keyword:kw}, triggerPayload)
 					if (res) {
 						flag = true
 					}
 				})
 				return flag
 			} else {
-				return checkHandler(handler, trigger)
+				return checkHandler(handler, triggerPayload)
 			}
          }).sort((a,b) => Number(a.preference) > Number(b.preference) ? 1 : -1)
 		// https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L1155
@@ -384,12 +400,12 @@ export class $Botutils {
 		
         matchedHandlers.forEach(match => {
             const { handler } = match
-            handler(this.botRef, trigger)
+            handler(this.botRef, triggerPayload)
         })
 
 		if (!matchedHandlers.length && noMatch && noMatch.handler) {
 			const {handler} = noMatch
-			handler(this.botRef, trigger)
+			handler(this.botRef, triggerPayload)
 		}
 	}
 
