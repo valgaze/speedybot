@@ -20,7 +20,7 @@ Speedybot is a tool to take you from zero to a user-valuable bot as quickly as p
 
 🌟 "SpeedyCard" to easily create rich interactive **["Adaptive Cards"](https://developer.webex.com/docs/api/guides/cards)** (more info **[here](#speedycard)**)
 
-🌟 Access encrypted file uploads + attachments (more info **[here](https://github.com/valgaze/speedybot-superpowers/blob/master/settings/handlers.ts)**)
+🌟 Access encrypted file uploads + attachments (more info **[here](#upload-a-file)**)
 
 🌟 Integrate with 3rd-party services
 
@@ -33,6 +33,9 @@ Speedybot is a tool to take you from zero to a user-valuable bot as quickly as p
 🌟 Zero configuration to get up and running (defaults to websockets for webhooks-- no nGrok or tunneling)
 
 🌟 Lots of quality-of-life and convenience features
+
+🌟 Full sample applications-- just add your token and boot up (more info **[here](#sample-applications)**)
+
 
 ## How to use
 
@@ -104,7 +107,7 @@ speedyhelper help
 
 ## Prompt
 
-ex. When the user says 'prompt', the agent will continue asking the user for a number whose digits sum to 10 (can quit by saying ```$exit```)
+ex. When the user says 'prompt', the agent will continue asking the user for a number whose digits sum to 6 (can quit by saying ```$exit```)
 
 ![sb](https://raw.githubusercontent.com/valgaze/speedybot/master/docs/assets/prompt_demo.gif)
 
@@ -139,11 +142,11 @@ export default [
 				},
 				validate(val=0) {
 					// Make sure digits add to 6
-					const sum = String(val).split('')
-											.map(Number)
-											.reduce(function (prev, next) {
-												return prev + next;
-											}, 0)
+                    const sum = String(val).split('')
+                                        .map(Number)
+                                        .reduce(function (prev, next) {
+                                            return prev + next;
+                                        }, 0)
 					if (sum === 6) {
 						return true
 					} else {
@@ -247,6 +250,20 @@ export default [
 ]
 ```
 
+## Upload a file
+
+ex. When the user uploads a spreadsheet file (*.xlsx), the agent will take the file-data, transform it into an html file, display the HTML file and generate a downloadable file for the user
+
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-superpowers/master/docs/assets/speedybot_xlsx.gif
+)
+
+```ts
+
+// See <@fileupload> handler here: https://github.com/valgaze/speedybot-superpowers/blob/master/settings/handlers.ts#L77
+
+```
+
+
 ## Adding a new chat handler
 
 With Speedybot, all you need to worry about is the **[settings directory](https://github.com/valgaze/speedybot-starter/tree/master/settings)** directory with two files:
@@ -292,6 +309,16 @@ export default 	{
     async handler(bot, trigger) {
         // ## 0) Wrap the bot object in $ to give it $uperpowers, ex $(bot)
         const $bot = $(bot)
+
+        // "counters" (scoped to user)
+        const counter = $bot.get
+        const counterRef = await $bot.getCounter('myCounter') // Defaults to 0 if does not exist
+        $bot.log('current counter value', counterRef)
+
+        await $bot.increaseCounter('myCounter') // 1
+        const counterMsg = `This handler has been run ${counterRef} times`
+        bot.say(counterMsg)
+
 
         // Provide some space
         await $bot.clearScreen()
@@ -423,6 +450,15 @@ export default 	{
 }
 ```
 </details>
+
+## Sample Applications
+
+| Item | Remarks | Video |
+| --- | --- | --- |
+| **[Speedybot-starter](https://github.com/valgaze/speedybot-starter)** | "Batteries-included" starter application with few external dependencies-- use this to start | **[https://share.descript.com/view/ds3UA1kUb9z](https://share.descript.com/view/ds3UA1kUb9z)** |
+| **[Speedybot-$uperpowers](https://github.com/valgaze/speedybot-superpowers)** | Application using $uperpowers with suggestion "chips", response variation, and capability to upload a spreadsheet *.xlsx and convert to an htm | **[https://share.descript.com/view/sBU3pk5L8Js](https://share.descript.com/view/sBU3pk5L8Js)** |
+| **[Speedybot-serverless](https://github.com/valgaze/speedybot-serverless-experiment)** | [EXPERIMENTAL/REDUCED FUNCTIONALITY] Proof-of-concept for stateless/serverless chat agent (ex lambda function) |  // |
+
 
 ## Credits/Attribution
 
