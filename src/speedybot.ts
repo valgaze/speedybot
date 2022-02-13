@@ -318,6 +318,8 @@ import {
                   return bot.say(retry)
                 } else if(Array.isArray(retry)) {
                   return $bot.sendRandom(retry)
+                } else if (typeof retry === 'function') {
+                  return retry(bot, trigger, res)
                 }
               }
             }

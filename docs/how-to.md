@@ -35,6 +35,18 @@ export default handlers = [
 		helpText: `A simple handler that greets the user`
 	},
 	{
+		keyword: '<@nomatch>',
+		handler(bot, trigger) {
+			const $bot = $(bot)
+			const { text } = trigger.message
+			$bot.sendRandom([`Sorry, I don't understand that command`, 
+							'Whoops, that input does not have an associated handler',
+							`Ruh roh, I don't know what to do with ${text}`])
+
+		},
+		helpText: `A simple handler that greets the user`
+	},
+	{
 		keyword: '<@catchall>',
 		handler(bot, trigger) {
 			// This could be used to send to a 3rd-party service like DialogFlow, Lex or GPT3 to extract intent &  parameters

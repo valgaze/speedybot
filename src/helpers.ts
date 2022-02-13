@@ -205,9 +205,10 @@ export const extractFileData = (contentDisposition: string): { fileName: string,
 }
 
 
+export type retryFunc = (bot: BotInst, trigger: Trigger, result?: string | number) => void | Promise<any>;
 export interface PromptConfig {
 	prompt?: string;
-	retry: string | string[];
+	retry: string | string[] | retryFunc;
 	validate?: (val: string | number) => boolean | Promise<boolean>;
 	success: (bot: BotInst, trigger: Trigger, result?: string | number) => void | Promise<any>;
 }
@@ -750,6 +751,75 @@ export class $Botutils {
 	public _auth(fn: Function) {
 		return fn.call(this, this.token)
 	}
+
+	public async getCounter(key: string): Promise<number> {
+		const counterKey = this.__buildCounter(key)
+		const counter = await this.getData(counterKey)
+		if (counter === null) {
+			await this.setCounter(key)
+			return 0
+		} else {
+			return counter
+		}
+	}
+
+	public async setCounter(key: string, val = 0) {
+		const counterKey = this.__buildCounter(key)
+		return this.saveData(counterKey, val)
+	}
+
+	public async increaseCounter(key: string): Promise<number> {
+		const counterKey = this.__buildCounter(key)
+		const counterRef = await this.getCounter(counterKey)
+		const addOne = counterRef + 1
+		await this.setCounter(key, addOne)
+		return addOne
+	}
+
+	public async decreaseCounter(key: string): Promise<number> {
+		const counterKey = this.__buildCounter(key)
+		const counterRef = await this.getCounter(counterKey)
+		const minusOne = counterRef - 1
+		await this.setCounter(counterKey, minusOne)
+		return minusOne
+	}
+	
+	public async thread(thread: [string | object, string]) {
+		let [root, reply] = thread
+		let firstMsg = root
+		const prepMsg = (card, fallback?) => {
+			const rootMsg = {
+				markdown: fallback ? fallback : "If you see this message your client cannot render buttons and cards.",
+				attachments: [{
+					"contentType": "application/vnd.microsoft.card.adaptive",
+					"content": card
+					}]
+			}
+			return rootMsg
+		}
+
+		if (typeof root === 'object') {
+			firstMsg = prepMsg(root)
+		}
+		this.botRef.say(firstMsg).then(({id}) => {
+			const msgObj = {
+				parentId: id,
+				markdown: reply
+			}
+			this.botRef.say(msgObj)
+		})
+	}
+
+
+	private __buildCounter(key: string=''): string {
+		const prefix = `___$counter_`
+		if (!key.includes(prefix)) {
+			return `${prefix}${key}`
+		} else {
+			return key
+		}
+
+	} 
 }
 
 export interface FileConfig {
