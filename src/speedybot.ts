@@ -20,7 +20,7 @@ import {
     Message
   } from "./framework";
   import { ValidatewebhookUrl, pickRandom, snippet } from "./helpers";
-  import { placeholder, chipLabel, chipConfigLabel, ChipConfig, ascii_art, SpeedyCard, $} from "./";
+  import { placeholder, chipLabel, chipConfigLabel, ChipConfig, ascii_art, SpeedyCard, $, vote_prefix} from "./";
   // TODO: make peer dependency or option to "pass-in" as parameter
   import Botframework from "webex-node-bot-framework";
   import BotWebhook from "webex-node-bot-framework/webhook";
@@ -62,6 +62,7 @@ import {
     constructor(config: SpeedybotConfig) {
       const inst: FrameworkInst = new Botframework(config);
       this.frameworkRef = inst;
+      this.frameworkRef[vote_prefix] = new Map()
     }
   
     send(payload: ToMessage) {

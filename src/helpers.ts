@@ -1,7 +1,7 @@
 import axios, { Method, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { createReadStream, unlink } from 'fs'
-import {  SpeedyCard, chipLabel, chipConfigLabel, $promptActiveKey, $prompts } from './index'
-import { BotInst, Trigger, ToMessage, Message, BotHandler } from './framework'
+import { SpeedyCard, chipLabel, chipConfigLabel, $promptActiveKey, $prompts } from './index'
+import { BotInst, Trigger, ToMessage, Message, BotHandler, Membership } from './framework'
 import { log, loud } from './logger'
 import { resolve } from 'path'
 import FormData from 'form-data'
@@ -582,6 +582,49 @@ export class $Botutils {
 		return axios.post(this.API.messages, formData, { headers })
 	}
 
+	public async edit<T=any>(message: string | Message, newData: string) {
+		let id = message
+		let roomId = this.botRef.room.id
+
+		if (typeof message === 'object') {
+			const { id:msgId, roomId:msgRoomId } = message as Message
+			id = msgId as string
+			roomId = msgRoomId as string
+		}
+
+		const submitData = {
+			roomId,
+			markdown: newData
+		}
+		const headers = {
+			Authorization: `Bearer ${this.token}`,
+		}
+		const url = `${this.API.messages}/${id}`
+		return axios.put(url, submitData, { headers })
+	}
+
+	public async getUsers(): Promise<Membership[]> {
+		const {items} = await this.botRef.webex.memberships.list({roomId: this.botRef.room.id})
+		// Remove any items where email includes @webex.bot
+		const botPrefix = '@webex.bot'
+		return items.filter(({personEmail}) => !personEmail.includes(botPrefix))
+	}
+
+	public async sendAll(msg: string | object, list?: string[]) {
+		const userList = list ? list : await this.getUsers()
+		userList.forEach(user => {
+			const { personEmail } = user
+			if (typeof msg === 'string') {
+				this.send({
+					toPersonEmail: user.personEmail,
+					markdown: msg as string
+				})
+			} else {
+				this.dmCard(personEmail, msg, 'Sorry it does not appear your client supports Adaptive Cards')
+			}
+		})
+	}
+
 	public killFile(path:string) {
 		return new Promise(resolve => {
 			unlink(path, (err) => {
@@ -808,6 +851,83 @@ export class $Botutils {
 			}
 			this.botRef.say(msgObj)
 		})
+	}
+
+	/**
+	 * Send a message to a room
+	 * @param roomId roomID to which bot MUST be a member
+	 * @param msgOrCard string | Adaptive Card: https://developer.webex.com/docs/api/guides/cards
+	 * @param config How to handle error situation
+	 * @param config.throwOnError flag to throw if error (ie target room does not exist or bot is not member of it)
+	 * @param config.fallbackText Fallback text if Adaptive Card not support on client
+	 * 
+	 * ex.
+	 * 
+	 *
+	 * ```ts
+	 * import { $, SpeedyCard, pickRandom } from "speedybot";
+		export const handlers = [
+		{
+			keyword: ["hi", "hello", "hey", "yo", "watsup", "hola"],
+			async handler(bot, trigger) {
+			const $bot = $(bot);
+
+			// Ex1. Send text to a specific room
+			const roomId = "aaa-bbb-ccc-ddd"; // NOTE: This is a ROOM ID not a room name!
+			$bot.sendRoom(roomId, "My special message to the room");
+
+			// Ex2. Send a card to specific room (https://developer.webex.com/docs/api/guides/cards)
+			const myCard = new SpeedyCard()
+				.setTitle("This is a card!")
+				.setSubtitle("I want a beer plz")
+				.setUrl(
+				pickRandom([
+					"https://www.youtube.com/watch?v=3GwjfUFyY6M",
+					"https://www.youtube.com/watch?v=d-diB65scQU",
+				]),
+				"Take a moment to celebrate"
+				)
+				.setTable([
+				[`Bot's Date`, new Date().toDateString()],
+				["Bot's Uptime", `${String(process.uptime()).substring(0, 25)}s`],
+				]);
+			$bot.sendRoom(roomId, myCard.render());
+			},
+			helpText: "Handler that runs when the user greets the bot",
+		}];
+		```
+	 * 
+	 *  
+	 */
+	public async sendRoom(roomId: string, msgOrCard: string | any, config: {throwOnError: boolean, fallbackText: string} = 
+	{
+		throwOnError: false, 
+		fallbackText:'If you see this message your client cannot render buttons and cards'
+	}) {
+		const isCard = typeof msgOrCard === 'object'
+		const  {throwOnError, fallbackText } = config	
+		try {
+			if (isCard) {
+				const payload = {
+					roomId,
+					markdown: fallbackText,
+					attachments: [{
+						"contentType": "application/vnd.microsoft.card.adaptive",
+						"content": msgOrCard
+						}]
+				}
+				return this.botRef.webex.messages.create(payload)
+				// send card
+			} else if (typeof msgOrCard === 'string') {
+				return this.botRef.webex.messages.create({roomId, markdown: msgOrCard })
+			}
+		} catch(e) {
+			if (throwOnError) {
+				throw e
+			}
+			this.log(`There was an error attempting to send a message to ${roomId}`)
+			this.log('Error', e)
+		}
 	}
 
 

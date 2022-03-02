@@ -20,3 +20,5 @@ export const chipConfigLabel = `${chipLabel}_$config`
 export const $promptActiveKey = '$promptActive'
 export const $prompts = '$prompts'
 
+// Vote
+export const vote_prefix = '$$_VOTE_$$'
