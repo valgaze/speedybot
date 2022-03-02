@@ -9,7 +9,8 @@
  * Framework instance: https://github.com/WebexSamples/webex-node-bot-framework/blob/master/lib/framework.js#L25-L34
  *
 */
-import { Locker } from './' 
+import { Locker, vote_prefix } from './' 
+
 export interface FrameworkInst {
     options: FrameworkOptions;
     id: string;
@@ -35,6 +36,7 @@ export interface FrameworkInst {
     on(eventName: string, handler: unknown): void;
     onMessageCreated(payload: Message): void;
     _$storage: Locker; // extend w/ storage for all users
+    [vote_prefix]: Map<string, any>
 }
 
 export interface FrameworkOptions {
@@ -110,6 +112,7 @@ export interface Message {
     html?: string;
     created?: string;
     files: string[];
+    mentionedPeople?: string[];
 }
 
 export interface Room {
@@ -193,6 +196,9 @@ export interface WebexInst {
         get(membership: (Message | string | number)): Promise<Membership>,
         remove(membership: (Message | string | number)): Promise<unknown>,
         update(membership: (Message | string | number)): Promise<Membership>,
+        list({roomId: string}): Promise<{
+            items: Membership[]
+        }>
     },
 
     request(payload: any): Promise<any>; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/request/index.d.ts
@@ -220,8 +226,11 @@ export interface Membership {
     isModerator: boolean; // Indicates whether the specified person should be a room moderator
     isMonitor: boolean; // Indicates whether the specified member is a room monitor
     created: string; // The date and time that this membership was created
+    roomType: string; // "group" or "other"
+    personDisplayName?: string;
+    personOrgId?: string;
+    isRoomHidden: boolean;
 }
-
 // Bot handler
 export type keywords = string | RegExp;
 export type Allowedkeywords = keywords | keywords[];
