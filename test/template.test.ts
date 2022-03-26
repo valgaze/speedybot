@@ -1,4 +1,4 @@
-import test from "tape";
+import test from "ava";
 import { fillTemplate } from './../src'
 
 test("Should pick a random choice and fill the template", (t) => {
@@ -21,10 +21,9 @@ test("Should pick a random choice and fill the template", (t) => {
 	}
 
 	t.deepEqual(true, pass);
-	t.end()
 });
 
-test("Should take a string & fill in the template (& not crash if key name happened to be contaied 😶)", (t) => {
+test("Should take a string & fill in the template", (t) => {
 	let pass = false;
 
 	const payload = {
@@ -42,5 +41,4 @@ test("Should take a string & fill in the template (& not crash if key name happe
 	}
 
 	t.deepEqual(true, pass);
-	t.end()
 });

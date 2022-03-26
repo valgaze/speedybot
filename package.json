@@ -5,7 +5,8 @@
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
     "scripts": {
-        "test": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
+        "test":"npm run build && ava 'dist/test/*.test.js'",
+        "x": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
         "patch": "npx np patch",
         "prepublish": "npm run build",
         "dev": "nodemon",
@@ -25,6 +26,7 @@
     "author": "valgaze@gmail.com",
     "license": "MIT",
     "dependencies": {
+        "ava": "^4.1.0",
         "axios": "^0.24.0",
         "form-data": "^4.0.0",
         "simple-log-colors": "^1.1.0"
@@ -38,9 +40,7 @@
     },
     "devDependencies": {
         "@types/node": "^13.13.52",
-        "@types/tape": "^4.13.2",
         "nodemon": "^2.0.4",
-        "tape": "^5.3.1",
         "ts-node": "^8.10.1",
         "typescript": "^3.8.3",
         "webex-node-bot-framework": "^2.3.7"
