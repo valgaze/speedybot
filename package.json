@@ -1,11 +1,11 @@
 {
     "name": "speedybot",
-    "version": "1.0.18",
+    "version": "1.0.19",
     "description": "Speedy & easy way to rapidly iterate with conversation bots",
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
     "scripts": {
-        "test":"npm run build && ava 'dist/test/*.test.js'",
+        "test": "npm run build && ava 'dist/test/*.test.js'",
         "x": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
         "patch": "npx np patch",
         "prepublish": "npm run build",
