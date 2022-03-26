@@ -1,9 +1,6 @@
-import test from "tape";
+import test from "ava";
 import { ValidatewebhookUrl } from './../src/helpers'
 
-test("setup", function (t) {
-  t.end();
-});
 
 // ex. good: https://123-456-789.ngrok.io/webhookroute
 // ex. bad: https://123-456-789.ngrok.io/
@@ -13,7 +10,6 @@ test("Should return true if valid", (t) => {
     const expected = true
 		const actual = ValidatewebhookUrl(webhookUrl)
 		t.deepEqual(actual, expected);
-    t.end();
 });
 
 test("Should throw if no ending path", (t) => {
@@ -22,9 +18,7 @@ test("Should throw if no ending path", (t) => {
     ValidatewebhookUrl(webhookUrl)
     t.fail('Should throw error');
   } catch (e) {
-    t.match(e.message, /.*?/, 'Error thrown correctly');
-  } finally {
-    t.end();
+    t.pass()
   }
 });
 
@@ -35,12 +29,10 @@ test("Should throw if no ending path, ends in slash", (t) => {
     ValidatewebhookUrl(webhookUrl)
     t.fail('Should throw error');
   } catch (e) {
-    t.match(e.message, /.*?/, 'Error thrown correctly');
+   t.pass()
   } finally {
-    t.end();
+    // no op
   }
+
 });
 
-test("teardown", function (t) {
-  t.end();
-});

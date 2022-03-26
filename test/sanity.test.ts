@@ -1,17 +1,10 @@
-import test from "tape";
+import test from 'ava';
 
-
-test("setup", function (t) {
-  t.end();
+test('foo', t => {
+	t.pass();
 });
 
-test("Sanity test", (t) => {
-    const expected = [1,2,3,4]
-		const actual = [1,2,3,4]
-		t.deepEqual(actual, expected);
-    t.end();
-});
-
-test("teardown", function (t) {
-  t.end();
+test('bar', async t => {
+	const bar = Promise.resolve('bar');
+	t.is(await bar, 'bar');
 });

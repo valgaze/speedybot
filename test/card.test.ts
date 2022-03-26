@@ -1,9 +1,6 @@
-import test from "tape";
+import test from "ava";
 import {SpeedyCard} from './../src'
 
-test("setup", function (t) {
-  t.end();
-});
 
 test("Sanity test", (t) => {
   const expected = {
@@ -23,7 +20,6 @@ test("Sanity test", (t) => {
 
   const actual = cardPayload.render()
   t.deepEqual(actual, expected);
-  t.end();
 });
 
 test("Kitchen sink", (t) => {
@@ -90,7 +86,6 @@ test("Kitchen sink", (t) => {
 
 		const actual = cardPayload.render()
 		t.deepEqual(actual, expected);
-    t.end();
 });
 
 test("Date and Time Pickers", (t) => {
@@ -105,9 +100,4 @@ test("Date and Time Pickers", (t) => {
 
   const actual = myCard.render()
   t.deepEqual(actual, expected);
-  t.end();
-});
-
-test("teardown", function (t) {
-  t.end();
 });
