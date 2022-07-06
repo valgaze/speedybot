@@ -6,6 +6,31 @@ import { log, loud } from './logger'
 import { resolve } from 'path'
 import FormData from 'form-data'
 
+export const checkers = {
+	isSpeedyCard(input: SpeedyCard | object): boolean {
+	  return (
+		typeof input === 'object' &&
+		'render' in input &&
+		typeof input.render === 'function'
+	  )
+	},
+	isCard(cardCandidate: any | SpeedyCard): boolean {
+	  if (this.isSpeedyCard(cardCandidate)) return true
+	  const stringifiedPayload = JSON.stringify(cardCandidate)
+	  const isCard =
+		stringifiedPayload.includes('AdaptiveCard') &&
+		stringifiedPayload.includes('$schema') &&
+		stringifiedPayload.includes('version')
+	  return isCard
+	},
+	isEmail(candidate: string) {
+	  // Only really care about joe@joe.com joe@joe.joe.com joe@a.io
+	  // Should probably get a Regex @ some point... // https://fightingforalostcause.net/content/misc/2006/compare-email-regex.php
+	  const res = candidate.includes('@') && candidate.includes('.')
+	  return res
+	},
+  }
+
 /**
 * @param list 
 * Pick an item from the list

@@ -22,3 +22,5 @@ export const $prompts = '$prompts'
 
 // Vote
 export const vote_prefix = '$$_VOTE_$$'
+
+export { HookBot, AbbreviatedSpeedyCard, Hooks, IncomingWebhook, SpeedyGuard } from './webhook'
