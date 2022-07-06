@@ -98,6 +98,7 @@ export interface BotInst {
 export interface ToMessage extends Partial<Message> {
     toPersonId?: string;
     toPersonEmail?: string;
+    roomId?: string;
     files?: string[] | any[]
 }
 
