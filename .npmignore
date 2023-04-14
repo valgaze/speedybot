@@ -1,5 +1,7 @@
-docs
+docs/
 settings/
 test/
 src/
 nodemon.json
+CNAME
+index.html
