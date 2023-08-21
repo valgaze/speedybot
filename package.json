@@ -1,48 +1,52 @@
 {
-    "name": "speedybot",
-    "version": "1.1.20",
-    "description": "Speedy & easy way to rapidly iterate with conversation bots",
-    "main": "./dist/src/index.js",
-    "types": "./dist/src/index.d.ts",
-    "scripts": {
-        "test": "npm run build && ava 'dist/test/*.test.js'",
-        "x": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
-        "patch": "npx np patch",
-        "prepublish": "npm run build",
-        "dev": "nodemon",
-        "superdev": "npm link && npm run dev",
-        "start": "ts-node src/launcher",
-        "start:dist": "npm run setup && cd dist && node src/launcher",
-        "build:global": "tsc",
-        "build": "./node_modules/typescript/bin/tsc",
-        "setup": "npm i && npm run build"
-    },
-    "keywords": [
-        "bot",
-        "scaffold",
-        "demo",
-        "speedybot"
-    ],
-    "author": "valgaze@gmail.com",
-    "license": "MIT",
-    "dependencies": {
-        "ava": "^4.1.0",
-        "axios": "^0.24.0",
-        "form-data": "^4.0.0",
-        "simple-log-colors": "^1.1.0"
-    },
-    "peerDependencies": {
-        "webex-node-bot-framework": "*"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/valgaze/speedybot.git"
-    },
-    "devDependencies": {
-        "@types/node": "^13.13.52",
-        "nodemon": "^2.0.4",
-        "ts-node": "^8.10.1",
-        "typescript": "^3.8.3",
-        "webex-node-bot-framework": "^2.3.7"
-    }
+  "name": "speedybot",
+  "version": "1.1.20",
+  "description": "Speedy & easy way to rapidly iterate with conversation bots",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "scripts": {
+    "test": "npm run build && ava 'dist/test/*.test.js'",
+    "x": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
+    "patch": "npx np patch",
+    "prepublish": "npm run build",
+    "dev": "nodemon",
+    "superdev": "npm link && npm run dev",
+    "start": "ts-node src/launcher",
+    "start:dist": "npm run setup && cd dist && node src/launcher",
+    "build:global": "tsc",
+    "build": "./node_modules/typescript/bin/tsc",
+    "setup": "npm i && npm run build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "bot",
+    "scaffold",
+    "demo",
+    "speedybot"
+  ],
+  "author": "valgaze@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "ava": "^4.1.0",
+    "axios": "^0.24.0",
+    "form-data": "^4.0.0",
+    "simple-log-colors": "^1.1.0"
+  },
+  "peerDependencies": {
+    "webex-node-bot-framework": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valgaze/speedybot.git"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.52",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3",
+    "vitepress": "^1.0.0-rc.4",
+    "webex-node-bot-framework": "^2.3.7"
+  }
 }
