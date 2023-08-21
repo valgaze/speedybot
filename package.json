@@ -8,7 +8,6 @@
     "test": "npm run build && ava 'dist/test/*.test.js'",
     "x": "npm run build && node_modules/.bin/tape dist/test/*.test.js",
     "patch": "npx np patch",
-    "prepublish": "npm run build",
     "dev": "nodemon",
     "superdev": "npm link && npm run dev",
     "start": "ts-node src/launcher",
