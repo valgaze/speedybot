@@ -3,11 +3,12 @@
     "declaration": true,
     "resolveJsonModule": true,
     "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es5",
+    "target": "ES2016",
     "noImplicitAny": false,
     "moduleResolution": "node",
+    "removeComments": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": false,
@@ -16,19 +17,9 @@
     "baseUrl": ".",
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "*": [
-        "node_modules/*",
-      ]
+      "*": ["node_modules/*"]
     }
   },
-  "include": [
-    "src/**/*",
-		"test/**/*",
-		"package.json"
-  ],
-  "exclude": [
-    "src/frontend",
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "package.json"],
+  "exclude": ["node_modules", "dist", "@vitest"]
 }

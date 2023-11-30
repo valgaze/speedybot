@@ -1,5 +1,11 @@
+.github/
 node_modules
 .DS_STORE
 deploy/
 dist/
-run.sh
+.env
+abc.ts
+.vitepress/cache
+docs/.vitepress/cache/
+coverage/
+todo.md

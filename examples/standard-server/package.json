@@ -1,0 +1,43 @@
+{
+  "name": "speedybot-standard-server",
+  "version": "2.0.0",
+  "description": "The speedy and easy way to build rich bots + conversation experiences",
+  "scripts": {
+    "bot:on": "tsx settings/launch",
+    "serve": "npm run bot:dev",
+    "dev": "npm run bot:dev",
+    "bot:debug": "npx -y envinfo@7.11.0",
+    "bot:serve": "npm run bot:dev",
+    "bot:dev": "tsx watch settings/launch",
+    "bot:reset": "tsx util/cli reset",
+    "bot:setup": "tsx util/cli setup",
+    "bot:token": "npm run bot:setup",
+    "bot:help": "tsx util/cli help",
+    "help": "npm run bot:help",
+    "bot:addsecret": "tsx util/cli addsecret"
+  },
+  "keywords": [
+    "bot",
+    "scaffold",
+    "continerless",
+    "speedybot",
+    "serverless"
+  ],
+  "author": "valgaze@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.1",
+    "typescript": "^3.9.10"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.1",
+    "speedybot": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

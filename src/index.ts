@@ -1,26 +1,164 @@
-export { Speedybot, SpeedybotWebhook, Speedytunnel, Launch } from './speedybot'
-export { SpeedybotConfig } from './speedybot'
+/**
+ ╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭╮╱╱╭╮╱╭━━╮╱╱╭━━━╮╱╭━━━━╮╱
+╱┃╭━╮┃╱┃╭━╮┃╱┃╭━━╯╱┃╭━━╯╱╰╮╭╮┃╱┃╰╮╭╯┃╱┃╭╮┃╱╱┃╭━╮┃╱┃╭╮╭╮┃╱
+╱┃╰━━╮╱┃╰━╯┃╱┃╰━━╮╱┃╰━━╮╱╱┃┃┃┃╱╰╮╰╯╭╯╱┃╰╯╰╮╱┃┃╱┃┃╱╰╯┃┃╰╯╱
+╱╰━━╮┃╱┃╭━━╯╱┃╭━━╯╱┃╭━━╯╱╱┃┃┃┃╱╱╰╮╭╯╱╱┃╭━╮┃╱┃┃╱┃┃╱╱╱┃┃╱╱╱
+╱┃╰━╯┃╱┃┃╱╱╱╱┃╰━━╮╱┃╰━━╮╱╭╯╰╯┃╱╱╱┃┃╱╱╱┃╰━╯┃╱┃╰━╯┃╱╱╱┃┃╱╱╱
+╱╰━━━╯╱╰╯╱╱╱╱╰━━━╯╱╰━━━╯╱╰━━━╯╱╱╱╰╯╱╱╱╰━━━╯╱╰━━━╯╱╱╱╰╯╱╱╱
+ */
 
-// Types: framework
-export { FrameworkInst, BotHandler,WebhookHandler, Message, ToMessage, BotInst, Trigger, passThru } from './framework'
-export { bad, help, ascii_art, log, good, askQuestion, loud } from './logger'
-// helpers
-export { fillTemplate, pickRandom, snippet, Storage, Locker, $, globoStore } from './helpers'
-export { Chip, ChipPayload, ChipConfig } from './helpers'
+export * from "./types";
+export { SpeedyBot } from "./speedybot";
+export { SpeedyCard } from "./cards";
+export const CONSTANTS = {
+  submitToken: "_private_speedybot_",
+  CHIP_LABEL: "speedybot_CHIP_CLICK",
+  invalidMessage: "Invalid message passed to sendTo",
+  unwrapLabel: "🎁 Unwrap",
+  destroyLabel: "🔥 Destroy",
+  action_delete: "delete",
+};
+export type { SurveyQuestion, SurveyQuestionType } from "./cards";
 
-// make adaptive cards less painful w/ base templates
-export { SpeedyCard } from './cards'
-export const placeholder = '__REPLACE__ME__'
+export const botTokenKey = "BOT_TOKEN";
+export const botPlaceholder = "__REPLACE__ME__";
 
-// special internal values for suggestion "chip" engine
-export const chipLabel = '___$CHIPS'
-export const chipConfigLabel = `${chipLabel}_$config`
+import { RequestOps } from "./types";
 
-// special internal values for $prompt'ing
-export const $promptActiveKey = '$promptActive'
-export const $prompts = '$prompts'
+// Workhorse makeRequest w/ fetch, can be stubbed for testing
 
-// Vote
-export const vote_prefix = '$$_VOTE_$$'
+class RequestError extends Error {
+  statusCode: number;
+  url: string;
 
-export { HookBot, AbbreviatedSpeedyCard, Hooks, IncomingWebhook, SpeedyGuard } from './webhook'
+  constructor(message: string, statusCode: number, url: string) {
+    super(message);
+    this.statusCode = statusCode;
+    this.url = url;
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, RequestError);
+    }
+  }
+}
+
+export const mainRequester = async (
+  url: string,
+  body: any,
+  opts: RequestOps = {}
+) => {
+  // escape hatch to pass init directly to fetch
+  if ("rawInit" in opts) {
+    try {
+      const response = await fetch(url, opts.rawInit);
+      if (!response.ok) {
+        throw new RequestError(
+          `The request to ${url} failed with status ${response.status}${
+            response.status === 401
+              ? " (You may need to double-check your access token)"
+              : ""
+          }`,
+          response.status,
+          url
+        );
+      }
+      return response;
+    } catch (error) {
+      throw error; // Re-throw custom error or new/exciting error
+    }
+  }
+
+  const defaultConfig = {
+    method: "POST",
+    "content-type": "application/json;charset=UTF-8",
+    raw: false,
+  };
+
+  const contentType = opts["content-type"] || defaultConfig["content-type"];
+  const init: {
+    method: string;
+    headers: any;
+    body?: any;
+    [key: string]: any;
+  } = {
+    method: opts.method ? opts.method : defaultConfig.method,
+    headers: {
+      "content-type": contentType,
+      Authorization: `Bearer ${opts.token}`,
+      ...(opts.headers || {}),
+    },
+  };
+  if (
+    opts.method === "POST" ||
+    opts.method === "PUT" ||
+    opts.method === "PATCH"
+  ) {
+    init.body = opts.raw ? body : JSON.stringify(body);
+  }
+  try {
+    const response = await fetch(url, init);
+    if (!response.ok) {
+      throw new RequestError(
+        `The request to ${url} failed with status ${response.status}${
+          response.status === 401
+            ? " (You may need to double-check your access token)"
+            : ""
+        }`,
+        response.status,
+        url
+      );
+    }
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const logoRoll = (idx?: number) => {
+  const variants = [
+    `
+  ███████╗██████╗ ███████╗███████╗██████╗ ██╗   ██╗██████╗  ██████╗ ████████╗
+  ██╔════╝██╔══██╗██╔════╝██╔════╝██╔══██╗╚██╗ ██╔╝██╔══██╗██╔═══██╗╚══██╔══╝
+  ███████╗██████╔╝█████╗  █████╗  ██║  ██║ ╚████╔╝ ██████╔╝██║   ██║   ██║   
+  ╚════██║██╔═══╝ ██╔══╝  ██╔══╝  ██║  ██║  ╚██╔╝  ██╔══██╗██║   ██║   ██║   
+  ███████║██║     ███████╗███████╗██████╔╝   ██║   ██████╔╝╚██████╔╝   ██║   
+  ╚══════╝╚═╝     ╚══════╝╚══════╝╚═════╝    ╚═╝   ╚═════╝  ╚═════╝    ╚═╝
+  https://speedybot.js.org`,
+    `
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+  ░░███░███░░████░████░███░░█░█░███░░░██░░███░
+  ░█   ░█  █░█   ░█   ░█  █░███░█  █░█  █░ █ ░
+  ░ ██░░███ ░███░░███░░█░░█░ █ ░███ ░█░░█░░█░░
+  ░░  █░█  ░░█  ░░█  ░░█░░█░░█░░█  █░█░░█░░█░░
+  ░███ ░█░░░░████░████░███ ░░█░░███ ░ ██ ░░█░░
+  ░   ░░ ░░░░    ░    ░   ░░░ ░░   ░░░  ░░░ ░░
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+  https://speedybot.js.org`,
+    `
+  ╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭━━━╮╱╭╮╱╱╭╮╱╭━━╮╱╱╭━━━╮╱╭━━━━╮╱
+  ╱┃╭━╮┃╱┃╭━╮┃╱┃╭━━╯╱┃╭━━╯╱╰╮╭╮┃╱┃╰╮╭╯┃╱┃╭╮┃╱╱┃╭━╮┃╱┃╭╮╭╮┃╱
+  ╱┃╰━━╮╱┃╰━╯┃╱┃╰━━╮╱┃╰━━╮╱╱┃┃┃┃╱╰╮╰╯╭╯╱┃╰╯╰╮╱┃┃╱┃┃╱╰╯┃┃╰╯╱
+  ╱╰━━╮┃╱┃╭━━╯╱┃╭━━╯╱┃╭━━╯╱╱┃┃┃┃╱╱╰╮╭╯╱╱┃╭━╮┃╱┃┃╱┃┃╱╱╱┃┃╱╱╱
+  ╱┃╰━╯┃╱┃┃╱╱╱╱┃╰━━╮╱┃╰━━╮╱╭╯╰╯┃╱╱╱┃┃╱╱╱┃╰━╯┃╱┃╰━╯┃╱╱╱┃┃╱╱╱
+  ╱╰━━━╯╱╰╯╱╱╱╱╰━━━╯╱╰━━━╯╱╰━━━╯╱╱╱╰╯╱╱╱╰━━━╯╱╰━━━╯╱╱╱    ╱`,
+    `
+  ─╔═══╗─╔═══╗─╔═══╗─╔═══╗─╔═══╗─╔╗──╔╗─╔══╗──╔═══╗─╔════╗─
+  ─║╔═╗║─║╔═╗║─║╔══╝─║╔══╝─╚╗╔╗║─║╚╗╔╝║─║╔╗║──║╔═╗║─║╔╗╔╗║─
+  ─║╚══╗─║╚═╝║─║╚══╗─║╚══╗──║║║║─╚╗╚╝╔╝─║╚╝╚╗─║║─║║─╚╝║║╚╝─
+  ─╚══╗║─║╔══╝─║╔══╝─║╔══╝──║║║║──╚╗╔╝──║╔═╗║─║║─║║───║║───
+  ─║╚═╝║─║║────║╚══╗─║╚══╗─╔╝╚╝║───║║───║╚═╝║─║╚═╝║───║║───
+  ─╚═══╝─╚╝────╚═══╝─╚═══╝─╚═══╝───╚╝───╚═══╝─╚═══╝───╚╝───`,
+    `
+  ╔═╗ ╔═╗ ╔═╗ ╔═╗ ╔╦╗ ╦ ╦ ╔╗  ╔═╗ ╔╦╗ 
+  ╚═╗ ╠═╝ ║╣  ║╣   ║║ ╚╦╝ ╠╩╗ ║ ║  ║  
+  ╚═╝ ╩   ╚═╝ ╚═╝ ═╩╝  ╩  ╚═╝ ╚═╝  ╩ `,
+  ];
+
+  if (idx) {
+    const logo =
+      variants[idx] || variants[Math.floor(Math.random() * variants.length)];
+    return logo;
+  }
+  const logo = variants[Math.floor(Math.random() * variants.length)];
+  return logo;
+};

@@ -1,0 +1,32 @@
+{
+  "name": "llm-stream",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "bot:dev": "tsx watch settings/launch",
+    "serve": "npm run bot:dev",
+    "start": "npm run bot:dev",
+    "dev": "npm run bot:dev",
+    "bot:setup": "tsx util/cli setup",
+    "bot:debug": "npx envinfo@7.11.0",
+    "bot:addsecret": "tsx util/cli addsecret",
+    "bot:help": "tsx util/cli help"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@axflow/models": "^0.0.25",
+    "speedybot": "latest"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@babel/runtime-corejs2": "^7.20.1",
+    "@types/node": "^16.18.3",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.3",
+    "tsx": "^4.7.0",
+    "typescript": "^3.8.3",
+    "webex": "^2.31.0"
+  }
+}

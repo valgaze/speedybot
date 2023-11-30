@@ -1,0 +1,48 @@
+{
+  "name": "speedybot-starter",
+  "version": "2.0.0",
+  "description": "The speedy and easy way to build rich bots + conversation experiences",
+  "main": "index.ts",
+  "scripts": {
+    "bot:on": "tsx settings/launch",
+    "serve": "npm run bot:dev",
+    "dev": "npm run bot:dev",
+    "bot:debug": "npx -y envinfo@7.11.0",
+    "bot:serve": "npm run bot:dev",
+    "bot:dev": "tsx watch settings/launch",
+    "bot:reset": "tsx util/cli reset",
+    "bot:setup": "tsx util/cli setup",
+    "bot:token": "npm run bot:setup",
+    "bot:help": "tsx util/cli help",
+    "help": "npm run bot:help",
+    "bot:addsecret": "tsx util/cli addsecret"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valgaze/speedybot-local-server.git"
+  },
+  "keywords": [
+    "bot",
+    "scaffold",
+    "continerless",
+    "speedybot",
+    "serverless"
+  ],
+  "author": "valgaze@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/runtime-corejs2": "^7.20.1",
+    "@types/node": "^16.18.3",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.3",
+    "tsx": "^4.7.0",
+    "typescript": "^3.8.3",
+    "webex": "^2.31.0"
+  },
+  "dependencies": {
+    "speedybot": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

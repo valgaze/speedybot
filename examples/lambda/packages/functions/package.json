@@ -1,0 +1,19 @@
+{
+  "name": "@my-sst-app/functions",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.4.5",
+    "sst": "^2.22.6",
+    "vitest": "^0.33.0"
+  },
+  "dependencies": {
+    "cross-fetch": "^4.0.0",
+    "speedybot": "latest"
+  }
+}
