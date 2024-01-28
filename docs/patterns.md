@@ -18,11 +18,13 @@ Below are some comon copy/paste'able step "snippets" or patterns which should co
 npm install speedybot
 ```
 
+**[https://www.npmjs.com/package/speedybot](https://www.npmjs.com/package/speedybot)**
+
 See **[/new](./new.md)** for easy to follow instructions to go from zero to a bot you can extend and customize however you want. With SpeedyBot is all you need to focus on when building your bot is `bot.ts.` If you need to deploy it to a highly controlled server or a serverless function or any infra you want you just need to pop your `bot.ts` and you're good to go.
 
-## Send a simple message from ascript
+## Send a simple message from a simple script
 
-The pattern below is not an interactive agent, but you can use SpeedyBot in a script to send messages + cards:
+While SpeedyBot can take care of all the details of running a bot, you can also opportunistically "pluck" out just bits you need and put SpeedyBot to work your way. The pattern below is not a full interactive agent, but shows how you can use SpeedyBot in a script to send messages + cards:
 
 ```ts
 import { SpeedyBot } from "speedybot";
