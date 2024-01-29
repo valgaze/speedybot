@@ -1,8 +1,10 @@
-# SpeedyBot on AWS Lambda
+# [QUICKSTART] λ Deploy your bot to a "serverless" AWS Lambda Function
 
-Note: This example uses the **[Serverless Stack (SST)](https://serverless-stack.com/)** toolchain for provisioning, deployment of infrastructure. SST is built on top of a version **[AWS Cloud Development Kit (cdk)](https://aws.amazon.com/cdk/)** and makes it possible to express your infrastructure needs as spec/code. SST is definitely not required, but is the quickest route to a serverless deployment.
+- This example uses the **[Serverless Stack (SST)](https://serverless-stack.com/)** toolchain for provisioning, deployment of infrastructure.
 
-SpeedyBot has been built with serverless in mind from the beginning-- serverless infrastructure is "asleep" until you need it. Start-up times are fast enough to interact with the chat client withot timing out.
+- SST is built on top of a version **[AWS Cloud Development Kit (cdk)](https://aws.amazon.com/cdk/)** and makes it possible to express your infrastructure needs as spec/code. SST is definitely not required, but is the quickest route to a serverless deployment.
+
+- SpeedyBot has been built with serverless in mind from the beginning-- serverless infrastructure is "asleep" until you need it. Start-up times are generally fast enough to interact with the chat client withot timing out. Check out the **[Worker sample](https://speedybot.js.org/examples/worker/README)** for a fast-loading V8 Isolate without the overhead of a container
 
 ## 1) Fetch repo & install dependencies
 
@@ -12,6 +14,8 @@ cd speedybot
 cd examples/lambda
 npm install
 ```
+
+Note: The actual code of the agent located in **packages/functions/src/settings/bot.ts** and lamba code is available **packages/functions/src/lambda.ts**
 
 ## 2) Set your bot access token
 
@@ -38,7 +42,7 @@ Note: You'll need an AWS account that has authorization/billing to create lambda
 
 3b. Setup AWS CLI: https://sst.dev/chapters/configure-the-aws-cli.html
 
-## 4) Deploy your bot and get its public URL
+## 4) Deploy your bot and obtain its public URL
 
 Run this command from the project directory:
 
@@ -48,11 +52,35 @@ npm run deploy
 
 If deployment is successful, you should find that your url that looks something like this: https://abcd123456.execute-api.us-east-1.amazonaws.com
 
-## 4) Register webhooks
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/sst_deploy.png" />
 
-Hop on over to the **[Webhooks Section](https://speedybot.js.org/webhooks)** to register your webhooks and secret
+## 5) Register your webhooks
+
+- Right now if you try to interact with your "deployed" agent nothing happens, nobody is "home" to answer the knock at the door
+
+- Make a note of the URL of the deployed function and append /speedybot on the end , ex https://abcd123456.execute-api.us-east-1.amazonaws.com/speedybot
+
+- Hop on over to the **[SpeedyBot Garage (https://speedybot.js.org/garage)](https://speedybot.js.org/garage)**, enter your access token, select the Webhooks tab, and then **Add New Webhook** and add your lambdas's URL + `/speedybot` and (optionally) a webhook secret
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
 
 Note:
 This uses SST but any deployment mechanism/structure you prefer works fine
 
 Note: This SST configuration is setup to capture incoming WebEx requests on the `/speedybot` route, you can change any/all the behavior in **[the stack config](./stacks/MyStack.ts)**
+
+## 6) Take it for a spin
+
+- After connecting webhooks, take it for a spin
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" />
+
+## 7) Local Dev
+
+SST has a cool feature where you can develop your lambda/bot code locally but reach real AWS services.
+
+Install dependencies in **packages/functions/src** and run `npm install` and you can run the following command for live-reload:
+
+```
+npm run dev
+```

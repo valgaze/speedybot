@@ -5,35 +5,27 @@ outline: deep
 
 ## Webhooks
 
-Webhooks are the "glue" that connect your agent to your users. Note that to use webhooks (rather than websockets), you will need a publically-accessible hostname in order to register a webhook.
+- Webhooks are the "glue" that connect your agent to your users. Note that to use webhooks (rather than websockets), you will need a publically-accessible hostname to associate with your agent.
 
-If you use a **[secret](https://developer.webex.com/blog/using-a-webhook-secret)** with your webhook (which you should), see **[Securing Webhooks](#securing-webhooks)** for information about how to validate the secret passed on payloads.
+- If you use a **[secret](https://developer.webex.com/blog/using-a-webhook-secret)** with your webhook (which you should), see **[Securing Webhooks](#securing-webhooks)** for information about how to validate the secret passed on payloads.
 
-Below you can create, inspect, and delete webhooks associated with your bot's access token.
-
-<TokenInput v-if="!store.state.tokenValid" />
-
-<Blur :shouldBlur="!store.state.tokenValid">
-
-<Webhooks> </Webhooks>
-
-</Blur>
+- In the **[SpeedyBot Gargage](./garage.md)**, you can create, inspect, and delete webhooks associated with your bot's access token.
 
 ## Securing Webhooks
 
-## Webhook secrets
+### Webhook secrets
 
-To help secure your agent, you can add a "secret" when creating webhooks.
+To help secure your agent, you can (and **SHOULD!!**) add a "secret" when creating your webhooks.
 
 If you add a secret when creating a webhook on each incoming request will receive a hashed version of the request body under the header **X-Spark-Signature**
 
 **Bottom line:** DO THIS. With your webhook secret you can take the SHA-1 representation of the request body and if it matches the signature on the header proceed otherwise simply discard the request.
 
-Note: All of the samples in the **[examples directory](./examples/index)** of the SpeedyBot repo have reference implementations of validating webhooks appropriate for each platform.
+Note: All of the samples in the **[examples directory](./examples/index)** of the SpeedyBot repo have reference implementations of validating webhooks in the manner appropriate for each platform.
 
 ## Reference implementations
 
-## NodeJS
+## NodeJS (Lambda, standard server, etc)
 
 ::: code-group
 
@@ -154,16 +146,3 @@ const res = validateWebhook(
 - https://developer.webex.com/blog/using-a-webhook-secret
 - https://community.cisco.com/t5/collaboration-blogs/using-a-webhook-secret/ba-p/3662176
 - https://blogs.cisco.com/learning/chatops-how-to-secure-your-webex-bot
-
-<script setup>
-import { ref } from 'vue'
-const jsonData = ref({})
-const shouldBlur = ref(true)
-import Webhooks from './.vitepress/components/webhooks.vue'
-import Blur from './.vitepress/components/Blur.vue'
-import TokenInput from './.vitepress/components/token_handler.vue'
-
-import { useCustomStore } from "./.vitepress/util/store";
-const store = useCustomStore();
-
-</script>

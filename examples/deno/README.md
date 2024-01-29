@@ -45,3 +45,9 @@ Verify you hit save underneath each secret you add to the playground
 - If all went well you should see this and your bot is up and running on Deno!
 
 ![sb](./../../docs/assets/deno/deno_webhook.png)
+
+## 5) Take it for a spin
+
+After connecting webhooks, send your bot a message to take it for a spin
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" />

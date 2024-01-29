@@ -35,6 +35,18 @@ Note: By default your agent will communicate using websockets, so you won't need
 npm run bot:dev
 ```
 
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" 
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
+
 ## NPM Run Scripts
 
 All you'll probably need are `npm run bot:dev` + maybe `npm run bot:reset`
@@ -74,3 +86,10 @@ However you set up your system, make sure to run `node -v` in your terminal to v
 </details>
 
 If you see an error that reads somnething like `Forbidden: User has excessive device registrations` you can run `npm run bot:reset`, wait a few minutes and try again
+
+<script setup>
+import { useData } from 'vitepress'
+import { useCustomStore } from "./../../.vitepress/util/store";
+const { isDark } = useData()
+const store = useCustomStore()
+</script>

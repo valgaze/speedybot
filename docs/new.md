@@ -1,12 +1,12 @@
 # "I'm new here" 🐣
 
-tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems in enterprises and large teams
+tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems-- especially in enterprises and large teams with complex requirements
 
-Follow the quick 3-step setup below to go from zero to a SpeedyBot running on your local machine (which you can later seamlessly deploy to any infrastructure you want if needed)
+Follow the quick setup below to go from zero to a SpeedyBot running on your local machine (which you can later seamlessly **[deploy to any infrastructure you want](./examples.md)** if needed)
 
 ## Step I: Grab Your Access Token
 
-- You'll need a WebEx account to build bots— if you don't have one one, sign up for a new account **[here](https://signup.webex.com/sign-up)**
+- You'll need a WebEx account to build bots— if you don't have one one, sign up for a new account here: **[https://signup.webex.com/sign-up](https://signup.webex.com/sign-up)**
 
 - Once you have an account, create a new bot and copy its access token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
 
@@ -58,7 +58,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 ## Step II: Send a Test Message with Your Access Token
 
-- Let's test out your bot access token by sending a **[SpeedyCard](#im-new-here-🐣)** to you as a direct message (tap the 🎲 to shuffle through some examples)
+- Let's test out your bot access token by sending a **[SpeedyCard](#im-new-here-🐣)** to you as a direct message (tap the 🎲 to shuffle through some examples as inspiration or write your own)
 
   <SpeedyCardEditor></SpeedyCardEditor>
 
@@ -88,18 +88,18 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 - In fact, any user interaction with {{ store.state.userData?.emails[0] ?? 'your bot'}} right now— be it a message, SpeedyCard submission, or file upload, results in icy radio silence
 
-- That's because there's nobody "home" to answer the request-- you can use SpeedyBot to "listen" so anytime someone interacts with your bot it will respond back automatically per your instructions
+- That's because there's nobody "home" to answer the request-- SpeedyBot can "listen" for messages (or card data submissions or files) so anytime someone interacts with your bot it will respond back automatically per your instructions
 
 ## Run your bot from your computer
 
-- Keeping things simple to start you'll run the bot from your machine (ie when your computer is off your bot is "off") but later if you need to, you can deploy it to virtually **[any standard server or scalable serverless cloud infrastructure you want](./examples/index)**
+- Keeping things simple to start you'll run the bot from your machine (ie when your computer is off, your bot is "off") but later if you need to, you can deploy it to virtually **[any standard server or scalable serverless cloud infrastructure you want](./examples/index)**
 
 Copy the commands below to get up and running
 
 ::: code-group
 
 ```sh-vue [🥺 New (recommended)]
-npm init speedybot setup {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }} --project default
+npm init speedybot setup {{ store.state.tokenValid ? `--token ${store.state.token} ` : '' }}--project default
 ```
 
 ```sh-vue [👹 Experienced]
@@ -131,19 +131,27 @@ However you set up your system, make sure to run `node -v` in your terminal to v
 
 :::
 
-If all went well, you should see something like this in your terminal:
+Now send a message to your bot and you'll see a welcome screen with buttons and cards:
 
-Now send a message to your bot and you'll see a welcome screen with buttons and cards
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif"     
+    :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" />
-
-You can customize this however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot-local-server/blob/deploy/settings/bot.ts)**
+You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot-local-server/blob/main/settings/bot.ts)**
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
-Turn off your bot by tapping CTRL-C, to
+You can turn off your bot by press **CTRL-C**
 
-Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- securely integrate w/ LLMs + content management systems, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-emails)**, create + manage **[SpeedyCards](./speedycard.md)**, ask for a user's location in a privacy-respecting way, and much more.
+Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- securely integrate w/ LLMs + content management systems, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-access-pattern)**, create + manage **[SpeedyCards](./speedycard.md)**, ask for a user's location in a privacy-respecting way, and much more.
 
 When you're ready to deploy it to a server, serverless function or virtually any infrastructure/device, **[check out the examples](./examples.md)**
 

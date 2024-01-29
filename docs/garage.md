@@ -25,7 +25,7 @@ ref="selectRef"
 The editor above is "live" & has type hints so you can dive in and get started with SpeedyCard. If you need some inspiration, <b><a style="cursor: pointer !important" @click="selectRef.rollDice()">
 press the dice 🎲 button</a></b> to cycle through some sample SpeedyCards. You can preview the output JSON, a rendering of what it will look like and if you have a token set you can even send the card to someone.
 
-Note: Afer you send the card to someone, if you want to collect the data from <a href="https://developer.webex.com/docs/buttons-and-cards" target="_blank">Adaptive Cards</a> or take action from it, you'll need a SpeedyBot server. You can set one up in about 15 seconds by
+Note: Afer you send the card to someone, if you want to collect the data from <a href="https://developer.webex.com/docs/buttons-and-cards" target="_blank">Adaptive Cards</a> or take action from it, you'll need a SpeedyBot server. You can set one up in seconds **[following the instructions here](./new.md)**
 </el-tab-pane>
 <el-tab-pane label="JSON (output)" name="json"  v-if="needsSpeedCardHelpers">
 

@@ -1,4 +1,4 @@
-# Add your bot on a Workers
+# [QUICKSTART] 🔥 Deploy your bot to a Worker/V8 Isolate
 
 Note: The steps below assume you have a working WebEx account + a Cloudflare account with permission to create Workers
 
@@ -12,33 +12,37 @@ npm i
 
 ## 2) Get + Set your bot access token
 
-- Create a bot from scratch here + cpo the token: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
+- Create a bot from scratch here + copy the token: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
 
-- If you have an existing bot, get its token her (regenerate): **[https://developer.webex.com/my-apps](https://developer.webex.com/my-apps)**
+- If you have an existing bot, get its token here (regenerate a new token): **[https://developer.webex.com/my-apps](https://developer.webex.com/my-apps)**
 
-## 3) Get your bot URL
+## 3) Get your bot's URL
 
 - If you don't have one already, get a **[cloudflare account](https://dash.cloudflare.com/sign-up)**
 
 - Authenticate your machine with `npx wrangler login`
 
-- Create a new "worker" from the **[cloudflare dashboard](https://dash.cloudflare.com)** & note its URL (you can name it something like https://speedybot1234.username.workers.dev)
+- Run the command to deploy the code in this repo to your Worker and get your bot URL
+
+```
+npm run deploy
+```
+
+You'll be prompted to open your browser and you'll see an authorization screen like the following asking to enable **[wrangler (Worker's CLI tool)](https://developers.cloudflare.com/workers/wrangler/)** to take actions with your account, click **ALLOW**
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_authorize_wrangler.png" />
+
+The URL will look something like https://speedybot-worker-infra.your_username.workers.dev (you'll need it in a minute when we register webhooks)
 
 ## 4) Add your bot token
 
-From the same directory as the repo run the following command to add a secret called `BOT_TOKEN` and enter your info using **[secrets manager](https://blog.cloudflare.com/workers-secrets-environment/#supporting-secrets)**
+From the same directory as the repo run the following command to add a secret called `BOT_TOKEN` and enter your info using **[secrets manager](https://developers.cloudflare.com/workers/configuration/secrets/#secrets-on-deployed-workers)**
 
 ```sh
 npx wrangler secret put BOT_TOKEN
 ```
 
-To secure your webhooks with a secret set a secret:
-
-```sh
-npx wrangler secret put WEBHOOK_SECRET
-```
-
-![image](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_secret.gif)
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_secret.gif" />
 
 ## 5) Deploy your agent
 
@@ -48,24 +52,30 @@ From the same directory as the repo run this command to deploy your agent (now b
 npm run deploy
 ```
 
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_deploy.gif" />
+
 ## 6) Register your webhooks
 
-- Make a note the URL of the deployed function (ie http://speedybot-mini.username.workers.dev)
+- Right now if you try to interact with your "deployed" agent nothing happens, nobody is "home" to answer the knock at the door
 
-Unlike the **[websockets example](https://speedybot.js.org/examples/speedybot-starter/README)**, you will need to deploy this serve or use a secure mechanism to expose it to the internet and then register the webhooks
+- Make a note of the URL of the deployed function (ie https://speedybot-worker-infra.your_username.workers.dev)
 
-Hop on over to the **[Webhooks Section](https://speedybot.js.org/webhooks)** to register your webhooks and secret
+- Hop on over to the **[SpeedyBot Garage (https://speedybot.js.org/garage)](https://speedybot.js.org/garage)**, enter your access token, select the Webhooks tab, and then **Add New Webhook** and add your Worker's URL and (optionally) a webhook secret
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
+
+## 6a) Supply your Webhook "secret" to your Worker
+
+Even though it's "optional", it's a really, really good idea to set a Webhook Secret too so you can make sure incoming requests are the real deal. For more detail, see **[https://speedybot.js.org/webhooks#securing-webhooks](https://speedybot.js.org/webhooks#securing-webhooks)**
+
+To supply your Worker with a webhook secret, set a secret called WEBHOOK_SECRET which you'll need to supply to your Worker like you did with your `BOT_TOKEN` value
+
+```sh
+npx wrangler secret put WEBHOOK_SECRET
+```
 
 ## 7) Take it for a spin
 
 - After connecting webhooks, take it for a spin
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" />
-
-## Webhook secrets
-
-- From the same directory as the repo run the following command to add a secret called `WEBHOOK_SECRET` and use the same secret value used when registering webhooks:
-
-```sh
-npx wrangler secret put WEBHOOK_SECRET
-```

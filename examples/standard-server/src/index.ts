@@ -30,10 +30,10 @@ app.post("/speedybot", async (req, res) => {
   // For more info see: https://github.com/valgaze/speedybot-mini/blob/deploy/docs/webhooks.md#secrets
 
   const signature = req.header("x-spark-signature");
-  const webhookSecret = process.env.WEBHOOK_SECRET;
+  const webhookSecret = process.env.WEBHOOK_SECRET || "";
 
   // Validate webhook & other checks you might need
-  if (webhookSecret && signature) {
+  if (signature) {
     const proceed = validateWebhook(json, webhookSecret, signature);
     if (proceed === false) {
       return res.send("Webhook Secret Rejected");

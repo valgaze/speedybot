@@ -24,28 +24,17 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
 
   const secret = CONFIG.secret; // webhook secret
   try {
-    // patch to run before starting middleware loop
-    // useful for validating secrets, see deets: https://github.com/valgaze/speedybot/blob/deploy/docs/webhooks.md#webhook-secrets
+    if (signature) {
+      const proceed = validateSignature(
+        signature as string,
+        secret as string,
+        data
+      );
 
-    Bot.insertStepToFront(async ($) => {
-      // Webhook "secret" check
-      if (secret && signature) {
-        const proceed = validateSignature(
-          signature as string,
-          secret as string,
-          data
-        );
-        if (!proceed) {
-          // Invalid webhook signature, discard
-          return $.end;
-        }
-        await $.send(`Just wanna let you know, we decided: ${$.next}`);
-        return $.next;
-      } else {
-        // no signature check
-        return $.next;
+      if (!proceed) {
+        throw new Error("Issue with webhook secret");
       }
-    });
+    }
 
     Bot.addSecrets(CONFIG);
     await Bot.runMiddleware(data as ENVELOPES);

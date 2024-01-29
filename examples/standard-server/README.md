@@ -36,19 +36,25 @@ npm run bot:dev
 
 ## 4) Run a test
 
-To test just the incoming webhook, edit the **[/incoming_webhook](./src/index.ts)** route & run this command to send a test paylaod
+To test **only** the incoming webhook, edit the **[/incoming_webhook](./src/index.ts)** route & run this command to send a test paylaod
 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{"id": 1234567890987654321}' http://localhost:8000/incoming_webhook
 ```
 
-Unlike the **[websockets example](https://speedybot.js.org/examples/speedybot-starter/README)**, you will need to deploy this serve or use a secure mechanism to expose it to the internet and then register the webhooks
+## 5) Register your webhooks
 
-You can register webhooks with:
+- Right now if you try to interact with your "deployed" agent through the WebEx client nothing happens, nobody is "home" to answer the knock at the door
 
-```sh
-npm init speedybot webhook create
-```
+- For this situation (where the whole agent is on a standard server) you'll need to find a way to securely expose that server in a way that is publically reachable
+
+- Hop on over to the **[SpeedyBot Garage (https://speedybot.js.org/garage)](https://speedybot.js.org/garage)**, enter your access token, select the Webhooks tab, and then **Add New Webhook** and add the URL of your server and (optionally but hopefully) a webhook secret
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
+
+## 6) Supply your Webhook "secret" to your Worker
+
+Even though it's "optional", it's a really, really good idea to set a Webhook Secret too so you can make sure incoming requests are the real deal. For more detail, see **[https://speedybot.js.org/webhooks#securing-webhooks](https://speedybot.js.org/webhooks#securing-webhooks)**
 
 ## NPM Run Scripts
 

@@ -12,7 +12,6 @@ Below are some comon copy/paste'able step "snippets" or patterns which should co
 
 - NodeJS 18+ or equivalent runtime like Bun/Deno/Worker/friends w/ **[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** available/polyfill
 - Text editor
-- Terminal for accessing speedybot-cli
 
 ```
 npm install speedybot
@@ -22,9 +21,74 @@ npm install speedybot
 
 See **[/new](./new.md)** for easy to follow instructions to go from zero to a bot you can extend and customize however you want. With SpeedyBot is all you need to focus on when building your bot is `bot.ts.` If you need to deploy it to a highly controlled server or a serverless function or any infra you want you just need to pop your `bot.ts` and you're good to go.
 
-## Send a simple message from a simple script
+## The basics
 
-While SpeedyBot can take care of all the details of running a bot, you can also opportunistically "pluck" out just bits you need and put SpeedyBot to work your way. The pattern below is not a full interactive agent, but shows how you can use SpeedyBot in a script to send messages + cards:
+SpeedyBot simplifies the process of creating interactive conversations and makes it easy to deploy and manage bots. Anytime your SpeedyBot receives an event from a user (a message, card, file upload, etc) it operates through a series of "steps."
+
+Each step is just a function which **must** return either $.next to proceed to the next step or $.end to terminate the chain. Each step can be synchronous or asynchronous depending on what you need to do.
+
+A step can do **whatever** you want (send the user a message or a **[SpeedyCard](./speedycard.md)** or send/fetch data from some external system, do nothing at all) Whatever you're up to in a step, however, try not to take too long to do it because you probably don't want to keep your user waiting.
+
+```ts
+import { SpeedyBot } from "speedybot";
+
+Bot.addStep(async ($) => {
+  await $.send("Step 1");
+  if ($.text === "hi") {
+    await $.reply(`Hi there ${$.author.name}!`);
+  }
+  return $.next;
+});
+
+Bot.addStep(($) => {
+  $.ctx.scribbledData = "someData_" + Math.random();
+  return $.next;
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 2");
+  const card = $.card()
+    .addTitle("My great card!")
+    .addText(`The random scribbled data is ${$.ctx.scribbledData}`)
+    .addTable([
+      ["Label", "Data 1"],
+      ["Label 2", "Data 2"],
+      ["Label 3", "Data 3"],
+    ]);
+  await $.send(card); // send a card, not just text
+  return $.next;
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 3");
+  return $.end; // <--- Stops the train!
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 4 (we never reach this!");
+  return $.end;
+});
+```
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/demo_basics.gif?raw=true"     
+    :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
+
+- The $ parameter provides a bunch of useful features, allowing you to reply to messages, send and check card data (see **[below for details on that](#simple-card-handler)**), and access information about the message and its author.
+
+- Important: Avoid excessive usage of steps. If you find yourself writing a lot of "handlers" or checks in your steps you might be making things harder than they need to be. For a natural language "conversation", for example, focus on capturing user utterances (`$.text`) in your steps and then all you need to do is transmit back and forth to an external service and keep your steps short and sweet and simple
+
+## Send a message from a script
+
+While SpeedyBot can take care of all the details of running a bot, you can also opportunistically "pluck" out just bits you need. The pattern below is not a full interactive agent (there's no steps), but shows how you can use SpeedyBot in a script to send messages + cards:
 
 ```ts
 import { SpeedyBot } from "speedybot";
@@ -102,7 +166,7 @@ const Bot = new SpeedyBot();
 
 // Will make sure
 Bot.insertStepToFront(async ($) => {
-  const allowedDomains = ["joe.com"];
+  const allowedDomains = ["allaboutfrogs.org", "geocities.com"];
   if (!allowedDomains.includes($.author.domain) && !$.data) {
     await $.send("You are not allowed sorry :( ");
     await $.send(
@@ -186,7 +250,17 @@ Bot.addStep(async ($) => {
 });
 ```
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/demo_chips.gif?raw=true" />
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/demo_chips.gif?raw=true" 
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
 
 ## Support Multiple Environments
 
@@ -315,25 +389,6 @@ Bot.addStep(async ($) => {
 
 **Important:** Files are automatically scanned for viruses. If you call the `getData` method before the scan finishes, you might encounter a **[423 File Locked status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/423)**. This can happen with large files (but generally not a common issue). You can implement a retry mechanism using an adpative card w/ the uploaded url.
 
-### Restrict emails
-
-```ts
-import { SpeedyBot } from "speedybot";
-
-const Bot = new SpeedyBot();
-
-Bot.addStep(async ($) => {
-  const allowedDomains = ["allaboutfrogs.org", "geocities.com"];
-  const proceed = allowedDomains.include($.author.domain);
-  if (!proceed) {
-    await $.send("sorry, your email is not part of this agent");
-    return $.end;
-  }
-
-  return $.next;
-});
-```
-
 ## Send a message, card (static file)
 
 SpeedyBot can be as big or as small a part of your agent as you want it to be. If you just want to send a few cards and messages and don't need to deal with webhooks (or consume them by a way unique to your team or organization) you can just use SpeedyBot directly
@@ -357,3 +412,10 @@ async function main(token) {
 
 main("__REPLACE__ME__");
 ```
+
+<script setup>
+import { useData } from 'vitepress'
+import { useCustomStore } from "./.vitepress/util/store";
+const { isDark } = useData()
+const store = useCustomStore()
+</script>

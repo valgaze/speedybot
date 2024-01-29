@@ -17,7 +17,7 @@ Deno.serve(async (req: Request) => {
     const Bot = new SpeedyBot(CONFIG.token);
     const json = await req.json();
 
-    if (CONFIG.webhookSecret && signature) {
+    if (signature) {
       const validateWebhook = async <T = any>(
         requestData: T,
         secret: string,

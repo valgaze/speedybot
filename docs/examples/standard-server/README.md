@@ -1,4 +1,4 @@
-## Speedybot Starter
+## Standard Server
 
 ## 1) Clone repo & install dependencies
 
@@ -36,19 +36,49 @@ npm run bot:dev
 
 ## 4) Run a test
 
-To test just the incoming webhook, edit the **[/incoming_webhook](./src/index.ts)** route & run this command to send a test paylaod
+To test **only** the incoming webhook, edit the **[/incoming_webhook](./src/index.ts)** route & run this command to send a test paylaod
 
 ```
 curl -X POST -H "Content-Type: application/json" -d '{"id": 1234567890987654321}' http://localhost:8000/incoming_webhook
 ```
 
-Unlike the **[websockets example](./../speedybot-starter/README.md)**, you will need to deploy this serve or use a secure mechanism to expose it to the internet and then register the webhooks
+## 5) Register your webhooks
 
-You can register webhooks with:
+- Right now if you try to interact with your "deployed" agent through the WebEx client nothing happens, nobody is "home" to answer the knock at the door
 
-```sh
-npm init speedybot webhook create
-```
+- For this situation (where the whole agent is on a standard server) you'll need to find a way to securely expose that server in a way that is publically reachable
+
+- Hop on over to the **[SpeedyBot Garage (https://speedybot.js.org/garage)](https://speedybot.js.org/garage)**, enter your access token, select the Webhooks tab, and then **Add New Webhook** and add the URL of your server and (optionally but hopefully) a webhook secret
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" 
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
+
+## 6) Supply your Webhook "secret" to your Worker
+
+Even though it's "optional", it's a really, really good idea to set a Webhook Secret too so you can make sure incoming requests are the real deal. For more detail, see **[https://speedybot.js.org/webhooks#securing-webhooks](https://speedybot.js.org/webhooks#securing-webhooks)**
+
+## 7) Take it for a spin
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif" 
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
 
 ## NPM Run Scripts
 
@@ -67,3 +97,10 @@ All you'll probably need are `npm run bot:dev` + maybe `npm run bot:reset`
 | `npm run bot:help`      | Displays help information for the bot          |
 | `npm run help`          | Alias for npm run bot:help                     |
 | `npm run bot:addsecret` | Adds a secret to the bot's configuration       |
+
+<script setup>
+import { useData } from 'vitepress'
+import { useCustomStore } from "./../../.vitepress/util/store";
+const { isDark } = useData()
+const store = useCustomStore()
+</script>

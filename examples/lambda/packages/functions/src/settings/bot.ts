@@ -95,7 +95,7 @@ Bot.addStep(async ($) => {
       const card = cardHash[value].addSubcard(
         $.card()
           .addLink(
-            "https://speedybot.js.org/docs/speedycard?card=${value}",
+            `https://speedybot.js.org/speedycard?card=${value}`,
             "See the source for this card"
           )
           .addText("Pick a new card")
@@ -419,7 +419,11 @@ export const cardHash: { [key: string]: SpeedyCard } = {
   )
     .addText(
       "نئے پلگ ان + انضمام کے اختیارات کے بارے میں جاننے کے لیے بٹن کو تھپتھپائیں۔",
-      { color: "red", backgroundColor: "blue", align: "Right" }
+      {
+        color: "red",
+        backgroundColor: "blue",
+        align: "Right",
+      }
     )
     .addLinkButton("https://www.figma.com/community/plugins", "اورجانیے 🚀"),
   acai: Bot.card()
@@ -702,4 +706,17 @@ Bot.exact("$survey", async ($) => {
 
   await $.send(surveyCard);
   return $.end;
+});
+
+// "ping"/"pong"
+Bot.addStep(async ($) => {
+  if ($.text) {
+    const lower = $.text.toLowerCase();
+    if (lower === "pong") {
+      await $.send("ping");
+    } else if (lower === "ping") {
+      await $.send("pong");
+    }
+  }
+  return $.next;
 });

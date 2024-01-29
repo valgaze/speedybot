@@ -95,7 +95,7 @@ Bot.addStep(async ($) => {
       const card = cardHash[value].addSubcard(
         $.card()
           .addLink(
-            "https://speedybot.js.org/docs/speedycard?card=${value}",
+            `https://speedybot.js.org/speedycard?card=${value}`,
             "See the source for this card"
           )
           .addText("Pick a new card")

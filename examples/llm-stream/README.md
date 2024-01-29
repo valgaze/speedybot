@@ -1,32 +1,38 @@
 ## LLM-Stream
 
-This was the major inspiration for SpeedyBot 2.0-- how to efficiently allocate the edits to "stream in" responses from an LLM eendpoint.
+This UI pattern was a major inspiration for building SpeedyBot 2.0-- how to efficiently allocate the edits to "stream in" responses from an LLM service.
 
-- You can make up to 10 edits on a WebEx message which can approximate the "stream-in" effect on some LLM applications (otherwise the latency involved with forcing a "just wait-it-out" for a generation is an awful experience)
-
-- With unknown chunk-length & an unknown number of chunks, we need a reasonable way to "smoothly" stream in edits so the user isn't left hanging but also not use up our precious 10 edits
+- You can make up to 10 edits on a WebEx message which can approximate the "stream-in" effect on some LLM applications (otherwise the latency involved with forcing a user to "just wait-it-out" until the model completes is an awful experience)
 
 - Streaming is implemented using: https://github.com/axflow/axflow (from https://axflow.dev), although **[vercel](https://sdk.vercel.ai/docs/concepts/streaming)** and others have libraries that could work
 
-- This is a bare-bones example which can be easily extended-- To see a reference (which depends a storage/state mechanism) which will manage conversational context + swap personas, handle file-uploads (.doc, xlsx files, and other) and inject into prompt, see here: https://github.com/valgaze/speedybot-gpt4
-
 Example Stream:
 
-<img src="https://github.com/valgaze/speedybot-utils/blob/main/assets/various/llm_stream.gif?raw=true" />
+<img src="https://github.com/valgaze/speedybot-utils/blob/main/assets/various/llm_stream.gif?raw=true"    
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
 
-## Setup
-
-## 1) Clone repo & install dependencies
+## 1) Fetch repo & install deps
 
 ```
 git clone https://github.com/valgaze/speedybot
-cd examples/llm-steam
-npm install
+cd speedybot/examples/llm-stream
+npm i
 ```
 
-## 2) Set your bot access token
+## 2) Get + Set your bot access token
 
-- Make a new bot and note its access token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
+- Create a bot from scratch here + copy the token: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
+
+- If you have an existing bot, get its token here (regenerate a new token): **[https://developer.webex.com/my-apps](https://developer.webex.com/my-apps)**
 
 You can set your `BOT_TOKEN` by running this script in the project directory:
 
@@ -59,8 +65,22 @@ OPEN_AI_KEY=__REPLACE__ME__
 BOT_TOKEN=__REPLACE__ME__
 ```
 
-## Boot it up
+## 7) Take it for a spin
 
-Greet your agent and attempt a generation
+Send a message to your agent and attempt a generation
+
+<img src="https://github.com/valgaze/speedybot-utils/blob/main/assets/various/llm_stream.gif?raw=true"    
+   :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
+
+- This is a bare-bones example which can be easily extended-- To see a reference (which depends a storage/state mechanism) which will manage conversational context + swap personas, handle file-uploads (.doc, xlsx files, and other) and inject into prompt, see here: https://github.com/valgaze/speedybot-gpt4
 
 Note: this example happens to use OpenAI, but you can swap-in HuggingFace, **[Anthropic](https://docs.axflow.dev/documentation/models/anthropic-completion.html)** or **[roll your own](https://docs.axflow.dev/guides/models/bring-your-own-models.html)**

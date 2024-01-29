@@ -40,7 +40,7 @@
     "webex": "^2.31.0"
   },
   "dependencies": {
-    "speedybot": "latest"
+    "speedybot": "^2.0.0"
   },
   "engines": {
     "node": ">=18.0.0"

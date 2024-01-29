@@ -1,6 +1,54 @@
-import { SpeedyBot, SpeedyCard, SurveyQuestion } from '../../../src';
+import { SpeedyBot, SpeedyCard, SurveyQuestion } from 'speedybot';
 
 const Bot = new SpeedyBot();
+
+Bot.addStep(async ($) => {
+	// handle text
+	if ($.text) {
+		if ($.text.toLowerCase() === 'showcard') {
+			const card = $.card()
+				.addTitle('Capture data')
+				.addTextarea('Submit data')
+				.addPickerDropdown(['option 1', 'option 2', 'option 3', 'option 4']);
+			await $.send(card);
+		}
+	}
+
+	// file handler
+	if ($.file) {
+		const { name, extension, contentType } = $.file;
+		await $.send(`You uploaded "${name}", a *.${extension} file [${contentType}]`);
+		// Fetch raw bytes (which you can pass onto other systems)
+		// const TheData = await $.file.getData(); // do something w/ the contents/bytes
+	}
+
+	// adaptive card/form submissions
+	if ($.data && !$.data.showCard && !$.data.randomSpeedyBot) {
+		const dataSnippet = $.buildDataSnippet($.data);
+		await $.send(`This data was submitted:`);
+		await $.send(dataSnippet);
+	}
+
+	return $.next;
+});
+
+Bot.addStep(async ($) => {
+	if ($.data && $.data.randomSpeedyBot) {
+		const randomImage = `https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo${$.pickRandom(1, 33)}.jpeg`;
+
+		await $.send(
+			$.card()
+				.addHeader('\u{1F916} SpeedyBot')
+				.addImage(randomImage, {
+					targetURL: 'https://speedybot.js.org',
+					size: 'ExtraLarge',
+				})
+				.addButton('🤖 Show another SpeedyBot', 'randomSpeedyBot')
+		);
+		return $.end;
+	}
+	return $.next;
+});
 
 // ## File upload handler
 Bot.addStep(async ($) => {
@@ -37,7 +85,7 @@ Bot.addStep(async ($) => {
 			const { value } = Bot.pickRandom(cardChoices);
 			const card = cardHash[value].addSubcard(
 				$.card()
-					.addLink('https://speedybot.js.org/docs/speedybot?card=${value}', 'See the source for this card')
+					.addLink(`https://speedybot.js.org/speedycard?card=${value}`, 'See the source for this card')
 					.addText('Pick a new card')
 					.addPickerDropdown(cardChoices, 'showCard'),
 				'Learn more'
@@ -68,6 +116,7 @@ Bot.addStep(async ($) => {
 
 // ## "kitchensink", show everything
 Bot.addStep(async ($) => {
+	$.author;
 	if ($.text && ['kitchen', 'kitchensink'].includes($.text)) {
 		await $.clearScreen();
 		await $.send(`## Kitchen Sink`);
@@ -92,6 +141,10 @@ Bot.addStep(async ($) => {
 			'thread item 5',
 		]);
 
+		await $.send(`-----------`);
+		await $.send($.buildDMLink('speedybot@webex.bot', '🤖 Talk to SpeedyBot'));
+		await $.send(`-----------`);
+
 		await $.send(`## Files`);
 
 		// Send data as a *.json file
@@ -112,17 +165,8 @@ Bot.addStep(async ($) => {
 			name: $.author.name,
 		};
 		await $.send($.fillTemplate(utterances, template));
-		const randomImage = `https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/memes/${Bot.pickRandom([
-			'logo.jpeg',
-			'logo2.jpeg',
-			'logo3.jpeg',
-			'logo4.jpeg',
-			'logo5.jpeg',
-			'logo6.jpeg',
-			'logo7.jpeg',
-			'logo8.jpeg',
-			'logo9.jpeg',
-		])}`;
+
+		const randomImage = `https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo${$.pickRandom(1, 33)}.jpeg`;
 
 		const introCard = $.card()
 			.addHeader('🤖 SpeedyBot')
@@ -137,6 +181,7 @@ Bot.addStep(async ($) => {
 				{ title: '🗂 files', value: 'files' },
 				{ title: '🗂 Everything (warning: fast)', value: 'kitchensink' },
 			])
+			.addButton('🤖 random', 'randomSpeedyBot')
 			.addSubcard(
 				$.card()
 					.addTitle('SpeedyCards')
@@ -155,14 +200,6 @@ Bot.addStep(async ($) => {
 
 // ## Card utilities
 // SpeedyCard form submissions, check for $.data, can add generics for type assurance
-Bot.addStep(async ($) => {
-	if ($.data && !$.data.showCard) {
-		const dataSnippet = $.buildDataSnippet($.data);
-		await $.send(`This data was submitted:`);
-		await $.send(dataSnippet);
-	}
-	return $.next;
-});
 
 // handle card picks from dropdown, attach preview, this can happen from multiple cards + locations
 Bot.addStep<Partial<{ showCard: string }>>(async ($) => {
@@ -172,36 +209,30 @@ Bot.addStep<Partial<{ showCard: string }>>(async ($) => {
 	};
 
 	if ($.data && isCardKey($.data.showCard)) {
-		cardHash[$.data.showCard].addSubcard(
+		const card = cardHash[$.data.showCard].addSubcard(
 			$.card()
-				.addLink(
-					$.ctx.isDev
-						? `http://localhost:5173/vitepresspublish/docs/speedycard?card=${$.data.showCard}`
-						: `https://speedybot.js.org/docs/speedybot?card=${$.data.showCard}`,
-					'See the source for this card'
-				)
+				.addLink(`https://speedybot.js.org/speedycard?card=${$.data.showCard}`, 'See the source for this card')
 				.addText('Pick a new card')
 				.addPickerDropdown(cardChoices, 'showCard'),
 			'Learn more'
 		);
-
-		const card = cardHash[$.data.showCard] as SpeedyCard;
 		await $.send(card);
 	}
+
 	return $.next;
 });
 
 // ## ex. pass data/flags between steps during runs
 Bot.addStep(($) => {
-	$.ctx.isDev = false; // set to true on debug mode to trace incoming messages
+	$.ctx.isDev = true; // set to true on debug mode to trace incoming messages
 	return $.next;
 });
 
 // ## read flags
 Bot.addStep(async ($) => {
-	if ($.ctx.isDev) {
-		await $.send($.buildDataSnippet($.debug()));
-	}
+	// if ($.ctx.isDev) {
+	//   await $.send($.buildDataSnippet($.debug()));
+	// }
 	return $.next;
 });
 
@@ -222,6 +253,7 @@ export default Bot;
 // Bunch of cards
 export const cardChoices = [
 	{ title: 'Text Formatting 📄', value: 'format-card' },
+	{ title: 'Tabular Data 🐸', value: 'table-card' },
 	{ title: 'Survey 📝', value: 'survey' },
 	{ title: 'Acai 🍇', value: 'acai' },
 	{ title: 'Appcard 💳', value: 'appcard' },
@@ -232,7 +264,6 @@ export const cardChoices = [
 	{ title: 'Banner Yellow 🟡', value: 'banner-yellow' },
 	{ title: 'Confirm ✔️', value: 'confirm' },
 	{ title: 'Image 🖼️', value: 'image' },
-	{ title: 'Chips 🍟', value: 'chips' },
 	{ title: 'Old Survey', value: 'old-survey' },
 ];
 
@@ -322,7 +353,7 @@ export const cardHash: { [key: string]: SpeedyCard } = {
 		.addText(
 			'By the way, text blocks support simple markdown like **bolding**, *italics*, and even **[links](https://speedybot.js.org/new)**'
 		)
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/memes/logo4.jpeg', { align: 'Center' }),
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { align: 'Center' }),
 	appcard: Bot.appCard('Design News', 'https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/figma_logo.png')
 		.addText('Tap the button to learn about new plugins + integration options', { color: 'red', backgroundColor: 'blue' })
 		.addLinkButton('https://www.figma.com/community/plugins', "🚀 Let's go"),
@@ -391,21 +422,31 @@ export const cardHash: { [key: string]: SpeedyCard } = {
 		.addTitle('Do you want to proceed')
 		.addButton('❌ Cancel', 'shouldProceed', { data: false })
 		.addButton('✅ OK', 'shouldProceed', { data: true }),
+	'table-card': Bot.card()
+		.addTitle('Ribbit! Check out the hop-tastic details below from FrogBot industries')
+		.addTable([
+			['Frog Species', 'Population'],
+			['Green Tree Frog', '2,500'],
+			['Red-eyed Tree Frog', '1,800'],
+			['Poison Dart Frog', '700'],
+			['Fire-bellied Toad', '1,200'],
+		])
+		.addLinkButton('http://allaboutfrogs.org/froglnd.shtml', '🐸 Explore Frogs'),
 	image: Bot.card()
 		.addTitle('Images')
 		.addSubtitle('Cards can have images too')
 		.addText('Small')
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', { size: 'Small' })
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { size: 'Small' })
 		.addText('Medium')
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', { size: 'Medium' })
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { size: 'Medium' })
 		.addText('Large')
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', { size: 'Large' })
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { size: 'Large' })
 		.addText('ExtraLarge')
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', { size: 'ExtraLarge' })
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { size: 'ExtraLarge' })
 		.addText('Stretch')
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', { size: 'Stretch' })
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', { size: 'Stretch' })
 		.addText('TIP: Images can be links too', { color: 'Attention' })
-		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-mini/deploy/docs/assets/speedybot_logo.png', {
+		.addImage('https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg', {
 			targetURL: 'https://speedybot.js.org',
 			size: 'ExtraLarge',
 		}),
@@ -524,5 +565,18 @@ Bot.exact('$survey', async ($) => {
 	]);
 
 	await $.send(surveyCard);
+	return $.end;
+});
+
+// "ping"/"pong"
+Bot.addStep(async ($) => {
+	if ($.text) {
+		const lower = $.text.toLowerCase();
+		if (lower === 'pong') {
+			await $.send('ping');
+		} else if (lower === 'ping') {
+			await $.send('pong');
+		}
+	}
 	return $.next;
 });

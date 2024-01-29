@@ -14,6 +14,6 @@
   },
   "dependencies": {
     "cross-fetch": "^4.0.0",
-    "speedybot": "latest"
+    "speedybot": "^2.0.0"
   }
 }
