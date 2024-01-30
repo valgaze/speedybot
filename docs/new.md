@@ -58,7 +58,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 ## Step II: Send a Test Message with Your Access Token
 
-- Let's test out your bot access token by sending a **[SpeedyCard](#im-new-here-🐣)** to you as a direct message (tap the 🎲 to shuffle through some examples as inspiration or write your own)
+- Let's test out your bot access token by sending a **[SpeedyCard](./speedycard.md)** to you as a direct message (tap the 🎲 to shuffle through some examples as inspiration or write your own)
 
   <SpeedyCardEditor></SpeedyCardEditor>
 
@@ -99,7 +99,7 @@ Copy the commands below to get up and running
 ::: code-group
 
 ```sh-vue [🥺 New (recommended)]
-npm init speedybot setup {{ store.state.tokenValid ? `--token ${store.state.token} ` : '' }}--project default
+npx speedybot setup {{ store.state.tokenValid ? `--token ${store.state.token} ` : '' }}--project default
 ```
 
 ```sh-vue [👹 Experienced]
@@ -114,13 +114,15 @@ npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOK
 
 ::: details Getting errors?
 
-If you see an error like `npm: command not found` you probably need to install node or compatible runtime (like **[bun](https://bun.sh)** or **[deno](https://deno.com)**) onto your system.
+If you see an error like `npm: command not found` you probably need to install node or a compatible runtime onto your system.
 
 There are many ways to do this, but two easy ways:
 
-Option 1. Download + install Node from the official site: **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
+**Option 1** Download + install Node from the official site: **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
 
-Option 2. Download with **[Volta](https://docs.volta.sh/guide/)** in the terminal
+or
+
+**Option 2** Download with **[Volta](https://docs.volta.sh/guide/)** in the terminal
 
 ```sh
 curl https://get.volta.sh | bash
@@ -128,7 +130,19 @@ curl https://get.volta.sh | bash
 volta install node
 ```
 
-However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can take advantage of its rich ecoysten
+However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can get up and running with `npx speedybot setup --project default`:
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/cli_setup.gif"     
+    :style="{ filter: !isDark ? 'invert(1)' : 'none' }"
+    style="
+      margin: 1rem 0px;
+      display: inline-block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+    "/>
 
 :::
 
@@ -150,7 +164,7 @@ You can now customize this bot however you want by editing the file **[settings/
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
-You can turn off your bot by press **CTRL-C**
+You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal
 
 Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- securely integrate w/ LLMs + content management systems, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-access-pattern)**, create + manage **[SpeedyCards](./speedycard.md)**, ask for a user's location in a privacy-respecting way, and much more.
 

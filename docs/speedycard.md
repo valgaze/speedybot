@@ -103,7 +103,6 @@ const initParent = (editor) => {
   }
 
   pageReady.value = true
-  console.log("##pageReady.value", pageReady.value)
 }
 const handleSelected = (codeSnippet) => {
   if (editorRef) {

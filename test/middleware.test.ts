@@ -10,7 +10,6 @@ describe("Various Messages", () => {
 
     // text passes through
     inst.addStep(async ($) => {
-      console.log("beer");
       expect($.text).toBe("beer");
       return $.next;
     });

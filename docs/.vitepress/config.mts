@@ -114,6 +114,10 @@ export default defineConfig({
             link: "webhooks.html#securing-webhooks",
           },
           {
+            text: "✉️ Send a SpeedyCard",
+            link: "/send-a-card",
+          },
+          {
             text: "📚 API Docs",
             link: "/../api-docs/modules",
           },

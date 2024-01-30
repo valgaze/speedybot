@@ -6,7 +6,7 @@ dist/
 .env
 abc.ts
 .vitepress/cache
-docs/.vitepress/cache/
+docs/.vitepress/cache/*
 coverage/
 todo.md
 trickyoperation.ts
