@@ -5,7 +5,7 @@ import { resetDevices } from "./utils";
 import { resolve } from "path";
 import * as dotenv from "dotenv";
 
-import { botTokenKey, logoRoll } from "../../../src";
+import { botTokenKey, logoRoll } from "speedybot";
 
 // Expects .env to get token on BOT_TOKEN
 dotenv.config({ path: resolve(__dirname, "..", ".env") });

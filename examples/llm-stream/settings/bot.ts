@@ -1,4 +1,4 @@
-import { SpeedyBot } from "../../../src";
+import { SpeedyBot } from "speedybot";
 
 import { OpenAIStream } from "./llm-stream";
 const Bot = new SpeedyBot();

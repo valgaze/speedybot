@@ -1,5 +1,4 @@
-import { SpeedyBot } from "../../../src"; // REPLACE W/ SPEEDYBOT IMPORT
-import { logoRoll } from "../../../src"; // REPLACE W/ SPEEDYBOT IMPORT
+import { SpeedyBot, logoRoll } from "speedybot";
 import { Websocket } from "./utils";
 
 export const websocketLauncher = async (

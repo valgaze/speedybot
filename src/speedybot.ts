@@ -866,6 +866,10 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return;
   }
 
+  /**
+   * Return array of full webhook data
+   *
+   */
   async getWebhooks(): Promise<{ items: Webhook[] }> {
     const url = `${this.API.webhooks}`;
     const res = (await this.makeRequest(
@@ -880,6 +884,10 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return json;
   }
 
+  /**
+   * Return abbreviated array of webhook data
+   *
+   */
   async fetchWebhooks(): Promise<
     {
       id: string;
@@ -901,7 +909,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return list;
   }
 
-  Setup(url, secret) {
+  Setup(url: string, secret: string) {
     return Promise.all([
       this.createFirehose(url, secret),
       this.createAttachmentActionsWebhook(url, secret),
@@ -936,7 +944,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
   /**
    * @hidden
    */
-  public async createAttachmentActionsWebhook(url, secret?) {
+  public async createAttachmentActionsWebhook(url: string, secret?: string) {
     const payload: {
       resource: string;
       event: string;
@@ -958,7 +966,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
   /**
    * @hidden
    */
-  public async createFirehose(url, secret) {
+  public async createFirehose(url: string, secret?: string) {
     const payload: {
       resource: string;
       event: string;

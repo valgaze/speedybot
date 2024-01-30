@@ -5,7 +5,7 @@ import { resolve } from "path";
 import * as dotenv from "dotenv";
 import "cross-fetch/polyfill"; // for non-tech environment for reset devices
 
-import { botTokenKey, logoRoll } from "../../../src";
+import { botTokenKey, logoRoll } from "speedybot";
 
 // Expects .env to get token on BOT_TOKEN
 dotenv.config({ path: resolve(__dirname, "..", ".env") });

@@ -103,8 +103,9 @@ npm init speedybot setup {{ store.state.tokenValid ? `--token ${store.state.toke
 ```
 
 ```sh-vue [👹 Experienced]
-git clone https://github.com/valgaze/speedybot-local-server
-cd speedybot-local-server
+git clone https://github.com/valgaze/speedybot
+cd speedybot
+cd examples/speedybot-starter
 npm i
 npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
 ```
@@ -145,7 +146,7 @@ Now send a message to your bot and you'll see a welcome screen with buttons and 
       padding: 10px;
     "/>
 
-You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot-local-server/blob/main/settings/bot.ts)**
+You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)**
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 

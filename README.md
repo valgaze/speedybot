@@ -21,7 +21,7 @@ npm install speedybot
 
 ## Speedy & Easy
 
-- SpeedyBot offers a buttery-smooth developer experience to keep you building your bots rather than scouring the docs. It's written in typescript + built-in type hints with autocomplete, has zero external dependencies, supports ESM + CommonJS, provides lots of other DX goodness that makes building bots a breeze like local development with live-reload (see **[here for details](https://github.com/valgaze/speedybot/tree/deploy/examples/speedybot-local-server)**).
+- SpeedyBot offers a buttery-smooth developer experience to keep you building your bots rather than scouring the docs. It's written in typescript + built-in type hints with autocomplete, has zero external dependencies, supports ESM + CommonJS, provides lots of other DX goodness that makes building bots a breeze like local development with live-reload (see **[here for details](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)**).
 
 - SpeedyBot shrinks away all the complexity and makes it a breeze to handle user input regardless of the source/modality-- text, file uploads, form submission from SpeedyCards, etc
 

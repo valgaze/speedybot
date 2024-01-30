@@ -3,7 +3,7 @@ import "cross-fetch/polyfill";
 import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
-import { websocketLauncher } from "../../speedybot-starter/util";
+import { websocketLauncher } from "./../util";
 
 import Bot from "./bot";
 

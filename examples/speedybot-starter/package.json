@@ -17,10 +17,6 @@
     "help": "npm run bot:help",
     "bot:addsecret": "tsx util/cli addsecret"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/valgaze/speedybot-local-server.git"
-  },
   "keywords": [
     "bot",
     "scaffold",
