@@ -5,6 +5,8 @@ outline: deep
 
 # 🌟 Send a SpeedyCard
 
+<div v-show="loadIt">
+
 SpeedyCards make it speedy and easy for your WebEx bots to send beautifully formatted **[Adaptive Cards](https://developer.webex.com/docs/buttons-and-cards)** without having to wrangle with JSON
 
 But did you know that there's a nifty way to send a SpeedyCard using your own account instead of your bot's? It's easy-as-pie 🥧 and you can do it right from this page
@@ -95,6 +97,8 @@ ref="rootRef"
     "
   />
 
+</div>
+
 <script setup>
 import { SpeedyBot } from './../src/index.ts'
 import { defineAsyncComponent, ref, watch, onMounted} from 'vue';
@@ -107,10 +111,13 @@ import SendMsg from './.vitepress/components/SendMsg.vue'
 import CompactSelect from './.vitepress/components/CompactSelect.vue';
 import { getRandomSpeedyCard, samples, cardRoster} from './.vitepress/util/samples'
 import { useCustomStore } from "./.vitepress/util/store";
+const loadIt = ref(false)
+
 onMounted(() => {
   document.querySelector('.VPNav').style.display = 'none'
   document.querySelector('.VPSidebar').style.display = 'none'
   document.querySelector('.VPDocFooter').style.display = 'none'
+  loadIt.value = true
 })
 
 const store = useCustomStore()

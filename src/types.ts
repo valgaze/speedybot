@@ -27,6 +27,7 @@ export type SpeedyFile = {
   name: string;
   extension: string;
   contentType: string;
+  bytes: number;
 };
 
 export type SpeedyFileUtils = SpeedyFile & {
@@ -147,6 +148,7 @@ export type $Magic<T = AttachedData> = {
     name: string;
     extension: string;
     contentType: string;
+    bytes: number;
   }>;
   thread(
     threadData: [string | SpeedyCard, ...string[]] & {

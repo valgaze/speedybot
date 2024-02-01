@@ -4,7 +4,7 @@ SpeedyBot has several "batteries-included" examples that show how to deploy Spee
 
 SpeedyBot makes it easy to focus on that parts that matter-- your content + integrations and you do all of that from a simple `bot.ts` file.
 
-Grab an example and see the included README for instructions on how to quickly go from zero to an agent with which you can virtal
+Grab an example and see the included README for instructions on how to get up and running the speedy + easy way
 
 | Platform                                                                          | Needs server? | Needs webhooks? |
 | --------------------------------------------------------------------------------- | ------------- | --------------- |
@@ -14,3 +14,5 @@ Grab an example and see the included README for instructions on how to quickly g
 | **[🔥 Deploy to Worker](./worker/README.md)**                                     | ❌            | ✅              |
 | **[🦖 Deploy to Deno](./deno/README.md)**                                         | ❌            | ✅              |
 | **[📲 LLM Stream](./llm-stream/README.md)**                                       | ❌            | ❌              |
+| **[🗣 Connect to Voiceflow](./voiceflow/README.md)**                               | ❌            | ❌              |
+| **[📂 RAG with Voiceflow (File Uploads)](./voiceflow-kb/README.md)**              | ❌            | ❌              |

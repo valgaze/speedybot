@@ -44,6 +44,14 @@ export default defineConfig({
             link: "/examples/llm-stream/README",
           },
           {
+            text: "🗣 Connect to Voiceflow",
+            link: "/examples/voiceflow/README",
+          },
+          {
+            text: "📂 RAG with Voiceflow (file upload)",
+            link: "/examples/voiceflow-kb/README",
+          },
+          {
             text: "🔐 Secure Webhooks ",
             link: "/webhooks",
           },
@@ -99,6 +107,14 @@ export default defineConfig({
             text: "📲 LLM streaming responses",
             link: "/examples/llm-stream/README",
           },
+          {
+            text: "🗣 Connect to Voiceflow",
+            link: "/examples/voiceflow/README",
+          },
+          {
+            text: "📂 RAG with Voiceflow (file upload)",
+            link: "/examples/voiceflow-kb/README",
+          },
         ],
       },
       {
@@ -111,12 +127,9 @@ export default defineConfig({
           },
           {
             text: `💻 Secure Webhooks with a "secret"`,
-            link: "webhooks.html#securing-webhooks",
+            link: "/webhooks.html#securing-webhooks",
           },
-          {
-            text: "✉️ Send a SpeedyCard",
-            link: "/send-a-card",
-          },
+
           {
             text: "📚 API Docs",
             link: "/../api-docs/modules",
@@ -124,6 +137,10 @@ export default defineConfig({
           {
             text: "💡 Get help",
             link: "/help",
+          },
+          {
+            text: "✉️ Send a SpeedyCard",
+            link: "https://speedybot.js.org/send-a-card", // open external
           },
           // {
           //   text: "🗣 Voiceflow Integration",

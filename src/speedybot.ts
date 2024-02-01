@@ -193,6 +193,13 @@ export class SpeedyBot<S extends string = string> {
     });
   }
 
+  /**
+   * Performs a case-sensitive match to check if the input text exactly matches the specified keyword.
+   * If there is a match, the provided middleware function is executed.
+   *
+   * @param keyword - The keyword to match against the input text.
+   * @param cb - The middleware function to be executed if there is a match.
+   */
   public exact(keyword: string, cb: Middleware) {
     this.insertStepToFront(async ($) => {
       if (typeof keyword === "string") {
@@ -204,6 +211,13 @@ export class SpeedyBot<S extends string = string> {
     });
   }
 
+  /**
+   * Performs a case-insensitive check to determine if the input text contains the specified keyword or a list of supplied words.
+   * If a match is found, the provided middleware function is executed.
+   *
+   * @param keyword - The keyword or array of keywords to check for in the input text.
+   * @param cb - The middleware function to be executed if a match is found.
+   */
   public contains(keyword: string | string[], cb: Middleware) {
     // should do a checkStrings option
     this.addStep(async ($) => {
@@ -1273,6 +1287,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
       contentType: type,
       name: fileName,
       extension,
+      bytes,
     } = this.extractFiledata(res as StubbedRes);
 
     // data could be binary if user needs it
@@ -1305,6 +1320,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
       extension,
       contentType: type,
       data,
+      bytes,
     };
     return payload;
   }
@@ -1312,13 +1328,19 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
   private extractFiledata(res: StubbedRes) {
     const type = res.headers.get("content-type");
     const contentDispo = res.headers.get("content-disposition");
+    const contentLength = Number(res.headers.get("content-length"));
     const fileName = contentDispo
       ?.split(";")[1]
       .split("=")[1]
       .replace(/\"/g, "");
     const extension = fileName.split(".").pop() || "";
 
-    return { contentType: type, extension, name: fileName };
+    return {
+      bytes: contentLength,
+      contentType: type,
+      extension,
+      name: fileName,
+    };
   }
 
   public async peekFile(url: string): Promise<Omit<SpeedyFile, "data">> {

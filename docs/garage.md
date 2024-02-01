@@ -5,7 +5,7 @@ outline: deep
 
 ## SpeedyBot Garage 🤖🔧
 
-The Garage is your one-stop-shop to manage webhooks, send messages, and build SpeedyCards (which **[render down to Adaptive Cards 🔗](https://developer.webex.com/docs/api/guides/cards)**)
+The Garage is your one-stop-shop to manage webhooks, send messages, and build SpeedyCards (which **[render down to Adaptive Cards 🔗](https://developer.webex.com/docs/buttons-and-cards)**)
 
 <span v-if="!store.state.tokenValid">Enter your token below to get started</span>
 

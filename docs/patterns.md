@@ -86,6 +86,8 @@ Bot.addStep(async ($) => {
 
 - Important: Avoid excessive usage of steps. If you find yourself writing a lot of "handlers" or checks in your steps you might be making things harder than they need to be. For a natural language "conversation", for example, focus on capturing user utterances (`$.text`) in your steps and then all you need to do is transmit back and forth to an external service and keep your steps short and sweet and simple
 
+- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience there is a `Bot.insertStepToFront` step which will slip the supplied to the front of the chain and `Bot.addStepSequence` to add a list of steps
+
 ## Send a message from a script
 
 While SpeedyBot can take care of all the details of running a bot, you can also opportunistically "pluck" out just bits you need. The pattern below is not a full interactive agent (there's no steps), but shows how you can use SpeedyBot in a script to send messages + cards:
@@ -153,6 +155,34 @@ Bot.addStep(async ($) => {
 });
 ```
 
+## Handle File Uploads
+
+SpeedyBot takes care of much of the complexity around handling file uploads and exposes useful data for consumption by your application. Just upload a file and check for `$.file` and inspect the file's name, content-type, extension, and file-size (in bytes)
+
+If you want to access the raw file contents (the raw file-bytes which you can pass to another system), try `$.file.getData()`
+
+```ts
+import { SpeedyBot } from "speedybot";
+
+const Bot = new SpeedyBot();
+
+Bot.addStep(async ($) => {
+  if ($.file) {
+    const { bytes, contentType, extension, name } = $.file;
+    await $.send(
+      `You uploaded "${name}", a *.${extension} file [${contentType}] with a size of ${bytes} bytes`
+    );
+
+    // Fetch raw bytes (which you can pass onto other systems, upload to database, etc)
+    const TheData = await $.file.getData(); // do something w/ the contents/bytes
+    console.log("Raw bytes", TheData);
+  }
+  return $.next;
+});
+```
+
+**Important:** Files are automatically scanned for viruses. If you call the `getData` method before the scan finishes, you might encounter a **[423 File Locked status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/423)**. This can happen with large files (but generally not a common issue for smaller files). If necessary, you can implement a retry mechanism using a SpeedyCard w/ containing uploaded url-- see the **[Voiceflow KnowledgeBase Example](./examples/voiceflow-kb/README.md)** and its **[source code](https://github.com/valgaze/speedybot/blob/v2/examples/voiceflow-kb/settings/bot.ts)** for an sample implementation.
+
 ## Restrict Access Pattern
 
 Below you can see how to restrict access to your agent to specific swaths of email domains. Once you've got the pattern in place, you could target specific individuals or call out to another system for additional authentication/authorization checks, etc
@@ -199,6 +229,44 @@ Bot.addStep(async ($) => {
 
 Bot.addStep(async ($) => {
   await $.send("You're in!");
+  return $.next;
+});
+```
+
+## Simple Text Match
+
+In general, if you find yourself writing a lot (or even any) manual text-parsing code you might be heading down a bad path. If you want to process natural language or integrate w/ LLMs, see **[here](./examples/voiceflow/README.md)** or **[here](./examples/voiceflow-kb/README.md)** for examples.
+
+But when you need pinpoint text matching or want to see if certain keywords are present, turn to the straightforward `Bot.exact`, `Bot.contains`, & `Bot.regex` special steps
+
+```ts
+import { SpeedyBot } from "speedybot";
+
+const Bot = new SpeedyBot();
+
+// quick exact match
+Bot.exact("$clear", async ($) => {
+  await $.clearScreen();
+  return $.end;
+});
+
+// identify words from a list
+Bot.contains(["bingo", "bongo"], async ($) => {
+  await $.send(
+    `You entered text that contained the word bingo/bongo somewhere`
+  );
+  return $.next;
+});
+
+// identify a single word
+Bot.contains("onomatopoeia", async ($) => {
+  $.ctx.literaryUser = true;
+  return $.next;
+});
+
+// use a regex (can also supply the RegExp constructor, seehttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+Bot.regex(/🐧/, async ($) => {
+  await $.send(`Penguin emoji spotted! 🎉🐧`);
   return $.next;
 });
 ```
@@ -361,33 +429,6 @@ Bot.addStep(async ($) => {
   return $.next;
 });
 ```
-
-## Handle File Uploads
-
-SpeedyBot takes care of much of the complexity around handling file uploads and exposes useful data for consumption by your application. Just upload a file and check for `$.file`
-
-If you want to access the raw file contents (bytes), try `$.file.getData()`
-
-```ts
-import { SpeedyBot } from "speedybot";
-
-const Bot = new SpeedyBot();
-
-Bot.addStep(async ($) => {
-  if ($.file) {
-    const { name, extension, contentType } = $.file;
-    await $.send(
-      `You uploaded "${name}", a *.${extension} file [${contentType}]`
-    );
-    // Fetch raw bytes (which you can pass onto other systems, upload to database, etc)
-    const TheData = await $.file.getData(); // do something w/ the contents/bytes
-    console.log("Raw bytes", TheData);
-  }
-  return $.next;
-});
-```
-
-**Important:** Files are automatically scanned for viruses. If you call the `getData` method before the scan finishes, you might encounter a **[423 File Locked status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/423)**. This can happen with large files (but generally not a common issue). You can implement a retry mechanism using an adpative card w/ the uploaded url.
 
 ## Send a message, card (static file)
 

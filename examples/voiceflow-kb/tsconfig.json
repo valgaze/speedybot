@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "resolveJsonModule": true,
+    "module": "commonjs",
+    "target": "ES2016",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "removeComments": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    }
+  },
+  "include": ["util/**/*", "package.json"],
+  "exclude": ["node_modules", "dist", "@vitest"]
+}
