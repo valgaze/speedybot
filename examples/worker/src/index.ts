@@ -27,7 +27,6 @@ ${new Date()}`);
 		const json = await request.json();
 		const signature = request.headers.get('x-spark-signature');
 		const secret = env.WEBHOOK_SECRET;
-		console.log('fire?', { signature, secret, abc: 'yay' });
 		// Validate webhook
 		if (signature) {
 			const proceed = await validateWebhook(json, secret, signature);
@@ -35,7 +34,6 @@ ${new Date()}`);
 				return new Response('Webhook Rejected');
 			}
 		}
-		console.log('#', env.BOT_TOKEN);
 		ctx.waitUntil(
 			new Promise<void>(async (resolve, reject) => {
 				try {

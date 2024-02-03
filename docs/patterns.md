@@ -159,7 +159,7 @@ Bot.addStep(async ($) => {
 
 SpeedyBot takes care of much of the complexity around handling file uploads and exposes useful data for consumption by your application. Just upload a file and check for `$.file` and inspect the file's name, content-type, extension, and file-size (in bytes)
 
-If you want to access the raw file contents (the raw file-bytes which you can pass to another system), try `$.file.getData()`
+If you want to access the raw file contents (meaning a reference to the raw file-bytes which you can pass to another system), try `$.file.getData()`
 
 ```ts
 import { SpeedyBot } from "speedybot";
@@ -181,7 +181,7 @@ Bot.addStep(async ($) => {
 });
 ```
 
-**Important:** Files are automatically scanned for viruses. If you call the `getData` method before the scan finishes, you might encounter a **[423 File Locked status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/423)**. This can happen with large files (but generally not a common issue for smaller files). If necessary, you can implement a retry mechanism using a SpeedyCard w/ containing uploaded url-- see the **[Voiceflow KnowledgeBase Example](./examples/voiceflow-kb/README.md)** and its **[source code](https://github.com/valgaze/speedybot/blob/v2/examples/voiceflow-kb/settings/bot.ts)** for an sample implementation.
+**Important:** Files are automatically scanned for viruses. If you call the `getData` method before the scan finishes, you might encounter a **[423 File Locked status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/423)**. This can happen with large files (but generally not a common issue for smaller files). If necessary, you can implement a retry mechanism using a SpeedyCard containing an uploaded url-- see the **[Voiceflow KnowledgeBase Example](./examples/voiceflow-kb/README.md)** and its **[source code](https://github.com/valgaze/speedybot/blob/v2/examples/voiceflow-kb/settings/bot.ts#L158-L216)** for a sample implementation.
 
 ## Restrict Access Pattern
 

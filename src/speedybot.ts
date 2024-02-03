@@ -1233,42 +1233,6 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return json as MessageResponse;
   }
 
-  /**
-   * Get a (secured) file's contents, probably would use this for examining uploaded files
-   * like JSON, excel (xlsx), etc
-   *
-   * ```ts
-   *
-   * import { SpeedyBot } from 'speedybot'
-   *
-   * const Bot = new SpeedyBot('__REPLACE__ME__')
-   * Bot.on('file', $ => {
-   *    const fileData = Bot.getFile($.details.urls)
-   *
-   * })
-   * // 1) Initialize your bot w/ config
-   * const CultureBot = new SpeedyBot(config);
-   *
-   * // 2) Export your bot
-   * export default CultureBot;
-   *
-   * // 3) Do whatever you want!
-   *
-   * CultureBot.contains(["hi", "hey"],
-   *  async ($bot, msg) => {
-   *   const [fileUrl] = trigger.message.files || []
-   *   const fileData = await $bot.getFile(fileUrl, {
-   *     responseType: 'arraybuffer',
-   *   })
-   *   const { fileName, extension, type } = fileData
-   *   $bot.say(
-   *     `The file you uploaded (${fileName}), is a ${extension} file of type ${type}`
-   *   )
-   *    // with fileData.data you have access to an arrayBuffer with the raw bytes of that file
-   * })
-   *
-   * ```
-   * */
   public async getFile(
     url: string,
     opts: {
