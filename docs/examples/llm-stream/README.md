@@ -65,7 +65,7 @@ OPEN_AI_KEY=__REPLACE__ME__
 BOT_TOKEN=__REPLACE__ME__
 ```
 
-## 7) Take it for a spin
+## 4) Take it for a spin
 
 Send a message to your agent and attempt a generation
 
