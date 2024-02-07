@@ -6,6 +6,9 @@ export default defineConfig({
   title: "SpeedyBot",
   description: "Rich conversation agents, the speedy and easy way",
   themeConfig: {
+    footer: {
+      message: `<a href="https://github.com/valgaze/speedybot/blob/v2/LICENSE" target="_blank">MIT License</a> ${new Date().getFullYear()}`, // this'll be statically updated everytime redeploy
+    },
     search: {
       provider: "local",
     },
@@ -50,6 +53,10 @@ export default defineConfig({
           {
             text: "📂 RAG with Voiceflow (file upload)",
             link: "/examples/voiceflow-kb/README",
+          },
+          {
+            text: "🌎 Location Prompt",
+            link: "/examples/location/README.md",
           },
           {
             text: "🔐 Secure Webhooks ",
@@ -114,6 +121,10 @@ export default defineConfig({
           {
             text: "📂 RAG with Voiceflow (file upload)",
             link: "/examples/voiceflow-kb/README",
+          },
+          {
+            text: "🌎 Location Prompt",
+            link: "/examples/location/README.md",
           },
         ],
       },

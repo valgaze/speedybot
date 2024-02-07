@@ -16,3 +16,4 @@ Grab an example and see the included README for instructions on how to get up an
 | **[📲 LLM Stream](./llm-stream/README.md)**                                       | ❌            | ❌              |
 | **[🗣 Connect to Voiceflow](./voiceflow/README.md)**                               | ❌            | ❌              |
 | **[📂 RAG with Voiceflow (File Uploads)](./voiceflow-kb/README.md)**              | ❌            | ❌              |
+| **[🌎 Location Prompt](./location/README.md)**                                    | ❌            | ❌              |
