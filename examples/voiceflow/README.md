@@ -101,6 +101,8 @@ BOT_TOKEN=NmFjNODY3MTgtNWIx_PF84_1eb65fdfm1Gak5PRFkzTVRndE5XSXhfUEY4NF8xZWI2NWZk
 VOICEFLOW_KEY=VF.DM.12345cbc8ef.sjaPjTtrgn
 ```
 
+**Custom runtime:** If you have a custom runtime/endpoint (ie the URL you see in the integration tab is something other than https://general-runtime.voiceflow.com), you can swap the `BASE_URL` value in **[settings/voiceflow.ts](https://github.com/valgaze/speedybot/blob/v2/examples/voiceflow/settings/voiceflow.ts#L7)**
+
 ## 6) Boot it up!
 
 Start up your agent with the following command:

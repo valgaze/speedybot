@@ -4,7 +4,7 @@ import { $Magic } from "speedybot";
 // https://www.voiceflow.com/api/dialog-manager
 
 export class VFHelper {
-  private BASE_URL = "https://general-runtime.voiceflow.com";
+  private BASE_URL = "https://general-runtime.voiceflow.com"; // <<-- Change this if using a private instance
   public static submitLabel = "VF_TAP_BUTTON";
   public static fallbackText =
     "Sorry, it appears your client does not support Adaptive Cards";
@@ -518,10 +518,10 @@ export class VFHelper {
         },
         method,
       };
-      const response = await fetch(
-        `https://general-runtime.voiceflow.com/state/user/${sessionId}`,
-        { ...config, ...(payload && { body: JSON.stringify(payload) }) }
-      );
+      const response = await fetch(`${this.BASE_URL}/state/user/${sessionId}`, {
+        ...config,
+        ...(payload && { body: JSON.stringify(payload) }),
+      });
       const data = await response.json();
       return data;
     } catch (err) {
