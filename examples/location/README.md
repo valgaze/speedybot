@@ -52,7 +52,15 @@ npx wrangler secret put BOT_TOKEN
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_secret.gif" />
 
-## 5) Deploy your agent
+## 5) Add your encryption secret
+
+Just like the last step add a secret called `CRYTPO_SECRET` to the environment. This value can be whatever you want so long as it's a random value and you keep it a secret
+
+```
+npx wrangler secret put CRYPTO_SECRET
+```
+
+## 6) Deploy your agent
 
 From the same directory as the repo run this command to deploy your agent (now bound with your `BOT_TOKEN` secret)
 
@@ -62,7 +70,7 @@ npm run deploy
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/worker_deploy.gif" />
 
-## 6) Register your webhooks
+## 7) Register your webhooks
 
 - Right now if you try to interact with your "deployed" agent nothing happens, nobody is "home" to answer the knock at the door
 
@@ -72,7 +80,7 @@ npm run deploy
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
 
-## 6a) Supply your Webhook "secret" to your Worker
+## 7a) Supply your Webhook "secret" to your Worker
 
 Even though it's "optional", it's a really, really good idea to set a Webhook Secret too so you can make sure incoming requests are the real deal. For more detail, see **[https://speedybot.js.org/webhooks#securing-webhooks](https://speedybot.js.org/webhooks#securing-webhooks)**
 
@@ -82,7 +90,7 @@ To supply your Worker with a webhook secret, set a secret called WEBHOOK_SECRET 
 npx wrangler secret put WEBHOOK_SECRET
 ```
 
-## 7) Take it for a spin
+## 8) Take it for a spin
 
 - After connecting webhooks, take it for a spin + say "location" or tap the Location Integration chip:
 

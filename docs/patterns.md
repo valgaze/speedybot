@@ -118,7 +118,7 @@ Bot.addStep(async ($) => {
 
 - Important: Avoid excessive usage of steps. If you find yourself writing a lot of "handlers" or checks in your steps you might be making things harder than they need to be. For a natural language "conversation", for example, focus on capturing user utterances (`$.text`) in your steps and then all you need to do is transmit back and forth to an external service and keep your steps short and sweet and simple
 
-- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience there is a `Bot.insertStepToFront` step which will slip the supplied to the front of the chain and `Bot.addStepSequence` to add a bunch of steps all at once
+- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience, there is a `Bot.insertStepToFront` step which will slip the supplied step to the front of the chain and also `Bot.addStepSequence` to add a list of steps all at once
 
 ## Send a message from a script
 

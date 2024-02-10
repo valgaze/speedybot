@@ -1,6 +1,6 @@
 import { SpeedyBot, SpeedyCard, SurveyQuestion } from 'speedybot';
-
-const Bot = new SpeedyBot();
+import { encrypt } from '../src/crypto';
+const Bot = new SpeedyBot<'cryptoSecret'>();
 
 Bot.addStep(async ($) => {
 	if ($.text?.toLowerCase() === 'location') {
@@ -13,7 +13,8 @@ Bot.addStep(async ($) => {
 		// Sneak'ily using reply message as the "state", if doesn't exist don't allow
 		const rootMessage = `'${displayName}' is requesting access to limited location data (country, timezone, city) in order to perform that action`;
 		const sentMsg = await $.send(rootMessage);
-		const url = `${$.ctx.botURL}/location?messageId=${sentMsg.id}`;
+		const encryptedMsgId = await encrypt(sentMsg.id, Bot.getSecret('cryptoSecret') as string);
+		const url = `${$.ctx.botURL}/location?messageId=${encryptedMsgId}`;
 		const card = $.card()
 			.addHeader('📍 Location Request')
 			.addText(`'${displayName}' wants to use your location, allow?`)

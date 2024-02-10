@@ -12,16 +12,20 @@ import { ENVELOPES, logoRoll } from '../../../../newshack/src';
 import { validateWebhook } from './validateWebhook';
 import { Location, checkMessage, tod_generator } from './location_helpers';
 import { locationHandler } from '../settings/location';
+import { decrypt } from './crypto';
 export interface Env {
 	BOT_TOKEN: string;
 	WEBHOOK_SECRET: string;
+	CRYPTO_SECRET: string;
 }
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+		const cryptoSecret = env.CRYPTO_SECRET;
 		const urlRef = new URL(request.url);
 		const { origin, pathname } = urlRef;
 		Bot.setToken(env.BOT_TOKEN);
+		Bot.addSecret('cryptoSecret', cryptoSecret);
 
 		if (request.method === 'GET') {
 			if (pathname === '/location') {
@@ -40,12 +44,13 @@ export default {
 
 				const urlRef = new URL(request.url);
 				const { searchParams } = urlRef;
-				const messageId = searchParams.get('messageId') || null;
+				const rawMsg = searchParams.get('messageId') || null;
 
-				if (!messageId) {
+				if (!rawMsg) {
 					return new Response('Missing parameters', { status: 422 });
 				}
 
+				const messageId = await decrypt(rawMsg, cryptoSecret);
 				const { roomId, ok } = await checkMessage(Bot, messageId);
 				if (!ok) {
 					return new Response('Sorry, that link is no longer valid', {
