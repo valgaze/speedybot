@@ -4,13 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bot:dev": "npm run dev",
     "dev": "sst dev",
     "build": "sst build",
     "deploy": "sst deploy",
     "remove": "sst remove",
     "console": "sst console",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "bot:dev": "echo Please see README.md to for instructions on how to boot"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.0",

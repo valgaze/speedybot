@@ -10,24 +10,54 @@ Below are some comon copy/paste'able step "snippets" or patterns which should co
 
 ### Prerequisites ​
 
+SpeedyBot is super easy to use once you have building blocks in place. You'll need the following to get SpeedyBot up and running on your computer
+
+- A "terminal" or command line interface-- if you don't have a lot of experience with it, see this guide here: **[terminal 101 ](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Understanding_client-side_tools/Command_line)** and also this video: **[https://www.youtube.com/watch?v=5XgBd6rjuDQ](https://www.youtube.com/watch?v=5XgBd6rjuDQ)**
+
 - NodeJS 18+ or equivalent runtime like Bun/Deno/Worker/friends w/ **[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** available/polyfill
-- Text editor
 
+::: details Errhm, what's Node??
+
+If you've never written code before or messed around with these tools you will need to a bit of setup.
+
+If you open your **[terminal](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Understanding_client-side_tools/Command_line)** type `npm -v` and see an error like `npm: command not found` you probably need to install node or a compatible runtime onto your system.
+
+There are many ways to do this, but two easy ways:
+
+**Option 1** Download + install Node from the official site: **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
+
+or
+
+**Option 2** Download with **[Volta](https://docs.volta.sh/guide/)** in the terminal
+
+```sh
+curl https://get.volta.sh | bash
+
+volta install node
 ```
-npm install speedybot
-```
 
-**[https://www.npmjs.com/package/speedybot](https://www.npmjs.com/package/speedybot)**
+However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you're good to go
+:::
 
-See **[/new](./new.md)** for easy to follow instructions to go from zero to a bot you can extend and customize however you want. With SpeedyBot is all you need to focus on when building your bot is `bot.ts.` If you need to deploy it to a highly controlled server or a serverless function or any infra you want you just need to pop your `bot.ts` and you're good to go.
+- Text editor: There's a lot of text editors in the world these days, a real popular + free one (that works great with SpeedyBot) is called Visual Studio Code, see here for details: **[https://code.visualstudio.com](https://code.visualstudio.com)**
+
+The developer-focused instructions are available here: **[https://www.npmjs.com/package/speedybot](https://www.npmjs.com/package/speedybot)**
+
+If you're new to bot development or not particularly technical, check out **[https://speedybot.js.org/new](https://speedybot.js.org/new)** for easy-to-follow instructions. These will take you from zero to a fully customizable bot in less than 3 minutes. With SpeedyBot, the main file you'll work with is bot.ts. All the patterns you'll see below would generally "live" inside your bot's `bot.ts` file.
+
+When you're just starting, SpeedyBot runs your bot directly and securely from your computer. This allows you to focus on the essential aspects of your bot. However, if you need to deploy it to a highly controlled server, a serverless function, or any other infrastructure, simply transfer your bot.ts file, and you're all set.
 
 ## The basics
 
-SpeedyBot simplifies the process of creating interactive conversations and makes it easy to deploy and manage bots. Anytime your SpeedyBot receives an event from a user (a message, card, file upload, etc) it operates through a series of "steps."
+- SpeedyBot simplifies the process of creating interactive conversations and makes it easy to deploy and manage bots. Anytime your SpeedyBot receives an event from a user (a message, card, file upload, etc) it operates through a series of "steps."
 
-Each step is just a function which **must** return either $.next to proceed to the next step or $.end to terminate the chain. Each step can be synchronous or asynchronous depending on what you need to do.
+- Each step is just a function which **must** return either $.next to proceed to the next step or $.end to terminate the chain. Each step can be synchronous or asynchronous depending on what you need to do
 
-A step can do **whatever** you want (send the user a message or a **[SpeedyCard](./speedycard.md)** or send/fetch data from some external system, do nothing at all) Whatever you're up to in a step, however, try not to take too long to do it because you probably don't want to keep your user waiting.
+- A step can do **whatever** you want (ex send the user a message or a **[SpeedyCard](./speedycard.md)**, call an API to interact with some external system, or do nothing at all)
+
+- Whatever you're up to in a step, however, try not to take too long to do it because you probably don't want to keep your user waiting
+
+Here's a starter `bot.ts`:
 
 ```ts
 import { SpeedyBot } from "speedybot";
@@ -84,9 +114,11 @@ Bot.addStep(async ($) => {
 
 - The $ parameter provides a bunch of useful features, allowing you to reply to messages, send and check card data (see **[below for details on that](#simple-card-handler)**), and access information about the message and its author.
 
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
+
 - Important: Avoid excessive usage of steps. If you find yourself writing a lot of "handlers" or checks in your steps you might be making things harder than they need to be. For a natural language "conversation", for example, focus on capturing user utterances (`$.text`) in your steps and then all you need to do is transmit back and forth to an external service and keep your steps short and sweet and simple
 
-- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience there is a `Bot.insertStepToFront` step which will slip the supplied to the front of the chain and `Bot.addStepSequence` to add a list of steps
+- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience there is a `Bot.insertStepToFront` step which will slip the supplied to the front of the chain and `Bot.addStepSequence` to add a bunch of steps all at once
 
 ## Send a message from a script
 
@@ -194,7 +226,7 @@ import { SpeedyBot } from "speedybot";
 
 const Bot = new SpeedyBot();
 
-// Will make sure
+// Will make sure this step fires "first"
 Bot.insertStepToFront(async ($) => {
   const allowedDomains = ["allaboutfrogs.org", "geocities.com"];
   if (!allowedDomains.includes($.author.domain) && !$.data) {
@@ -281,12 +313,13 @@ import { SpeedyBot } from "speedybot";
 const Bot = new SpeedyBot();
 
 Bot.addStep(async ($) => {
+  // set a random value on $.ctx.myValue
   $.ctx.myValue = `${Bot.rando()}_${Bot.rando()}`;
   return $.next;
 });
 
 Bot.addStep(async ($) => {
-  await $.send(`You said ${$.ctx.myValue}`);
+  await $.send(`You added this value to the context: ${$.ctx.myValue}`);
   return $.next;
 });
 ```
