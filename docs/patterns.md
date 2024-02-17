@@ -62,6 +62,8 @@ Here's a starter `bot.ts`:
 ```ts
 import { SpeedyBot } from "speedybot";
 
+const Bot = new SpeedyBot();
+
 Bot.addStep(async ($) => {
   await $.send("Step 1");
   if ($.text === "hi") {
@@ -150,6 +152,10 @@ Note: You could run this from a script, a CI/CD environment, an existing server 
 You can do a LOT of cool stuff with **[SpeedyCards](./speedycard.md)** but one of the most useful things you can do is capture user data in a structured manner. Below we'll send the user a **[SpeedyCard](./speedycard.md)** and then when they tap submit it will be displayed back to the user
 
 ```ts
+import { SpeedyBot } from "speedybot";
+
+const Bot = new SpeedyBot();
+
 Bot.addStep(async ($) => {
   // if card submission
   if ($.data) {
