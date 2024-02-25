@@ -3,7 +3,8 @@ import "cross-fetch/polyfill";
 import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
-import { websocketLauncher } from "../util";
+import { announceExit, websocketLauncher } from "../util";
+process.on("exit", announceExit);
 
 import Bot from "./bot";
 

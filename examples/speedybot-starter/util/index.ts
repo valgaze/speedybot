@@ -1,6 +1,6 @@
 import { SpeedyBot, logoRoll } from "speedybot";
 import { Websocket } from "./utils";
-
+import { resolve } from "path";
 export const websocketLauncher = async (
   BotRef: SpeedyBot,
   cb?: (data?: { email: string; name?: string }) => any
@@ -48,4 +48,26 @@ export const announceWebsockets = (email: string, name = "Your bot") => {
     console.log("Websockets Registered. Listening...");
   }
   console.log(`You can reach ${name} here: ${email}`);
+};
+
+export const announceExit = (name = "Your bot") => {
+  const isColorSupported = process.stdout.isTTY;
+  if (isColorSupported) {
+    const BOT_DISCONNECTED = `\n\x1b[1m\x1b[7m\x1b[31m 🤖 DISCONNECTED \x1b[0m\x1b[31m Bot is now offline. \x1b[0m`;
+    process.stdout.write(BOT_DISCONNECTED + "\n");
+  } else {
+    console.log("Bot is now offline.");
+  }
+  console.log(
+    `
+Your bot is now "off"
+    
+You can turn your bot back on by entering the following commands:
+    
+cd ${resolve(__dirname, "..")}
+npm run dev
+
+If you want to deploy your bot to a persistent server or serverless function, see here: https://speedybot.js.org/examples
+`
+  );
 };

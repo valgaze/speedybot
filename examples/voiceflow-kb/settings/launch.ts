@@ -1,23 +1,14 @@
 // npm i cross-fetch dotenv
 import "cross-fetch/polyfill";
-import { resolve } from "path";
 import { config } from "dotenv";
+import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
-import { websocketLauncher } from "../util";
-
-// Assert these are available on process.env yadda-yadda, otherwise would have to `process.env.BOT_TOKEN as string`
-declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-      BOT_TOKEN: string;
-      VOICEFLOW_API_KEY: string;
-    }
-  }
-}
+import { announceExit, websocketLauncher } from "../util";
+process.on("exit", announceExit);
 
 import Bot from "./bot";
 
-Bot.setToken(process.env.BOT_TOKEN);
-Bot.addSecret("VOICEFLOW_API_KEY", process.env.VOICEFLOW_API_KEY);
+Bot.setToken(process.env.BOT_TOKEN as string);
+
 // Pass in your SpeedyBot
 websocketLauncher(Bot).catch((e) => console.log("##", e));
