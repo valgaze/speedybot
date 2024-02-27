@@ -102,6 +102,10 @@ Copy the commands below to get up and running
 npx -y speedybot@^2.0.0 setup --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
+```sh-vue [🚀 Bun (FAST!!)]
+bunx speedybot@^2.0.0 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+```
+
 ```sh-vue [👹 Experienced]
 git clone https://github.com/valgaze/speedybot
 cd speedybot
@@ -133,7 +137,7 @@ volta install node
 
 However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can get up and running with `npx speedybot setup --project default`:
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/cli_setup.gif"     
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/cli_setup.gif"     
     :style="{ filter: !isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;
@@ -145,6 +149,8 @@ However you set up your system, make sure to run `node -v` in your terminal to v
       padding: 10px;
     "/>
 
+Note: If you really want to speedy things up try it with **[Bun](https://bun.sh)** and install with
+`curl -fsSL https://bun.sh/install | bash`
 :::
 
 Now send a message to your bot and you'll see a welcome screen with buttons and cards:
