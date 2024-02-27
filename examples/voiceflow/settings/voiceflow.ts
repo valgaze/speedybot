@@ -5,6 +5,7 @@ import { $Magic } from "speedybot";
 
 export class VFHelper {
   private BASE_URL = "https://general-runtime.voiceflow.com"; // <<-- Change this if using a private instance
+  private API_PREFIX = "https://api.voiceflow.com/v3alpha";
   public static submitLabel = "VF_TAP_BUTTON";
   public static fallbackText =
     "Sorry, it appears your client does not support Adaptive Cards";
@@ -329,10 +330,8 @@ export class VFHelper {
     limit?: number;
     documentType?: "url" | "pdf" | "txt" | "docx" | "all";
   }): Promise<KBDocRes | undefined> {
-    // https://api.voiceflow.com/v3alpha/knowledge-base/docs?Pagination=page=1&limit=10
-
     try {
-      const baseUrl = "https://api.voiceflow.com/v3alpha/knowledge-base/docs";
+      const baseUrl = `${this.API_PREFIX}/knowledge-base/docs`;
       let url = `${baseUrl}`;
 
       if (options) {
@@ -398,14 +397,11 @@ export class VFHelper {
     name: string,
     tags?: string[]
   ): Promise<KbDocument> {
-    let targetURL =
-      "https://api.voiceflow.com/v3alpha/knowledge-base/docs/upload";
+    let targetURL = `${this.API_PREFIX}/knowledge-base/docs/upload`;
 
     if (tags?.length) {
       targetURL = `${targetURL}?tags=${JSON.stringify(tags)}`;
     }
-    //api.voiceflow.com/v3alpha/knowledge-base/docs/upload?tags=["beginner","small_scale"]
-
     const headers = {
       Authorization: `${this.apiKey}`,
       "content-type": "application/json",
@@ -447,7 +443,7 @@ export class VFHelper {
     fileData: Uint8Array | Buffer,
     tags?: string[]
   ): Promise<KbDocument> {
-    let url = "https://api.voiceflow.com/v3alpha/knowledge-base/docs/upload";
+    let url = `${this.API_PREFIX}/knowledge-base/docs/upload`;
 
     if (tags?.length) {
       url = `${url}?tags=${JSON.stringify(tags)}`;
@@ -484,7 +480,7 @@ export class VFHelper {
   }
 
   public async kbDeleteDoc(documentId: string): Promise<boolean> {
-    const url = `https://api.voiceflow.com/v3alpha/knowledge-base/docs/${documentId}`;
+    const url = `${this.API_PREFIX}/knowledge-base/docs/${documentId}`;
     const headers = {
       Authorization: this.apiKey,
     };
