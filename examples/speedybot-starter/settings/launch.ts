@@ -4,9 +4,8 @@ import { config } from "dotenv";
 import { resolve } from "path";
 config({ path: resolve(__dirname, "..", ".env") });
 import { announceExit, websocketLauncher } from "../util";
-process.on("exit", announceExit);
-
 import Bot from "./bot";
+process.on("exit", announceExit);
 
 Bot.setToken(process.env.BOT_TOKEN as string);
 

@@ -16,11 +16,11 @@ Note: The steps below assume you have a **[working WebEx account](https://develo
 
 - Press the blue "New Playground" button
 
-![sb](./../../docs/assets/deno/deno_playground.png)
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/deno/deno_playground.png)
 
 Note: There are many (better) ways to setup Deno, but for now we can just use the Playground and copy/paste everything in **[index.ts](./index.ts)**
 
-![sb](./../../docs/assets/deno/deno_addcode.png)
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/deno/deno_addcode.png)
 
 ## 3) Expose your bot access token to Deno
 
@@ -30,11 +30,11 @@ Note: There are many (better) ways to setup Deno, but for now we can just use th
 
 - If you're using a webhook secret (which you should), add it as a secret `webhookSecret`
 
-![sb](./../../docs/assets/deno/set_secrets.png)
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/deno/set_secrets.png)
 
 Verify you hit save underneath each secret you add to the playground
 
-![sb](./../../docs/assets/deno/set_secrets_saved.png)
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/deno/set_secrets_saved.png)
 
 ## 4) Register your webhook
 
@@ -44,7 +44,7 @@ Verify you hit save underneath each secret you add to the playground
 
 - If all went well you should see this and your bot is up and running on Deno!
 
-![sb](./../../docs/assets/deno/deno_webhook.png)
+![sb](https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/deno/deno_webhook.png)
 
 ## 5) Take it for a spin
 

@@ -13,7 +13,7 @@ Follow the quick setup below to go from zero to a SpeedyBot running on your loca
 The flow to get a token will look roughly like this:
 
 <img
-    src="./assets/build_a_bot.gif"
+    src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/build_a_bot.gif"
     :style="{ filter: isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;
@@ -41,7 +41,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 **REMEMBER:** If your agent's access token is ever compromised/exposed, you can always invalidate it + get a new one by tapping "Regenerate Access Token" under your agent's <a href="https://developer.webex.com/my-apps" style="color:#646cff;text-decoration: bold;">settings page</a>
 
 <img
-    src="./assets/regen_token.gif"
+    src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/regen_token.gif"
     :style="{ filter: isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;
@@ -73,7 +73,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
   />
 
 <img
-    src="./assets/card_nosubmit.gif"
+    src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
     :style="{ filter: isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;
@@ -133,7 +133,7 @@ volta install node
 
 However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can get up and running with `npx speedybot setup --project default`:
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/cli_setup.gif"     
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/cli_setup.gif"     
     :style="{ filter: !isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;

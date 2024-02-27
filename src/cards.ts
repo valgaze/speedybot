@@ -453,8 +453,9 @@ export class SpeedyCard {
   }
 
   addHeader(text: string, config: HeaderConfig = {}) {
+    const hasURL = config.iconURL?.includes("http");
+
     const textPayload = {
-      width: "stretch",
       items: [
         {
           type: "TextBlock",
@@ -475,18 +476,30 @@ export class SpeedyCard {
     };
 
     const iconPayload = config.iconURL
-      ? {
-          width: "32px",
-          items: [
-            {
-              type: "Image",
-              horizontalAlignment: config.iconAlignment ?? "Left",
-              url: config.iconURL,
-              ...(config.iconRound && { style: "person" }),
-              width: `${config.iconWidth ?? "16"}px`,
-            },
-          ],
-        }
+      ? hasURL
+        ? {
+            width: "32px",
+            items: [
+              {
+                type: "Image",
+                horizontalAlignment: config.iconAlignment ?? "Left",
+                url: config.iconURL,
+                ...(config.iconRound && { style: "person" }),
+                width: `${config.iconWidth ?? "16"}px`,
+              },
+            ],
+          }
+        : {
+            type: "Column",
+            width: "auto",
+            items: [
+              {
+                type: "TextBlock",
+                text: config.iconURL,
+                verticalContentAlignment: "Center",
+              },
+            ],
+          }
       : null;
 
     const headerPayload: {
@@ -494,6 +507,7 @@ export class SpeedyCard {
       columns: (typeof textPayload | typeof iconPayload)[];
     } = {
       type: "ColumnSet",
+
       columns: config.rtl
         ? [textPayload, iconPayload].filter(Boolean)
         : [iconPayload, textPayload].filter(Boolean),

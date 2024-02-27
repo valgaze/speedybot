@@ -1,9 +1,9 @@
 import { SpeedyBot } from "speedybot";
 
 import { OpenAIStream } from "./llm-stream";
-const Bot = new SpeedyBot();
+const Bot = new SpeedyBot<"OPEN_AI_KEY">();
 
-const showDebug = false;
+const showDebug = false; // show debug info flag
 
 Bot.exact("$clear", async ($) => {
   await $.clearScreen();
@@ -34,6 +34,7 @@ Bot.addStep(async ($) => {
   if ($.text) {
     const rootMsg = await $.reply("Thinking...");
     OpenAIStream(
+      Bot.getSecret("OPEN_AI_KEY") as string,
       $.text,
       async (curr, isFinal) => {
         await $.edit(rootMsg, curr);

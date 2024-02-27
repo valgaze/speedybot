@@ -18,6 +18,7 @@ type Chunk = {
 };
 
 export const OpenAIStream = async (
+  apiKey: string,
   prompt: string,
   cb: (currentChunk: string, isFinale: boolean) => void,
   config: Partial<OpenAIChatTypes.Request> = {},
@@ -32,7 +33,7 @@ export const OpenAIStream = async (
         content: prompt,
       }),
     },
-    { apiKey: process.env.OPEN_AI_KEY }
+    { apiKey }
   );
 
   // type handler = (chunk: string, isFinished?: boolean) => void;

@@ -82,20 +82,19 @@ ref="rootRef"
 - In fact, any user interaction with a card sent from {{ store.state.userData?.emails[0] ?? 'your account'}} right now results in icy radio silence, the data doesn't "go" anywhere
 
 - If you want to collect the data from a SpeedyCard, you'll need a SpeedyBot for that. You can set one up in about 20 seconds (really) by visiting <a href="https://speedybot.js.org/new" target="_blank">https://speedybot.js.org/new</a>
-
-<img
-    src="./assets/card_nosubmit.gif"
-    :style="{ filter: isDark ? 'invert(1)' : 'none' }"
-    style="
-      margin: 1rem 0px;
-      display: inline-block;
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-    "
-  />
+  <img
+      src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
+      :style="{ filter: isDark ? 'invert(1)' : 'none' }"
+      style="
+        margin: 1rem 0px;
+        display: inline-block;
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+      "
+    />
 
 </div>
 
