@@ -1,8 +1,38 @@
-# "I'm new here" 🐣
+## Setup for Windows
 
-tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems-- especially in enterprises and large teams with complex requirements
+SpeedyBot can run virtually anywhere on any system or architecture. If you're using a windows machine and want to run SpeedyBot locally you'll need to set up a few pieces
 
-Follow the quick setup below to go from zero to a SpeedyBot running on your local machine (which you can later seamlessly **[deploy to any infrastructure you want](./examples.md)** if needed)
+## 1) Install Git-bash
+
+Download git-bash here: https://git-scm.com/download/win
+
+**Note:** You'll have the choice to download 32-bit or 64-bit person, check this page to see which version matches your computer: https://support.microsoft.com/en-us/windows/which-version-of-windows-operating-system-am-i-running-628bec99-476a-2c13-5296-9dd081cdd808
+
+If you're not sure and you have non-ancient machine you probably have 64 bit
+
+If you need step-by-step instructions, see **[this guide](https://www.git-tower.com/blog/git-bash/)**
+
+## 2) Install Node
+
+There are many ways to install **[Node](https://nodejs.org)**, but below is one straightforward method
+
+Download + install Node from the official site-- select the LTS (Long Term Support): **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
+
+You know you're in a good shape if after installation you can run the following command in `Git Bash` and not see an error:
+
+```
+node -v
+```
+
+If you need step-by-step instructions, see **[this guide](https://blog.teamtreehouse.com/installing-node-js-and-npm-on-windows)**
+
+## 3) Install a Text Editor
+
+There's a lot of text editors in the world these days, a real popular + free one (that works great with SpeedyBot) is called Visual Studio Code, see here for details: **[https://code.visualstudio.com](https://code.visualstudio.com)**
+
+Once you have everything setup, you can follow along with the **[quickstart instructions](./new.md)** or follow the instructions below:
+
+## Set up your bot
 
 ## Step I: Grab Your Access Token
 
@@ -26,7 +56,7 @@ The flow to get a token will look roughly like this:
     "
   />
 
-### Validate Token
+## Step II: Validate Your Access Token
 
 Once you've got your token, pop it into the box below to validate it & review your bot's details
 
@@ -56,55 +86,11 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 :::
 
-## Step II: Send a Test Message with Your Access Token
+## Step III: Setup your bot
 
-- Let's test out your bot access token by sending a **[SpeedyCard](./speedycard.md)** to you as a direct message (tap the 🎲 to shuffle through some examples as inspiration or write your own)
-
-  <SpeedyCardEditor></SpeedyCardEditor>
-
-- When you're ready, tap the **Send Message** tab and use the email you signed up with as the destination and hit Send-- in about a second you should receive a new message from your bot
-
-## Step III: Setup your SpeedyBot Listener
-
-<el-alert
-    title="⛔️ Nobody is listening"
-    type="error"
-    description="You may have noticed that if you tried to submit any data back from a card-- nothing happens "
-  />
-
-<img
-    src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
-    :style="{ filter: isDark ? 'invert(1)' : 'none' }"
-    style="
-      margin: 1rem 0px;
-      display: inline-block;
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-    "
-  />
-
-- In fact, any user interaction with {{ store.state.userData?.emails[0] ?? 'your bot'}} right now— be it a message, SpeedyCard submission, or file upload, results in icy radio silence
-
-- That's because there's nobody "home" to answer the request-- SpeedyBot can "listen" for messages (or card data submissions or files) so anytime someone interacts with your bot it will respond back automatically per your instructions
-
-## Run your bot from your computer
-
-- Keeping things simple to start you'll run the bot from your machine (ie when your computer is off, your bot is "off") but later if you need to, you can deploy it to virtually **[any standard server or scalable serverless cloud infrastructure you want](./examples/index)**
-
-Copy the commands below to get up and running
+Open Git Bash which you installed above and copy/paste the following commands into Git Bash:
 
 ::: code-group
-
-```sh-vue [🥺 New (recommended)]
-npx -y speedybot@^2.0.0 setup --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
-```
-
-```sh-vue [🚀 Bun (FAST!!)]
-bunx speedybot@^2.0.0 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
-```
 
 ```sh-vue [👹 Experienced]
 git clone --depth 1 https://github.com/valgaze/speedybot
@@ -117,45 +103,7 @@ npm run dev
 
 :::
 
-::: details Getting errors?
-
-If you see an error like `npm: command not found` you probably need to install node or a compatible runtime onto your system.
-
-There are many ways to do this, but two easy ways:
-
-<el-alert title="Note for Windows Users" type="info" show-icon />
-
-If you use Windows, see the **[Windows Quickstart](./windows.md)**
-
-**Option 1** Download + install Node from the official site: **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
-
-or
-
-**Option 2** Download with **[Volta](https://docs.volta.sh/guide/)** in the terminal
-
-```sh
-curl https://get.volta.sh | bash
-
-volta install node
-```
-
-However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can get up and running with `npx speedybot setup --project default`:
-
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/cli_setup.gif"     
-    :style="{ filter: !isDark ? 'invert(1)' : 'none' }"
-    style="
-      margin: 1rem 0px;
-      display: inline-block;
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-    "/>
-
-Note: If you really want to speedy things up try it with **[Bun](https://bun.sh)** and install with
-`curl -fsSL https://bun.sh/install | bash`
-:::
+## Step IV: Turn it on!
 
 Now send a message to your bot and you'll see a welcome screen with buttons and cards:
 
@@ -186,8 +134,6 @@ import { ref, watch } from 'vue'
 import { useData } from 'vitepress'
 import { useCustomStore } from "./.vitepress/util/store";
 import TokenInput from './.vitepress/components/token_handler.vue'
-import Blur from './.vitepress/components/Blur.vue'
-import SpeedyCardEditor from './.vitepress/components/SpeedyCardEditor.vue'
 const { isDark } = useData()
 const store = useCustomStore()
 
