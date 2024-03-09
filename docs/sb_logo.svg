@@ -1,0 +1,72 @@
+<svg width="32769" height="23570" viewBox="0 0 32769 23570" fill="none" xmlns="http://www.w3.org/2000/svg" id="cute-svg">
+  <style>
+    /* Initial state */
+    #left-eye {
+      transform-origin: center;
+      animation: look-around-left-animation 4s infinite;
+    }
+
+    #right-eye {
+      transform-origin: center;
+      animation: look-around-right-animation 4s infinite;
+    }
+
+    @keyframes look-around-left-animation {
+      0%, 100% {
+        transform: translateX(0) translateY(0);
+      }
+      25% {
+        transform: translateX(15%) translateY(-5%);
+      }
+      50% {
+        transform: translateX(-5%) translateY(5%);
+      }
+       75% {
+        transform: translateX(18%) translateY(5%);
+      }
+      
+    }
+
+    @keyframes look-around-right-animation {
+      0%, 100% {
+        transform: translateX(0) translateY(0);
+      }
+      25% {
+        transform: translateX(5%) translateY(-5%);
+      }
+      50% {
+        transform: translateX(-15%) translateY(5%);
+      }
+       75% {
+        transform: translateX(5%) translateY(5%);
+      }
+
+
+    html.dark #cute-svg path,
+    html.dark #cute-svg circle {
+      fill: white;
+    }
+  </style>
+
+  <path d="M24107.9 7548.34C24107.9 6676.18 23761.4 5839.73 23144.7 5223.02C22528 4606.3 21691.5 4259.84 20819.4 4259.84C19947.2 4259.84 19110.8 4606.3 18494.1 5223.02C17877.3 5839.73 17530.9 6676.18 17530.9 7548.34L20819.4 7548.34H24107.9Z" fill="#303030"/>
+  <circle id="left-eye" cx="16220.2" cy="13083.8" r="1825.65" fill="#303030"/>
+  <circle id="right-eye" cx="25535.6" cy="13083.8" r="1825.65" fill="#303030"/>
+  <rect x="20386.4" y="2644.85" width="866.011" height="3253.39" fill="#303030"/>
+  <circle cx="20831.1" cy="1451.15" r="1451.15" fill="#303030"/>
+  <rect x="4332.06" y="11054.2" width="6759.01" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect y="16497.7" width="2290.81" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="1315.47" y="11054.2" width="2290.81" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="3855.82" y="8332.43" width="2290.81" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="907.242" y="8332.43" width="2290.81" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="6509.53" y="13775.9" width="3923.86" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="3039.27" y="16497.7" width="8732.28" height="1360.87" rx="764.425" fill="#303030"/>
+  <rect x="6794.56" y="8332.43" width="5266.28" height="1357.53" rx="762.547" fill="#303030"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M8996 12414.3C9323.32 12468.5 9572.94 12752.8 9572.94 13095.5C9572.94 13437.4 9324.45 13721.2 8998.22 13776.3C9044.49 14247.3 9137.45 14704.6 9272.41 15143.5H9807C10181.9 15143.5 10485.8 15447.4 10485.8 15822.3C10485.8 16181.6 10206.5 16475.8 9853.12 16499.5C11050.8 18637.2 13338 20082.1 15962.7 20082.1H25769.7C29634.7 20082.1 32768 16948.9 32768 13083.8C32768 9218.73 29634.8 6085.48 25769.7 6085.48H15962.7C13328.8 6085.48 11034.7 7540.58 9840.47 9690.77C10199.8 9708.22 10485.8 10005.1 10485.8 10368.7C10485.8 10743.6 10181.9 11047.5 9807 11047.5H9265.26C9131.98 11486.4 9040.67 11943.6 8996 12414.3ZM15951 8332.43C13320.4 8332.43 11187.9 10464.9 11187.9 13095.5C11187.9 15726.1 13320.4 17858.6 15951 17858.6H25781.4C28412 17858.6 30544.5 15726.1 30544.5 13095.5C30544.5 10464.9 28412 8332.43 25781.4 8332.43H15951Z" fill="#303030"/>
+  <circle cx="5148.64" cy="14456.4" r="680.437" fill="#303030"/>
+  <mask id="mask0_50_44" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="14909" y="7536" width="7821" height="16034">
+    <path d="M14909.4 7536.64C17035.5 7536.64 19074.6 8381.23 20577.9 9884.61C22081.3 11388 22516.3 16095.3 22516.3 18221.3C22516.3 20347.4 23317.5 18555.3 21814.1 20058.7C20310.7 21562.1 17035.5 23569.6 14909.4 23569.6L14909.4 15553.1L14909.4 7536.64Z" fill="#303030"/>
+  </mask>
+  <g mask="url(#mask0_50_44)">
+    <rect x="13739.2" y="19075.7" width="9970.83" height="4493.9" fill="#303030"/>
+  </g>
+</svg>

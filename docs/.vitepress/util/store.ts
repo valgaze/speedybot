@@ -1,7 +1,9 @@
-import { inject, provide, InjectionKey, reactive, ref } from "vue";
+import { inject, provide, InjectionKey, reactive, ref, nextTick } from "vue";
 import { SpeedyBot } from "./../../../src/speedybot";
+import { RoomConfig } from "../../../src";
 import { ElLoading } from "element-plus";
-import { Webhook } from "../../../src";
+import { Room_Details, Webhook } from "../../../src";
+import { de, el, tr } from "element-plus/es/locale/index.mjs";
 
 interface UserData {
   username: string;
@@ -15,6 +17,8 @@ interface Store {
   webhooks: Webhook[];
   tokenValid: null | boolean;
   userData: UserData;
+  deepSearch: boolean;
+  roomFilters: Partial<RoomConfig>;
 }
 
 const BotInst = new SpeedyBot() as SpeedyBot;
@@ -29,18 +33,32 @@ const store: Store = reactive({
     type: "",
     emails: [],
   },
+  deepSearch: false,
+  roomFilters: {},
 });
 
-async function getRecentRooms(): Promise<
-  { type: string; title: string; id: string }[]
-> {
-  const list = await BotInst.getRecentRooms();
+async function getRooms(
+  config?: { full?: boolean } & Partial<RoomConfig>
+): Promise<{ type: string; title: string; id: string }[]> {
+  const { full, ...options } = config || {};
+  const list = full
+    ? await BotInst.getAllRooms(options)
+    : await BotInst.getRecentRooms();
   return list;
 }
 
-async function setRecentRooms() {
-  const list = await BotInst.getRecentRooms();
-  store.roomList = list;
+function setRooms(
+  rooms: {
+    type: string;
+    title: string;
+    id: string;
+  }[]
+) {
+  store.roomList = rooms;
+}
+
+function setSearchlevel(deep: boolean) {
+  store.deepSearch = deep;
 }
 
 function setToken(newToken: string) {
@@ -62,22 +80,28 @@ async function validateToken(tokenCandidate: string): Promise<void | boolean> {
     const isValid = await BotInst.getSelf(tokenCandidate.trim()); // trim bc lots of people have newlines/spaces
     if (isValid.id) {
       store.tokenValid = true;
-      if (store.tokenValid) {
-        store.token = tokenCandidate;
-        store.userData.username = isValid.displayName;
-        store.userData.type = isValid.type;
-        store.userData.emails = isValid.emails;
-        BotInst.setToken(tokenCandidate);
-
-        // Get a headstart on rooms list
-        await setRecentRooms();
-      }
-    } else {
-      store.tokenValid = false;
+      store.token = tokenCandidate;
+      store.userData.username = isValid.displayName;
+      store.userData.type = isValid.type;
+      store.userData.emails = isValid.emails;
+      BotInst.setToken(tokenCandidate);
+      nextTick(async () => {
+        const rooms = await getRooms(
+          store.deepSearch
+            ? { full: true, ...store.roomFilters }
+            : { full: false, ...store.roomFilters }
+        );
+        setRooms(rooms);
+        nextTick(async () => {
+          loading.close();
+        });
+      });
     }
-    loading.close();
   } catch (_) {
-    loading.close();
+    console.log(_);
+    nextTick(() => {
+      loading.close();
+    });
     store.tokenValid = false;
     return false;
   }
@@ -111,12 +135,14 @@ function cycle(index?: number) {
 export const storeHelper = {
   Bot: BotInst,
   state: store,
-  getRecentRooms,
-  setRecentRooms,
+  getRooms,
+  setRooms,
+  // setRecentRooms,
   setToken,
   addWebhook,
   validateToken,
   cycle,
+  setSearchlevel,
 };
 
 const storeSymbol: InjectionKey<typeof storeHelper> = Symbol("customStore");

@@ -1,5 +1,6 @@
 import { CONSTANTS, mainRequester } from "./index";
 import {
+  Chunk,
   CoreMakerequest,
   Destination,
   ENVELOPES,
@@ -8,6 +9,7 @@ import {
   MessageResponse,
   Message_Details,
   File_Details,
+  RoomConfig,
   Room_Details,
   SelfData,
   SpeedyFile,
@@ -923,6 +925,12 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return list;
   }
 
+  /**
+   * Create firehose and attachmentActions webhooks
+   * @param url
+   * @param secret
+   * @returns
+   */
   Setup(url: string, secret: string) {
     return Promise.all([
       this.createFirehose(url, secret),
@@ -1307,6 +1315,11 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     };
   }
 
+  /**
+   * @hidden
+   *
+   * Utility to traverse Link headers for pagination, built-in back-off
+   */
   public async peekFile(url: string): Promise<Omit<SpeedyFile, "data">> {
     const res = await this.makeRequest(
       url,
@@ -1375,6 +1388,10 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     return res;
   }
 
+  /**
+   *
+   * Utility to traverse Link headers for pagination, built-in back-off
+   */
   fuzzyMatch(candidate: string, options: string[]): boolean {
     const lowerCaseCandidate = candidate.toLowerCase();
     return options.some((option) =>
@@ -1413,5 +1430,97 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     config: Omit<HeaderConfig, "iconURL"> = {}
   ) {
     return this.card().addHeader(appName, { iconURL: logoUrl, ...config });
+  }
+
+  /**
+   * @hidden
+   *
+   * Utility to traverse Link headers for pagination, built-in back-off
+   */
+  private async fetchData<T>(
+    url: string,
+    retries: number = 3,
+    onChunk?: Chunk<T>
+  ): Promise<T[]> {
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this._token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 429 && retries > 0) {
+          const retryAfter =
+            parseInt(response.headers.get("Retry-After") || "1", 10) * 1000;
+          await delay(retryAfter);
+          return await this.fetchData(url, retries - 1);
+        } else {
+          const text = await response.text();
+          throw new Error(
+            `Error fetching messages: ${response.statusText}, ${text}`
+          );
+        }
+      }
+
+      const { items } = await response.json();
+      const data = items as T[];
+      const linkHeader = response.headers.get("Link");
+      const hasNext = linkHeader ? linkHeader.includes(`rel="next"`) : false;
+      const nextURL = hasNext
+        ? linkHeader!.split(";")[0].replace("<", "").replace(">", "")
+        : null;
+
+      if (onChunk) {
+        await onChunk(data);
+      }
+      if (hasNext && nextURL) {
+        const nextPageData = await this.fetchData<T>(nextURL, retries);
+        return data.concat(nextPageData);
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error(`Error fetching data: ${error}`);
+    }
+  }
+
+  /**
+   * @hidden
+   */
+  private buildQueryURL(
+    target: string,
+    options?: Record<string, string | undefined>
+  ): string {
+    const queryParams: string[] = [];
+
+    if (options) {
+      Object.entries(options).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.push(
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+          );
+        }
+      });
+    }
+
+    const queryString =
+      queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+    return `${target}${queryString}`;
+  }
+
+  /**
+   * @hidden
+   */
+  public async getAllRooms(
+    options?: Partial<RoomConfig>
+  ): Promise<Room_Details[]> {
+    const url = this.buildQueryURL(this.API.rooms, options);
+    const collection = await this.fetchData<Room_Details>(url);
+    return collection as Room_Details[];
   }
 }

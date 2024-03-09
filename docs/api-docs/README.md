@@ -13,7 +13,7 @@ speedybot / [Exports](modules.md)
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/memes/logo4.jpeg?raw=true" />
 
-tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems
+tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems-- go from zero to a bot in seconds **[here](https://speedybot.js.org/new)**
 
 ## Setup
 
@@ -23,7 +23,7 @@ npm install speedybot
 
 ## Speedy & Easy
 
-- SpeedyBot offers a buttery-smooth developer experience to keep you building your bots rather than scouring the docs. It's written in typescript + built-in type hints with autocomplete, has zero external dependencies, supports ESM + CommonJS, provides lots of other DX goodness that makes building bots a breeze like local development with live-reload (see **[here for details](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)**).
+- SpeedyBot offers a buttery-smooth developer experience to keep you building your bots rather than scouring the docs. It's written in typescript + built-in type hints with autocomplete, **has zero external dependencies**, supports ESM + CommonJS, provides lots of other DX goodness like live-reload on code changes that makes building bots speedy and easy (see **[here for details](https://speedybot.js.org/new)**).
 
 - SpeedyBot shrinks away all the complexity and makes it a breeze to handle user input regardless of the source/modality-- text, file uploads, form submission from SpeedyCards, etc
 
@@ -31,37 +31,82 @@ npm install speedybot
 
 ## SpeedyBot basics
 
-You can see fleshed-out examples at **[https://speedybot.js.org/examples/](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- securely integrate w/ LLMs + content management systems, **[process file-uploads](https://speedybot.js.org/patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns.md#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, ask for a user's location in a privacy-respecting way and lots more.
+You can get a bot up and running fast by grabbing one of the batteries-included samples at **[https://speedybot.js.org/examples](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](https://speedybot.js.org/examples/voiceflow/README)**, **[process file-uploads](https://speedybot.js.org/patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns.md#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, **[ask for a user's location in a privacy-respecting way](https://speedybot.js.org/examples/location/README)** and lots more.
 
-### Auto-binding
+## The basics
 
-As a convenience, SpeedyBot's "magic" $ parameter will auto-bind to the incoming message and give you access to all kinds of useful features
+- SpeedyBot streamlines the creation of conversation systems, making it easy to deploy and manage bots. When your SpeedyBot receives an event from a user (such as a message, card, or file upload), it processes the event through a sequence of steps, similar to how a car moves through a carwash.
 
-```js
+- Each step is just a function which **must** return either $.next to proceed to the next step or $.end to terminate the chain. Each step can be synchronous or asynchronous depending on what you need to do
+
+- A step can do **whatever** you want (ex send the user a message or a **[SpeedyCard](https://speedybot.js.org/speedycard)**, call an API to interact with some external system, or do nothing at all)
+
+- Whatever you're up to in a step, however, try not to take too long to do it because you probably don't want to keep your user waiting
+
+Here's a starter `bot.ts`:
+
+```ts
+import { SpeedyBot } from "speedybot";
+
 const Bot = new SpeedyBot();
 
-// You get an incoming messsage
 Bot.addStep(async ($) => {
-  await $.send("Hello the originating person/room");
-  await $.reply("Reply to the originating person/room");
-
-  // The same as the following
-  await Bot.sendTo($.author.email, "my message");
-
-  const parentMessageID = $.id;
-  await Bot.replyTo(parentMessageID, $.author.email, "my great reply message");
-
+  await $.send("Step 1");
+  if ($.text === "hi") {
+    await $.reply(`Hi there ${$.author.name}!`);
+  }
   return $.next;
+});
+
+Bot.addStep(($) => {
+  $.ctx.scribbledData = "someData_" + Math.random();
+  return $.next;
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 2");
+  const card = $.card()
+    .addTitle("My great card!")
+    .addText(`The random scribbled data is ${$.ctx.scribbledData}`)
+    .addTable([
+      ["Label", "Data 1"],
+      ["Label 2", "Data 2"],
+      ["Label 3", "Data 3"],
+    ]);
+  await $.send(card); // send a card, not just text
+  return $.next;
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 3");
+  return $.end; // <--- Stops the train!
+});
+
+Bot.addStep(async ($) => {
+  await $.send("Step 4 (we never reach this!");
+  return $.end;
 });
 ```
 
-There's also a lot more you can do
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/demo_basics.gif?raw=true">
+
+- The $ parameter provides a bunch of useful features, allowing you to reply to messages, send and check card data (see **[details on that](https://speedybot.js.org/patterns.html#simple-card-handler)**), and access information about the message and its author.
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
+- Important: Avoid excessive usage of steps. If you find yourself writing a lot of "handlers" or checks in your steps you might be making things harder than they need to be. For a natural language "conversation", for example, focus on capturing user utterances (`$.text`) in your steps and then all you need to do is transmit back and forth to an external service and keep your steps short and sweet and simple
+
+- Execution Order: Generally speaking, steps will fire in the order they are added to your `bot.ts`-- for convenience, there is a `Bot.insertStepToFront` step which will slip the supplied step to the front of the chain and also `Bot.addStepSequence` to add a list of steps all at once
+
+## Garage
+
+SpeedyBot's docs are special-- they're interactive and you can do things with them. From the Patterns docs you can grab **[code snippets](https://speedybot.js.org/patterns)** and throw them right into your bot. Inside the visaul **[SpeedyBot Garage](https://speedybot.js.org/garage)** experience you can register webhooks and design + preview + send **[SpeedyCards](https://speedybot.js.org/speedycard)**
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
+
 ## SpeedyCards
 
-SpeedyCards make it (yep) speedy and easy to build **[Adaptive Cards](https://adaptivecards.io)** where you can easily collect structured data from users and add colors, "chips", formatting and other visual embellishments.
+SpeedyCards make it speedy and easy to build **[Adaptive Cards](https://adaptivecards.io)** where you can easily collect structured data from users and add colors, "chips", formatting and other visual embellishments.
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/speedycard.gif?raw=true" />
 
@@ -73,55 +118,6 @@ SpeedyBot makes it speedy & easy to build serverless bots for the LLM era. See t
 
 <img src="https://github.com/valgaze/speedybot-utils/blob/main/assets/various/llm_stream.gif?raw=true" />
 
-## SpeedyBot "listener"
-
-You can use SpeedyBot to only send messages + cards and nothing more. But if you have data on those cards you want to capture or if you want to provide an automated conversation experience SpeedyBot takes of all the hassle.
-
-Ex. Here is a minimal handler that will echo back information if a user transmits data via text, file, and adaptive card. Write "show card" to display a card. You can chain multiple addSteps if you need to, but in this era you probably don't need/want to be doing much logic in code.
-
-See full example applications here: **[https://speedybot.js.org/examples](https://speedybot.js.org/examples)**
-
-```ts
-import { SpeedyBot } from "speedybot";
-
-const Bot = new SpeedyBot();
-Bot.addStep(async ($) => {
-  // handle text
-  if ($.text) {
-    await $.send(`You said "${$.text}`);
-
-    if ($.text.toLowerCase() === "showcard") {
-      const card = $.card()
-        .addTitle("Capture data")
-        .addTextarea("Submit data")
-        .addPickerDropdown(["option 1", "option 2", "option 3", "option 4"]);
-      await $.send(card);
-    }
-  }
-
-  // file handler
-  if ($.file) {
-    const { name, extension, contentType } = $.file;
-    await $.send(
-      `You uploaded "${name}", a *.${extension} file [${contentType}]`
-    );
-    // Fetch raw bytes (which you can pass onto other systems)
-    // const TheData = await $.file.getData(); // do something w/ the contents/bytes
-  }
-
-  // form/card submissions
-  if ($.data) {
-    const dataSnippet = $.buildDataSnippet($.data);
-    await $.send(`This data was submitted:`);
-    await $.send(dataSnippet);
-  }
-
-  return $.next;
-});
-
-export default Bot;
-```
-
 ## 🐍 Speedybot-Python
 
-If you want to build bots with Python rather than Typescript, you can check out [🐍Speedybot-Python🐍](https://pypi.org/project/speedybot)
+If you want to build bots with Python rather than Typescript, you can also check out [🐍Speedybot-Python🐍](https://pypi.org/project/speedybot)

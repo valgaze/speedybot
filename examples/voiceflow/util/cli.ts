@@ -1,11 +1,10 @@
 // #!/usr/bin/env node
+import * as dotenv from "dotenv";
+import { resolve } from "path";
 import * as fs from "fs/promises";
 import * as readline from "readline";
-import { resetDevices } from "./utils";
-import { resolve } from "path";
-import * as dotenv from "dotenv";
-
 import { botTokenKey, logoRoll } from "speedybot";
+import { LocalSockets } from "./websockets";
 
 // Expects .env to get token on BOT_TOKEN
 dotenv.config({ path: resolve(__dirname, "..", ".env") });
@@ -46,7 +45,9 @@ async function resetBot(token) {
       "Enter your token, [Usage: npm run bot:reset <token>]"
     );
   }
-  await resetDevices(finalToken);
+
+  const websockets = new LocalSockets(finalToken);
+  await websockets.resetDevices();
   console.log("Reset attempted");
 }
 

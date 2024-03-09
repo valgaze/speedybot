@@ -91,7 +91,7 @@ const store = useCustomStore();
 const showWebhooksForm = ref(false);
 const webhooksForm = ref({
   url: "",
-  secret: null,
+  secret: "",
 });
 
 const webhooksList = ref<
@@ -151,7 +151,7 @@ const submit = async () => {
 
     const createWebhook = async () => {
       try {
-        await store.Bot.Setup(url, secret);
+        await store.Bot.Setup(url, secret ?? undefined);
         ElMessage({
           type: "success",
           message: "Webhook created 🎉",
@@ -180,31 +180,21 @@ watch(
   () => store.state.tokenValid,
   async (v) => {
     if (v === true) {
-      const loading = ElLoading.service({
-        lock: true,
-        text: "Loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
       await webhooksFetch();
-      loading.close();
     }
   }
 );
 
 onMounted(async () => {
   if (store.state.tokenValid) {
-    const loading = ElLoading.service({
-      lock: true,
-      text: "Loading",
-      background: "rgba(0, 0, 0, 0.7)",
-    });
-
     try {
       await webhooksFetch();
     } catch (e) {
-      loading.close();
+      ElMessage({
+        type: "error",
+        message: "Error fetching websockets " + e,
+      });
     }
-    loading.close();
   }
 });
 

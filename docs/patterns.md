@@ -49,7 +49,7 @@ When you're just starting, SpeedyBot runs your bot directly and securely from yo
 
 ## The basics
 
-- SpeedyBot simplifies the process of creating interactive conversations and makes it easy to deploy and manage bots. Anytime your SpeedyBot receives an event from a user (a message, card, file upload, etc) it operates through a series of "steps."
+- SpeedyBot streamlines the creation of conversation systems, making it easy to deploy and manage bots. When your SpeedyBot receives an event from a user (such as a message, card, or file upload), it processes the event through a sequence of steps, similar to how a car moves through a carwash.
 
 - Each step is just a function which **must** return either $.next to proceed to the next step or $.end to terminate the chain. Each step can be synchronous or asynchronous depending on what you need to do
 

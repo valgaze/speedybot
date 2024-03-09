@@ -5,7 +5,7 @@ export async function locationHandler(bot: typeof Bot, roomId: string, locationD
 	const locationCard = Bot.card()
 		.addTitle(`Good ${locationData.tod}`)
 		.addSubtitle(
-			`Note: this timezone + location data is not stored/collected/sold and is not hyper-accurate. It's accurate enough to understand if its dark/light outside whenever a user is located`
+			`Note: this timezone + location data is not stored/collected/sold and is not hyper-accurate. It's accurate enough to understand if its dark/light outside wherever a user is located`
 		)
 		.addTable([
 			['Country', locationData.country],
