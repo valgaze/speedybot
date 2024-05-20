@@ -14,14 +14,6 @@ Bot.addStep(async ($) => {
 		}
 	}
 
-	// file handler
-	if ($.file) {
-		const { name, extension, contentType } = $.file;
-		await $.send(`You uploaded "${name}", a *.${extension} file [${contentType}]`);
-		// Fetch raw bytes (which you can pass onto other systems)
-		// const TheData = await $.file.getData(); // do something w/ the contents/bytes
-	}
-
 	// adaptive card/form submissions
 	if ($.data && !$.data.showCard && !$.data.randomSpeedyBot) {
 		const dataSnippet = $.buildDataSnippet($.data);

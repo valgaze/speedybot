@@ -5,9 +5,9 @@ hero:
   name: "SpeedyBot"
   text: "Rich conversation systems, the speedy and easy way"
   # tagline: Efficiently design, deploy, and secure rich conversation systems in enterprises and large teams
-  # image:
-  #   src: ./assets/bongo.png
-  #   alt: SpeedyBot
+  image:
+    src: ./sb_logo.svg
+    alt: SpeedyBot
   actions:
     - theme: brand
       text: 🚀 Get Started

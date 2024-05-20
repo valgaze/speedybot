@@ -172,3 +172,23 @@
 .excerpt-gradient-top {
   display: none !important;
 }
+
+html.dark img.logo {
+  filter: invert(1.5);
+}
+
+/* html.dark .VPImage.image-src {
+  filter: invert(0.75);
+} */
+
+.VPImage.image-src:hover {
+  filter: contrast(200%);
+}
+
+.image-bg {
+  background: linear-gradient(
+    25deg,
+    #ffd1a4 0%,
+    #fff9c4 100%
+  ) !important; /* hack :( */
+}

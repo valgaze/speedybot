@@ -10,6 +10,7 @@
       <TokenInput
         v-if="!store.state.tokenValid && showToken"
         :autofocus="autofocus"
+        :skipRoomConfig="skipRoomConfig"
       />
     </div>
 
@@ -57,6 +58,12 @@ const targetRoom = ref("");
 const showToken = ref(true);
 
 const props = defineProps({
+  skipRoomConfig: {
+    type: Boolean,
+    default() {
+      return true;
+    },
+  },
   msg: {
     type: Object,
   },

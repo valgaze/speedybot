@@ -18,7 +18,7 @@ You can set your `BOT_TOKEN` by running this script in the project directory:
 
 <details><summary>Set token by hand</summary>
 
-Copy the file **[.env.example](.env.example)** as `.env` in the root of your project and save your access token under the `BOT_TOKEN` field, ex
+Copy the file **[.env.example](https://github.com/valgaze/speedybot/blob/v2/examples/standard-server/.env.example)** as `.env` in the root of your project and save your access token under the `BOT_TOKEN` field, ex
 
 ```
 BOT_TOKEN=__REPLACE__ME__

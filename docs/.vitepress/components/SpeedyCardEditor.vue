@@ -8,20 +8,20 @@
     ></compact-select>
 
     <el-tabs v-model="activeName" :class="{ 'is-dark': isDark }">
-      <el-tab-pane label="SpeedyCard editor" name="editor">
+      <el-tab-pane label="📝 SpeedyCard editor" name="editor">
         <MonacoEditor
           @editorReady="initParent"
           @valChanged="handleChange"
           :isDark="isDark"
         />
       </el-tab-pane>
-      <el-tab-pane label="Preview" name="preview">
+      <el-tab-pane label="🔭 Preview" name="preview">
         <el-card class="box-card">
           <AdaptiveCardRender :jsonData="jsonData" />
         </el-card>
       </el-tab-pane>
-      <el-tab-pane label="Send Message" name="sendmessage">
-        <SendMsg :msg="jsonData" :showRecents="false" />
+      <el-tab-pane label="📤 Send Message" name="sendmessage">
+        <SendMsg :msg="jsonData" :showRecents="false" :skipRoomConfig="true" />
       </el-tab-pane>
     </el-tabs>
   </client-only>

@@ -9,3 +9,5 @@ abc.ts
 docs/.vitepress/cache/*
 coverage/
 todo.md
+message_log.txt
+changelog.md

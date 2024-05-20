@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { version } from "./../../package.json";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -6,6 +7,7 @@ export default defineConfig({
   title: "SpeedyBot",
   description: "Rich conversation agents, the speedy and easy way",
   themeConfig: {
+    logo: "./..//sb_logo.svg",
     footer: {
       message: `<a href="https://github.com/valgaze/speedybot/blob/v2/LICENSE" target="_blank">MIT License</a> ${new Date().getFullYear()}`, // this'll be statically updated everytime redeploy
     },
@@ -70,8 +72,22 @@ export default defineConfig({
       },
       { text: "📇 SpeedyCard", link: "/speedycard" },
       { text: "🔧 Garage", link: "/garage" },
-      { text: "📚 Reference", link: "/../api-docs/modules" },
+      // { text: "📚 Reference", link: "/../api-docs/modules" },
       { text: "🐍 Python Version", link: "https://pypi.org/project/speedybot" },
+      {
+        text: `v${version}`,
+        items: [
+          {
+            text: "Release Notes",
+            link: "https://github.com/valgaze/speedybot/releases",
+          },
+          {
+            text: "Contributing",
+            link: "https://github.com/valgaze/speedybot/blob/main/CONTRIBUTING.md",
+          },
+        ],
+      },
+
       // { text: "🏡 Home", link: "/" },
     ],
 

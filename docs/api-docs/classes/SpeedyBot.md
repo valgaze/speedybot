@@ -49,7 +49,6 @@
 - [insertStepToFront](SpeedyBot.md#insertsteptofront)
 - [onCamera](SpeedyBot.md#oncamera)
 - [onReject](SpeedyBot.md#onreject)
-- [peekFile](SpeedyBot.md#peekfile)
 - [pickRandom](SpeedyBot.md#pickrandom)
 - [rando](SpeedyBot.md#rando)
 - [regex](SpeedyBot.md#regex)
@@ -85,13 +84,15 @@
 
 #### Defined in
 
-[speedybot.ts:53](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L53)
+[speedybot.ts:55](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L55)
 
 ## Methods
 
 ### Setup
 
 ▸ **Setup**(`url`, `secret`): `Promise`<[`Webhook`, `Webhook`]\>
+
+Create firehose and attachmentActions webhooks
 
 #### Parameters
 
@@ -106,7 +107,7 @@
 
 #### Defined in
 
-[speedybot.ts:926](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L926)
+[speedybot.ts:934](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L934)
 
 ___
 
@@ -127,7 +128,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:67](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L67)
+[speedybot.ts:69](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L69)
 
 ___
 
@@ -147,7 +148,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:71](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L71)
+[speedybot.ts:73](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L73)
 
 ___
 
@@ -190,7 +191,7 @@ Bot.addStep(async ($) => {
 
 #### Defined in
 
-[speedybot.ts:152](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L152)
+[speedybot.ts:154](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L154)
 
 ___
 
@@ -216,7 +217,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:156](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L156)
+[speedybot.ts:158](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L158)
 
 ___
 
@@ -238,7 +239,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1410](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1410)
+[speedybot.ts:1427](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1427)
 
 ___
 
@@ -258,7 +259,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:245](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L245)
+[speedybot.ts:247](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L247)
 
 ___
 
@@ -306,7 +307,7 @@ CultureBot.contains(["hi", "hey"],
 
 #### Defined in
 
-[speedybot.ts:710](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L710)
+[speedybot.ts:712](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L712)
 
 ___
 
@@ -326,7 +327,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1018](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1018)
+[speedybot.ts:1026](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1026)
 
 ___
 
@@ -350,7 +351,7 @@ If a match is found, the provided middleware function is executed.
 
 #### Defined in
 
-[speedybot.ts:221](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L221)
+[speedybot.ts:223](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L223)
 
 ___
 
@@ -387,7 +388,7 @@ The converted object.
 
 #### Defined in
 
-[speedybot.ts:1402](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1402)
+[speedybot.ts:1419](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1419)
 
 ___
 
@@ -412,7 +413,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1002](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1002)
+[speedybot.ts:1010](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1010)
 
 ___
 
@@ -432,7 +433,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:857](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L857)
+[speedybot.ts:859](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L859)
 
 ___
 
@@ -452,7 +453,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:870](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L870)
+[speedybot.ts:872](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L872)
 
 ___
 
@@ -472,7 +473,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:842](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L842)
+[speedybot.ts:844](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L844)
 
 ___
 
@@ -496,7 +497,7 @@ Edit a message
 
 #### Defined in
 
-[speedybot.ts:792](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L792)
+[speedybot.ts:794](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L794)
 
 ___
 
@@ -517,7 +518,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:775](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L775)
+[speedybot.ts:777](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L777)
 
 ___
 
@@ -541,7 +542,7 @@ If there is a match, the provided middleware function is executed.
 
 #### Defined in
 
-[speedybot.ts:203](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L203)
+[speedybot.ts:205](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L205)
 
 ___
 
@@ -568,7 +569,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1292](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1292)
+[speedybot.ts:1300](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1300)
 
 ___
 
@@ -584,13 +585,15 @@ Return abbreviated array of webhook data
 
 #### Defined in
 
-[speedybot.ts:905](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L905)
+[speedybot.ts:907](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L907)
 
 ___
 
 ### fuzzyMatch
 
 ▸ **fuzzyMatch**(`candidate`, `options`): `boolean`
+
+Utility to traverse Link headers for pagination, built-in back-off
 
 #### Parameters
 
@@ -605,7 +608,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1378](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1378)
+[speedybot.ts:1395](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1395)
 
 ___
 
@@ -619,7 +622,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1132](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1132)
+[speedybot.ts:1140](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1140)
 
 ___
 
@@ -641,7 +644,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1236](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1236)
+[speedybot.ts:1244](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1244)
 
 ___
 
@@ -661,7 +664,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1069](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1069)
+[speedybot.ts:1077](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1077)
 
 ___
 
@@ -681,7 +684,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:935](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L935)
+[speedybot.ts:943](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L943)
 
 ___
 
@@ -701,7 +704,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1083](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1083)
+[speedybot.ts:1091](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1091)
 
 ___
 
@@ -721,7 +724,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:75](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L75)
+[speedybot.ts:77](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L77)
 
 ___
 
@@ -741,7 +744,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1024](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1024)
+[speedybot.ts:1032](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1032)
 
 ___
 
@@ -755,7 +758,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:105](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L105)
+[speedybot.ts:107](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L107)
 
 ___
 
@@ -771,7 +774,7 @@ Return array of full webhook data
 
 #### Defined in
 
-[speedybot.ts:887](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L887)
+[speedybot.ts:889](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L889)
 
 ___
 
@@ -791,7 +794,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:113](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L113)
+[speedybot.ts:115](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L115)
 
 ___
 
@@ -816,7 +819,7 @@ For use w/ vision + text prompting systems
 
 #### Defined in
 
-[speedybot.ts:183](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L183)
+[speedybot.ts:185](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L185)
 
 ___
 
@@ -836,27 +839,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:239](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L239)
-
-___
-
-### peekFile
-
-▸ **peekFile**(`url`): `Promise`<`Omit`<`SpeedyFile`, ``"data"``\>\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `url` | `string` |
-
-#### Returns
-
-`Promise`<`Omit`<`SpeedyFile`, ``"data"``\>\>
-
-#### Defined in
-
-[speedybot.ts:1310](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1310)
+[speedybot.ts:241](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L241)
 
 ___
 
@@ -882,7 +865,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:120](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L120)
+[speedybot.ts:122](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L122)
 
 ▸ **pickRandom**<`P`\>(`min`, `max`): `number`
 
@@ -905,7 +888,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:121](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L121)
+[speedybot.ts:123](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L123)
 
 ▸ **pickRandom**<`P`\>(`listOrMin`, `max?`): `number` \| `P`
 
@@ -928,7 +911,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:122](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L122)
+[speedybot.ts:124](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L124)
 
 ___
 
@@ -944,7 +927,7 @@ Generate a random string of 11 characters (letters + numbers)
 
 #### Defined in
 
-[speedybot.ts:1139](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1139)
+[speedybot.ts:1147](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1147)
 
 ___
 
@@ -965,7 +948,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:160](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L160)
+[speedybot.ts:162](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L162)
 
 ___
 
@@ -987,7 +970,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:812](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L812)
+[speedybot.ts:814](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L814)
 
 ___
 
@@ -1015,7 +998,7 @@ import
 
 #### Defined in
 
-[speedybot.ts:260](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L260)
+[speedybot.ts:262](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L262)
 
 ___
 
@@ -1052,7 +1035,7 @@ $bot.sendFileTo('target@email.com', myData, 'json')
 
 #### Defined in
 
-[speedybot.ts:1180](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1180)
+[speedybot.ts:1188](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1188)
 
 ___
 
@@ -1087,7 +1070,7 @@ Bot.sendTo({toPersonId: 'xxxyyyzzz', '**here is a message**')
 
 #### Defined in
 
-[speedybot.ts:624](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L624)
+[speedybot.ts:626](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L626)
 
 ___
 
@@ -1107,7 +1090,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:109](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L109)
+[speedybot.ts:111](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L111)
 
 ___
 
@@ -1129,7 +1112,7 @@ Sets the token to transact with APIs (needed to send messages, receive webhooks,
 
 #### Defined in
 
-[speedybot.ts:100](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L100)
+[speedybot.ts:102](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L102)
 
 ___
 
@@ -1152,7 +1135,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:764](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L764)
+[speedybot.ts:766](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L766)
 
 ___
 
@@ -1173,7 +1156,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:782](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L782)
+[speedybot.ts:784](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L784)
 
 ___
 
@@ -1193,7 +1176,7 @@ ___
 
 #### Defined in
 
-[speedybot.ts:667](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L667)
+[speedybot.ts:669](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L669)
 
 ___
 
@@ -1207,4 +1190,4 @@ ___
 
 #### Defined in
 
-[speedybot.ts:1038](https://github.com/valgaze/speedybot/blob/4524beb/src/speedybot.ts#L1038)
+[speedybot.ts:1046](https://github.com/valgaze/speedybot/blob/4280279/src/speedybot.ts#L1046)

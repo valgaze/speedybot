@@ -1,10 +1,10 @@
 # [QUICKSTART] λ Deploy your bot to a "serverless" AWS Lambda Function
 
-- This example uses the **[Serverless Stack (SST)](https://serverless-stack.com/)** toolchain for provisioning, deployment of infrastructure.
+- This example uses the **[Serverless Stack (SST)](https://ion.sst.dev/docs)** toolchain for provisioning, deployment of infrastructure and makes it possible to express your infrastructure needs as spec/code
 
-- SST is built on top of a version **[AWS Cloud Development Kit (cdk)](https://aws.amazon.com/cdk/)** and makes it possible to express your infrastructure needs as spec/code. SST is definitely not required, but is the quickest route to a serverless deployment.
+- SpeedyBot has been built with serverless in mind from the beginning-- serverless infrastructure is "asleep" until you need it (ie when a user sends a message, card, or file). S
 
-- SpeedyBot has been built with serverless in mind from the beginning-- serverless infrastructure is "asleep" until you need it. Start-up times are generally fast enough to interact with the chat client withot timing out. Check out the **[Worker sample](https://speedybot.js.org/examples/worker/README)** for a fast-loading V8 Isolate without the overhead of a container
+- Start-up times are generally fast enough to interact with the chat client without timing out. Check out the **[Worker sample](https://speedybot.js.org/examples/worker/README)** for a fast-loading V8 Isolate without the overhead of a container
 
 ## 1) Fetch repo & install dependencies
 

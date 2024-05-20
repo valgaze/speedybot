@@ -240,16 +240,6 @@ export type Submit_Details<T = object> = {
   created: Date | string;
 };
 
-export type AA_Details = {
-  id: string;
-  type: string;
-  messageId: string;
-  inputs: any;
-  personId: string;
-  roomId: string;
-  created: Date | string;
-};
-
 // Get Self data from token
 export type SelfData = {
   id: string;
@@ -416,4 +406,10 @@ export type Room_Details = {
   ownerId: string;
   isPublic: boolean;
   isReadOnly: boolean;
+};
+
+export type Chunk<T> = (messageChunk: T[]) => void;
+export type RoomConfig = {
+  type: "group" | "direct";
+  sortBy: "id" | "lastactivity" | "created";
 };

@@ -1,6 +1,33 @@
 <template>
   <client-only>
     <div>
+      <el-collapse accordion @change="handleChange" v-if="!skipRoomConfig">
+        <el-collapse-item
+          :title="label + ' Room Filter Options ' + label"
+          name="2"
+        >
+          <el-form-item label="FULL Room Scan">
+            <el-switch v-model="store.state.deepSearch" />
+          </el-form-item>
+
+          <el-form-item label="Room Type">
+            <el-radio-group v-model="store.state.roomFilters.type">
+              <el-radio :label="undefined">Both</el-radio>
+              <el-radio :label="'group'">Group</el-radio>
+              <el-radio :label="'direct'">Direct</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="Sort By">
+            <el-radio-group v-model="store.state.roomFilters.sortBy">
+              <el-radio :label="''">None</el-radio>
+              <el-radio :label="'created'">Created</el-radio>
+              <el-radio :label="'lastactivity'">Last Activity</el-radio>
+              <el-radio :label="'id'">ID</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-collapse-item>
+      </el-collapse>
       <el-input
         v-model="store.state.token"
         @input="checkToken(store.state.token)"
@@ -18,6 +45,12 @@
           >
         </template>
       </el-input>
+
+      <!-- <el-switch
+        v-model="store.state.deepSearch"
+        label="Full Room Search"
+        size="small"
+      /> -->
       <el-alert
         v-if="
           store.state.tokenValid === false &&
@@ -61,11 +94,14 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { Refresh } from "@element-plus/icons-vue";
 import { useCustomStore } from "./../util/store";
+import { computed, watch } from "vue";
+// import { ElLoading } from "element-plus";
 
 const store = useCustomStore();
-
+const label = ref("⭐️");
 const emit = defineEmits();
 const checkToken = async (tokenCandidate: string) => {
   if (tokenCandidate.length > 5) {
@@ -76,7 +112,33 @@ const checkToken = async (tokenCandidate: string) => {
   }
 };
 
+const watchFilters = computed(() => ({
+  roomFiltersSort: store.state.roomFilters.sortBy,
+  roomFiltersType: store.state.roomFilters.type,
+  deepSearch: store.state.deepSearch,
+}));
+
+watch(watchFilters, async (newValues, oldValues) => {
+  if (store.state.token) {
+    await store.validateToken(store.state.token);
+  }
+});
+
+const handleChange = (val: string[]) => {
+  if (val) {
+    label.value = "🌟";
+  } else {
+    label.value = "⭐️";
+  }
+};
+
 const props = defineProps({
+  skipRoomConfig: {
+    type: Boolean,
+    default() {
+      return false;
+    },
+  },
   showInfo: {
     type: Boolean,
     default() {

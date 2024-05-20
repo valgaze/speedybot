@@ -15,3 +15,6 @@ todo.md
 .github
 .vscode
 trickyoperation.ts
+contributing.md
+devtools/
+changelog.md

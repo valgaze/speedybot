@@ -1,4 +1,4 @@
-# "I'm new here" 🐣
+# <span class="boop">🐣</span> "I'm new here"
 
 tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems-- especially in enterprises and large teams with complex requirements
 
@@ -30,7 +30,7 @@ The flow to get a token will look roughly like this:
 
 Once you've got your token, pop it into the box below to validate it & review your bot's details
 
-<TokenInput :showInfo="true" :autofocus="false"/>
+<TokenInput :showInfo="true" :skipRoomConfig="true" :autofocus="false"/>
 
 ::: details Is this safe??
 
@@ -58,7 +58,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 ## Step II: Send a Test Message with Your Access Token
 
-- Let's test out your bot access token by sending a **[SpeedyCard](./speedycard.md)** to you as a direct message (tap the 🎲 to shuffle through some examples as inspiration or write your own)
+- Let's test out your bot access token. You can do this by sending yourself a SpeedyCard in a direct message. Feel free to tap the 🎲 for some examples or craft your own code with the editor
 
   <SpeedyCardEditor></SpeedyCardEditor>
 
@@ -153,8 +153,10 @@ However you set up your system, make sure to run `node -v` in your terminal to v
       padding: 10px;
     "/>
 
-Note: If you really want to speedy things up try it with **[Bun](https://bun.sh)** and install with
+Note: If you really want to speed things up, try it with **[Bun](https://bun.sh)** and install with the following command:
+
 `curl -fsSL https://bun.sh/install | bash`
+
 :::
 
 Now send a message to your bot and you'll see a welcome screen with buttons and cards:
@@ -194,3 +196,33 @@ const store = useCustomStore()
 const type = ref(1)
 
 </script>
+
+<style>
+  @keyframes floatEmoji {
+  0%, 100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes floatEmoji {
+  0%, 100% {
+    transform: translateY(-2px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(2px) rotate(5deg);
+  }
+}
+
+.boop {
+  animation: floatEmoji 1.65s ease-in-out infinite;
+  display: inline-block;
+}
+
+.boop:hover {
+  animation-play-state: paused;
+}
+
+</style>
