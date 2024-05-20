@@ -1,52 +1,48 @@
 <svg width="32769" height="23570" viewBox="0 0 32769 23570" fill="none" xmlns="http://www.w3.org/2000/svg" id="cute-svg">
-  <style>
-    /* Initial state */
-    #left-eye {
-      transform-origin: center;
-      animation: look-around-left-animation 4s infinite;
-    }
-
-    #right-eye {
-      transform-origin: center;
-      animation: look-around-right-animation 4s infinite;
-    }
-
+<style>
     @keyframes look-around-left-animation {
       0%, 100% {
-        transform: translateX(0) translateY(0);
+        transform: translate(0, 0);
       }
       25% {
-        transform: translateX(15%) translateY(-5%);
+        transform: translate(2450px, -1180px);
       }
       50% {
-        transform: translateX(-5%) translateY(5%);
+        transform: translate(-815px, 1180px);
       }
-       75% {
-        transform: translateX(18%) translateY(5%);
+      75% {
+        transform: translate(2940px, 1180px);
       }
-      
     }
 
     @keyframes look-around-right-animation {
       0%, 100% {
-        transform: translateX(0) translateY(0);
+        transform: translate(0, 0);
       }
       25% {
-        transform: translateX(5%) translateY(-5%);
+        transform: translate(1275px, -1180px);
       }
       50% {
-        transform: translateX(-15%) translateY(5%);
+        transform: translate(-3820px, 1180px);
       }
-       75% {
-        transform: translateX(5%) translateY(5%);
+      75% {
+        transform: translate(1275px, 1180px);
       }
+    }
 
+    #left-eye {
+      animation: look-around-left-animation 4s infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
 
-    html.dark #cute-svg path,
-    html.dark #cute-svg circle {
-      fill: white;
+    #right-eye {
+      animation: look-around-right-animation 4s infinite;
+      transform-box: fill-box;
+      transform-origin: center;
     }
   </style>
+
 
   <path d="M24107.9 7548.34C24107.9 6676.18 23761.4 5839.73 23144.7 5223.02C22528 4606.3 21691.5 4259.84 20819.4 4259.84C19947.2 4259.84 19110.8 4606.3 18494.1 5223.02C17877.3 5839.73 17530.9 6676.18 17530.9 7548.34L20819.4 7548.34H24107.9Z" fill="#303030"/>
   <circle id="left-eye" cx="16220.2" cy="13083.8" r="1825.65" fill="#303030"/>

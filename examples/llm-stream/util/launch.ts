@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { resolve } from "path";
 import { announceExit } from "./index";
 process.on("exit", announceExit);
+process.on("SIGINT", process.exit.bind(null, 0));
 
 config({ path: resolve(__dirname, "..", ".env") });
 

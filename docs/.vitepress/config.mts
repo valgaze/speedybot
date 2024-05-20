@@ -7,7 +7,7 @@ export default defineConfig({
   title: "SpeedyBot",
   description: "Rich conversation agents, the speedy and easy way",
   themeConfig: {
-    logo: "./..//sb_logo.svg",
+    logo: "./../sb_logo.svg",
     footer: {
       message: `<a href="https://github.com/valgaze/speedybot/blob/v2/LICENSE" target="_blank">MIT License</a> ${new Date().getFullYear()}`, // this'll be statically updated everytime redeploy
     },
@@ -83,14 +83,11 @@ export default defineConfig({
           },
           {
             text: "Contributing",
-            link: "https://github.com/valgaze/speedybot/blob/main/CONTRIBUTING.md",
+            link: "https://github.com/valgaze/speedybot/blob/v2/contributing.md#contributing",
           },
         ],
       },
-
-      // { text: "🏡 Home", link: "/" },
     ],
-
     sidebar: [
       {
         text: "🤖 Bot Utils ",

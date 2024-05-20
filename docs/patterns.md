@@ -288,7 +288,7 @@ Bot.exact("$clear", async ($) => {
   return $.end;
 });
 
-// identify words from a list
+// identify words from a list (case-insensitive)
 Bot.contains(["bingo", "bongo"], async ($) => {
   await $.send(
     `You entered text that contained the word bingo/bongo somewhere`
@@ -328,6 +328,29 @@ Bot.addStep(async ($) => {
   await $.send(`You added this value to the context: ${$.ctx.myValue}`);
   return $.next;
 });
+```
+
+## List Rooms
+
+Retrieve a full list of rooms associated with a `BOT_TOKEN` using `Bot.getAllRooms` or `Bot.getRecentRooms`
+
+This can be be a long-running operation-- `Bot.getAllRooms` captures all rooms by exhaustively checking all pages [pages](https://developer.webex.com/docs/basics#pagination)
+
+```ts
+import { SpeedyBot } from "speedybot";
+
+const Bot = new SpeedyBot();
+Bot.setToken("BOT_TOKEN");
+
+// List the last 100 recent rooms
+const recentRooms = await Bot.getRecentRooms();
+
+// List ALL rooms associated with a BOT_TOKEN
+// type: 'direct' | 'group' (default both)
+// sortBy: "id" | "lastactivity" | "created";
+const allRooms = await Bot.getAllRooms({ type: "group" });
+
+console.log(allRooms.map((room) => room.title));
 ```
 
 ## Handle "chips"

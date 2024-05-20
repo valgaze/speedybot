@@ -10,7 +10,7 @@ export const announceExit = (name?: string) => {
   }
   console.log(
     `
-  ${name ? name : "Your bot"} is now "off"
+  ${name && typeof name === "string" ? name : "Your bot"} is now "off"
       
   You can turn your bot back on by entering the following commands:
       

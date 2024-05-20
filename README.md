@@ -29,7 +29,7 @@ npm install speedybot
 
 ## SpeedyBot basics
 
-You can get a bot up and running fast by grabbing one of the batteries-included samples at **[https://speedybot.js.org/examples](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](https://speedybot.js.org/examples/voiceflow/README)**, **[process file-uploads](https://speedybot.js.org/patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns.md#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, **[ask for a user's location in a privacy-respecting way](https://speedybot.js.org/examples/location/README)** and lots more.
+You can get a bot up and running fast by grabbing one of the batteries-included samples at **[https://speedybot.js.org/examples](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](https://speedybot.js.org/examples/voiceflow/README)**, **[process file-uploads](https://speedybot.js.org/patterns#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, **[ask for a user's location in a privacy-respecting way](https://speedybot.js.org/examples/location/README)** and lots more.
 
 ## The basics
 
