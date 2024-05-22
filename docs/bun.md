@@ -56,10 +56,6 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 :::
 
-## Step IA: [optional] Install a text editor
-
-There's a lot of text editors in the world these days, a popular + free one (that also works great with SpeedyBot) is called Visual Studio Code, see here for details: **[https://code.visualstudio.com](https://code.visualstudio.com)**
-
 ## Step II: Send a Test Message with Your Access Token
 
 - Let's test out your bot access token. You can do this by sending yourself a SpeedyCard in a direct message. Feel free to tap the 🎲 for some examples or craft your own code with the editor
@@ -94,7 +90,7 @@ There's a lot of text editors in the world these days, a popular + free one (tha
 
 - That's because there's nobody "home" to answer the request-- SpeedyBot can "listen" for messages (or card data submissions or files) so anytime someone interacts with your bot it will respond back automatically per your instructions
 
-## Run your bot from your computer
+## Step IV: Run your bot from your computer
 
 ### Getting Started with Bun on Your Computer
 
@@ -120,16 +116,20 @@ Note for Windows: On PC you may have enter the `powershell` install command twic
 
 ::: details Concerns about Bun
 
+**[Bun](https://bun.sh)** is an experimental high-performance JavaScript runtime and toolkit that combines a package manager, bundler, and task runner into one tool.
+
 Note: Install scripts are available for inspection below
 
 - For Mac: [install.sh](https://github.com/oven-sh/bun/blob/main/src/cli/install.sh)
 - For Windows: [install.ps1](https://github.com/oven-sh/bun/blob/main/src/cli/install.ps1)
 
-SpeedyBot can run on any Javascript/Typescript runtime or infrastructue-- Bun is the quickest way to get up and running
+SpeedyBot can run on any Javascript/Typescript runtime or infrastructue-- Bun just happens to be the easiest way to get up and running-- see https://speedybot.js.org/new for full instructions
 
 :::
 
-### Copy the commands below to get up and running
+### Boot it up!
+
+Copy the command below into your terminal to turn on your bot
 
 ::: code-group
 
@@ -138,7 +138,7 @@ SpeedyBot can run on any Javascript/Typescript runtime or infrastructue-- Bun is
 bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
-```sh-vue [👹 Experienced]
+```sh-vue [👹 Experienced/Node]
 git clone --depth 1 https://github.com/valgaze/speedybot
 cd speedybot
 cd examples/speedybot-starter
@@ -148,6 +148,8 @@ npm run dev
 ```
 
 :::
+
+### Talk to Your Bot
 
 Now send a message to your bot and you'll see a welcome screen with buttons and cards:
 
@@ -163,11 +165,35 @@ Now send a message to your bot and you'll see a welcome screen with buttons and 
       padding: 10px;
     "/>
 
-You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)**
+You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `bun run dev`
+
+Note: when you press **CTRL-C** the terminal will display the location of your bot
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/bot_off.gif" />
+
+## Step V Customize your Bot
+
+🎉 Congrats! You have a bot running on your machine!
+
+Now it's time to make it useful just for you. To customize your bot's behavior or responses, you'll need a code editor. One popular choice is Visual Studio Code.
+
+For installation details, visit **[https://code.visualstudio.com/download](https://code.visualstudio.com/download)**
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/vsc_editor.png" />
+
+It works great with SpeedyBot and even provides helpful hints as you build ex.
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
-You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `npm run dev`
+When adding functionality to your bot the only file you'll need to modify is the `bot.ts` file and SpeedyBot will take care of the rest. See **[here for the details](https://speedybot.js.org/patterns#the-basics)** but the tl;dr version is that anytime a user sends your bot a message, uploads a file, or clicks submit on a **[SpeedyCard](./send-a-card.md)** SpeedyBot will follow your instructions and take actions on the user's behalf.
+
+With SpeedyBot you can really do it all-- start a conversation, communicate with a large language model, call out to 3rd-party APIs/services, add a document to an embedding/vector data, and generally handle user input in any way you choose.
+
+### Live reload
+
+You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)** in your code editor. Note that if your bot is running, when you make a change and click save your bot will auto-reload and instantly reflect your changes.
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/live_reload.gif?raw=true" />
 
 Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](./examples/voiceflow/README)**, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-access-pattern)**, **[let users upload documents and then 'chat' with them using an LLM and a R.A.G. pattern](./examples/voiceflow-kb/README.md)**, create + manage **[SpeedyCards](./speedycard.md)**, **[ask for a user's location in a privacy-respecting way](./examples/location/README.md)**, and much more.
 

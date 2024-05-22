@@ -35,9 +35,14 @@ Heads up-- unlike a **[bot token](https://developer.webex.com/my-apps/new/bot)**
 
 Once you've got your token, pop it into the box below to validate it & review your bot's details
 
-<TokenInput :showInfo="true" :autofocus="false"/>
+<TokenInput :showInfo="true" :autofocus="false" :skipRoomConfig="true"/>
 
 ## Step III: Send a SpeedyCard! 🚀
+
+<compact-select
+ref="rootRef"
+:labelValuePairs="samples"
+@selected="handleSelected"></compact-select>
 
 <el-tabs v-model="activeName" :class="{'is-dark': isDark}">
 <el-tab-pane label="SpeedyCard editor" name="editor">
@@ -46,11 +51,6 @@ Once you've got your token, pop it into the box below to validate it & review yo
 <el-checkbox v-model="showJSON">{{ showJSON ? 'Hide JSON Output' : 'Show JSON Output' }}</el-checkbox>
 
 The box above is "live" & has typing hints so you can dive in and get started writing SpeedyCards. If you need some inspiration, press the dice 🎲 button button to cycle through some sample SpeedyCards. You can send the card to a specific person or a room
-
-<compact-select
-ref="rootRef"
-:labelValuePairs="samples"
-@selected="handleSelected"></compact-select>
 
 </el-tab-pane>
 <el-tab-pane label="JSON (output)" name="json" v-if="showJSON">

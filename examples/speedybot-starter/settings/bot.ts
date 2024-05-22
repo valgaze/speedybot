@@ -2,7 +2,9 @@ import { SpeedyBot, SpeedyCard, SurveyQuestion } from "speedybot";
 
 const Bot = new SpeedyBot();
 
+// See here for other steps/functionalities: https://speedybot.js.org/patterns
 Bot.addStep(async ($) => {
+  await $.send(`This is the first message change me!`);
   // handle text
   if ($.text) {
     if ($.text.toLowerCase() === "showcard") {
