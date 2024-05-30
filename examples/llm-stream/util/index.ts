@@ -1,4 +1,8 @@
 import { resolve } from "path";
+declare const Bun: unknown;
+export const isBun = () => {
+  return typeof Bun !== "undefined";
+};
 
 export const announceExit = (name?: string) => {
   const isColorSupported = process.stdout.isTTY;
@@ -15,7 +19,7 @@ export const announceExit = (name?: string) => {
   You can turn your bot back on by entering the following commands:
       
   cd ${resolve(__dirname, "..")}
-  npm run dev
+  ${isBun() ? "bun --watch util/launch.ts" : "npm run dev"}
   
   If you want to deploy your bot to a persistent server or serverless function, see here:
   https://speedybot.js.org/examples

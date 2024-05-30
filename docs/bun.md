@@ -67,10 +67,13 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 ## Step III: Setup your SpeedyBot Listener
 
 <el-alert
-    title="⛔️ Nobody is listening"
+    title="⛔️ PROBLEM: Nobody is listening ⛔️"
     type="error"
-    description="You may have noticed that if you tried to submit any data back from a card-- nothing happens "
+    :closable="false"
+    effect="dark"
   />
+
+You may have noticed that if you tried to submit any data back from a card-- nothing happens, ex:
 
 <img
     src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
@@ -112,9 +115,7 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 
 :::
 
-Note for Windows: On PC you may have enter the `powershell` install command twice
-
-::: details Concerns about Bun
+::: details 💡 Tips for Windows Users + Bun Concerns
 
 **[Bun](https://bun.sh)** is an experimental high-performance JavaScript runtime and toolkit that combines a package manager, bundler, and task runner into one tool.
 
@@ -124,6 +125,29 @@ Note: Install scripts are available for inspection below
 - For Windows: [install.ps1](https://github.com/oven-sh/bun/blob/main/src/cli/install.ps1)
 
 SpeedyBot can run on any Javascript/Typescript runtime or infrastructue-- Bun just happens to be the easiest way to get up and running-- see https://speedybot.js.org/new for full instructions
+
+## Note for Windows
+
+On PC if you're having trouble getting `Bun` working on Windows/Powershell try the following method instead:
+
+Step 1: Download and run Git Bash https://git-scm.com/download/win
+
+**Note:** Step-by-step instructions available here: https://www.git-tower.com/blog/git-bash/
+
+Step 2: Run the following command inside Git Bash to setup Bun:
+
+```
+curl -fsSL https://bun.sh/install | bash
+```
+
+Step 3: Completely close out from Git Bash
+
+Step 4: Re-open Git Bash again and enter the following command:
+
+```sh-vue
+
+bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+```
 
 :::
 
@@ -138,13 +162,13 @@ Copy the command below into your terminal to turn on your bot
 bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
-```sh-vue [👹 Experienced/Node]
+```sh-vue [👹 Experienced]
 git clone --depth 1 https://github.com/valgaze/speedybot
 cd speedybot
 cd examples/speedybot-starter
-npm i
-npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
-npm run dev
+bun install
+bun util/cli.ts setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
+bun --watch util/launch.ts
 ```
 
 :::
@@ -187,7 +211,7 @@ It works great with SpeedyBot and even provides helpful hints as you build ex.
 
 When adding functionality to your bot the only file you'll need to modify is the `bot.ts` file and SpeedyBot will take care of the rest. See **[here for the details](https://speedybot.js.org/patterns#the-basics)** but the tl;dr version is that anytime a user sends your bot a message, uploads a file, or clicks submit on a **[SpeedyCard](./send-a-card.md)** SpeedyBot will follow your instructions and take actions on the user's behalf.
 
-With SpeedyBot you can really do it all-- start a conversation, communicate with a large language model, call out to 3rd-party APIs/services, add a document to an embedding/vector data, and generally handle user input in any way you choose.
+With SpeedyBot you can really do it all-- start a conversation, communicate with a large language model, call out to 3rd-party APIs/services, add a document to an embedding/vector database, and generally handle user input in any way you choose.
 
 ### Live reload
 

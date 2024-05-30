@@ -60,17 +60,18 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 - Let's test out your bot access token. You can do this by sending yourself a SpeedyCard in a direct message. Feel free to tap the 🎲 for some examples or craft your own code with the editor
 
-  <SpeedyCardEditor></SpeedyCardEditor>
+<SpeedyCardEditor></SpeedyCardEditor>
 
 - When you're ready, tap the **Send Message** tab and use the email you signed up with as the destination and hit Send-- in about a second you should receive a new message from your bot
 
-## Step III: Setup your SpeedyBot Listener
-
 <el-alert
-    title="⛔️ Nobody is listening"
+    title="⛔️ PROBLEM: Nobody is listening ⛔️"
     type="error"
-    description="You may have noticed that if you tried to submit any data back from a card-- nothing happens "
+    :closable="false"
+    effect="dark"
   />
+
+You may have noticed that if you tried to submit any data back from a card that has form inputs-- nothing happens, ex:
 
 <img
     src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
@@ -90,42 +91,110 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 - That's because there's nobody "home" to answer the request-- SpeedyBot can "listen" for messages (or card data submissions or files) so anytime someone interacts with your bot it will respond back automatically per your instructions
 
-## Run your bot from your computer
+## Step III: Setup your SpeedyBot "Listener"
 
-- Keeping things simple to start you'll run the bot from your machine (ie when your computer is off, your bot is "off") but later if you need to, you can deploy it to virtually **[any standard server or scalable serverless cloud infrastructure you want](./examples/index)**
+To keep things simple at the start, you'll run the bot from your own machine (meaning when your computer is off, your bot is "off" too). Later, if needed, you can deploy your bot to virtually <a href="./examples/index" target="_blank">any standard server or scalable serverless cloud infrastructure you prefer</a>
 
-Copy the commands below to get up and running
+<el-switch
+v-model="runTimeChoice"
+active-text="Use NodeJS (advanced)"
+inactive-text="Use Bun (easy)"
+:active-value="'node'"
+:inactive-value="'bun'"
+active-color="#81ecec"
+inactive-color="#74b9ff">
+</el-switch>
+
+<div v-if="runTimeChoice === 'bun'">
+
+### Getting Started with Bun on Your Computer
+
+Bun is a tool that helps make working with JavaScript faster and easier. It's like a special tool that helps you run JavaScript code really quickly. You can find helpful guides and explanations about Bun [here](https://bun.sh/docs).
+
+Setting up Bun is simple. It ships as a single executable that you can easily install on your computer. If you're not interested in using Bun, that's okay too. SpeedyBot works with many runtimes and infrastructure-- see the NodeJS instructions by tapping the toggle above
+Enter the commands below in your terminal to get up and running with Bun
 
 ::: code-group
 
-```sh-vue [🥺 New (recommended)]
-npx -y speedybot@^2.0.0 setup --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+```sh-vue [Linux/Mac]
+curl -fsSL https://bun.sh/install | bash
 ```
 
+```sh-vue [Windows (must use powershell)]
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+Verify that Bun is installed correctly and available from your terminal-- if you can run `bun --version` in your terminal and you see a version number you're good to go!
+
+:::
+
+::: details 💡 Tips for Windows Users + Bun Questions
+
+**[Bun](https://bun.sh)** is an experimental high-performance JavaScript runtime and toolkit that combines a package manager, bundler, and task runner into one tool.
+
+Note: Install scripts are available for inspection below
+
+- For Mac: [install.sh](https://github.com/oven-sh/bun/blob/main/src/cli/install.sh)
+- For Windows: [install.ps1](https://github.com/oven-sh/bun/blob/main/src/cli/install.ps1)
+
+SpeedyBot can run on any Javascript/Typescript runtime or infrastructue-- Bun just happens to be a speedy and easy way to get up and running
+
+### Note for Windows Users
+
+On PC if you're having trouble getting `Bun` working on Windows/Powershell try the following method instead:
+
+Step 1: Download and run Git Bash https://git-scm.com/download/win
+
+**Note:** Step-by-step instructions available here: https://www.git-tower.com/blog/git-bash/
+
+Step 2: Run the following command inside Git Bash to setup Bun:
+
+```
+curl -fsSL https://bun.sh/install | bash
+```
+
+Step 3: Completely close out from Git Bash
+
+Step 4: Re-open Git Bash again and enter the following command:
+
+```sh-vue
+
+bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+```
+
+:::
+
+### Boot it up!
+
+Copy the command below into your terminal to turn on your bot
+
+::: code-group
+
 ```sh-vue [🚀 Bun (FAST!!)]
-bunx speedybot@^2.0.0 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+
+bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
 ```sh-vue [👹 Experienced]
 git clone --depth 1 https://github.com/valgaze/speedybot
 cd speedybot
 cd examples/speedybot-starter
-npm i
-npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
-npm run dev
+bun install
+bun util/cli.ts setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
+bun --watch util/launch.ts
 ```
 
 :::
 
-::: details Getting errors?
+</div>
 
-If you see an error like `npm: command not found` you probably need to install node or a compatible runtime onto your system.
+<div v-if="runTimeChoice === 'node'">
 
-There are many ways to do this, but two easy ways:
+### Setup Node on Your Computer
 
-<el-alert title="Note for Windows Users" type="info" show-icon />
+Node is a popular tool for running Typescript/JavaScript on web servers. Today, you'll use it to activate your bot—it will handle all the details behind the scenes.
 
-If you use Windows, see the **[Windows Quickstart](./windows.md)**
+You'll need to install NodeJS on your machine to turn on your bot. There are many ways to do that, but two easy ways:
 
 **Option 1** Download + install Node from the official site: **[https://nodejs.org/en/download](https://nodejs.org/en/download)**
 
@@ -139,25 +208,34 @@ curl https://get.volta.sh | bash
 volta install node
 ```
 
-However you set up your system, make sure to run `node -v` in your terminal to verify node is correctly installed and you can get up and running with `npx speedybot setup --project default`:
+Note: If you're having trouble getting setup on Windows see the **[Windows Quickstart](./windows.md)**
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/cli_setup.gif"     
-    :style="{ filter: !isDark ? 'invert(1)' : 'none' }"
-    style="
-      margin: 1rem 0px;
-      display: inline-block;
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-    "/>
+Whatever option you choose, verify that Node.js is installed, enter `node -v` in your terminal-- if you see a version number you're good to go!
 
-Note: If you really want to speed things up, try it with **[Bun](https://bun.sh)** and install with the following command:
+### Boot it up!
 
-`curl -fsSL https://bun.sh/install | bash`
+Once Node is on your machine, copy the command below into your terminal to turn on your bot
+
+::: code-group
+
+```sh-vue [🥺 npx (recommended)]
+npx -y speedybot@^2.0.0 setup --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+```
+
+```sh-vue [👹 Manual Steps (For experienced)]
+git clone --depth 1 https://github.com/valgaze/speedybot
+cd speedybot
+cd examples/speedybot-starter
+npm i
+npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
+npm run dev
+```
 
 :::
+
+</div>
+
+### Talk to Your Bot
 
 Now send a message to your bot and you'll see a welcome screen with buttons and cards:
 
@@ -173,11 +251,35 @@ Now send a message to your bot and you'll see a welcome screen with buttons and 
       padding: 10px;
     "/>
 
-You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)**
+You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `bun run dev`
+
+Note: when you press **CTRL-C** the terminal will display the location of your bot
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/bot_off.gif" />
+
+## Step V Customize your Bot
+
+🎉 Congrats! You have a bot running on your machine!
+
+Now it's time to make it useful just for you. To customize your bot's behavior or responses, you'll need a code editor. One popular choice is Visual Studio Code.
+
+For installation details, visit **[https://code.visualstudio.com/download](https://code.visualstudio.com/download)**
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/vsc_editor.png" />
+
+It works great with SpeedyBot and even provides helpful hints as you build ex.
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
-You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `npm run dev`
+When adding functionality to your bot the only file you'll need to modify is the `bot.ts` file and SpeedyBot will take care of the rest. See **[here for the details](https://speedybot.js.org/patterns#the-basics)** but the tl;dr version is that anytime a user sends your bot a message, uploads a file, or clicks submit on a **[SpeedyCard](./send-a-card.md)** SpeedyBot will follow your instructions and take actions on the user's behalf.
+
+With SpeedyBot you can really do it all-- start a conversation, communicate with a large language model, call out to 3rd-party APIs/services, add a document to an embedding/vector database, and generally handle user input in any way you choose.
+
+### Live reload
+
+You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)** in your code editor. Note that if your bot is running, when you make a change and click save your bot will auto-reload and instantly reflect your changes.
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/live_reload.gif?raw=true" />
 
 Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](./examples/voiceflow/README)**, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-access-pattern)**, **[let users upload documents and then 'chat' with them using an LLM and a R.A.G. pattern](./examples/voiceflow-kb/README.md)**, create + manage **[SpeedyCards](./speedycard.md)**, **[ask for a user's location in a privacy-respecting way](./examples/location/README.md)**, and much more.
 
@@ -194,6 +296,13 @@ const { isDark } = useData()
 const store = useCustomStore()
 
 const type = ref(1)
+// const runTimeChoice = ref('bun')
+const runTimeChoice = ref('node')
+
+const switchToNode = () => {
+  runTimeChoice.value = 'node'
+}
+
 
 </script>
 
