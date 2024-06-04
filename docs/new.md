@@ -297,7 +297,7 @@ const store = useCustomStore()
 
 const type = ref(1)
 // const runTimeChoice = ref('bun')
-const runTimeChoice = ref('node')
+const runTimeChoice = ref('bun')
 
 const switchToNode = () => {
   runTimeChoice.value = 'node'
