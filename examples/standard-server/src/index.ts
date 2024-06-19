@@ -1,11 +1,11 @@
 import * as bodyParser from "body-parser";
 import { config } from "dotenv";
-import * as express from "express";
+import express from "express";
 import { resolve } from "path";
 import Bot from "./../settings/bot";
 import { validateWebhook } from "./validateWebhook";
 import { announceReady } from "../util";
-import { SpeedyBot } from "../../../src";
+import { SpeedyBot } from "speedybot";
 
 // Expects .env to get token on BOT_TOKEN
 config({ path: resolve(__dirname, "..", ".env") });
