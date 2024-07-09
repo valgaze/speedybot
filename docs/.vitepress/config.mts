@@ -36,6 +36,11 @@ export default defineConfig({
             text: "🔥 Deploy to Worker ",
             link: "/examples/worker/README",
           },
+
+          {
+            text: "🔗 Bot + Azure LLM",
+            link: "/examples/azure/README",
+          },
           {
             text: "🦖 Deploy to Deno",
             link: "/examples/deno/README",
@@ -78,6 +83,10 @@ export default defineConfig({
         text: `v${version}`,
         items: [
           {
+            text: "NPM Package",
+            link: "https://www.npmjs.com/package/speedybot",
+          },
+          {
             text: "Release Notes",
             link: "https://github.com/valgaze/speedybot/releases",
           },
@@ -118,6 +127,10 @@ export default defineConfig({
           {
             text: "🦖 Deploy to Deno",
             link: "/examples/deno/README",
+          },
+          {
+            text: "🔗 Bot + Azure LLM",
+            link: "/examples/azure/README",
           },
           {
             text: "🌐 Deploy to Server ",

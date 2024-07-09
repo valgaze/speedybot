@@ -99,6 +99,9 @@ export const mainRequester = async (
   try {
     const response = await fetch(url, init);
     if (!response.ok) {
+      console.log("Full", { init, response });
+      const beer = await response.text();
+      console.log("#", beer);
       throw new RequestError(
         `The request to ${url} failed with status ${response.status}${
           response.status === 401

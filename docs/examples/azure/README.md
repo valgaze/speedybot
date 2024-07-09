@@ -1,14 +1,38 @@
-# <span class="boop">🐣</span> "I'm new here"
+# <span class="boop">🔗</span> Integrate with Azure
 
-tl;dr: SpeedyBot helps you efficiently design, deploy, and secure rich conversation systems-- especially in enterprises and large teams with complex requirements
+This guide will show you how to set up SpeedyBot on your local machine and connect it to a large language model managed by Azure. SpeedyBot streamlines the process of designing, deploying, and securing sophisticated conversation systems, tailored for enterprises and large teams with complex needs.
 
-Follow the quick setup below to go from zero to a SpeedyBot running on your local machine (which you can later seamlessly **[deploy to any infrastructure you want](./examples.md)** if needed)
+## Step 0: Get your Azure details
+
+To authenticate with Azure, you'll need to obtain some key data. Your organization might be able to provide this information.
+
+```sh
+BOT_TOKEN=__REPLACE__ME__
+OAUTH_ENDPOINT=https://yourDomain.com/oauth2/default/v1/token
+CLIENT_ID=aabbccddeeffgghhiijjkk
+CLIENT_SECRET=abcd1234567890987654321
+
+BASE_URL_LLM=https://{your-resource-name}.openai.azure.com/openai
+MODEL=gpt-35-turbo
+APP_KEY=app-name-here
+API_VERSION=2023-12-01-preview
+```
+
+Further reading:
+
+- Setup: https://learn.microsoft.com/en-us/azure/ai-services/openai/quickstart?tabs=command-line&pivots=rest-api
+
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/reference
+
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter?tabs=warning%2Cpython-new
+
+- https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt?tabs=python-new
 
 ## Step I: Grab Your Access Token
 
-- You'll need a WebEx account to build bots— if you don't have one one, sign up for a new account here: **[https://signup.webex.com/sign-up](https://signup.webex.com/sign-up)**
+- **Sign Up**: You'll need a WebEx account to build bots— if you don't have one one, sign up for a new account here: **[https://signup.webex.com/sign-up](https://signup.webex.com/sign-up)**
 
-- Once you have an account, create a new bot and copy its access token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
+- **Create a Bot**: Once you have an account, create a new bot and copy its access token from here: **[https://developer.webex.com/my-apps/new/bot](https://developer.webex.com/my-apps/new/bot)**
 
 The flow to get a token will look roughly like this:
 
@@ -56,42 +80,7 @@ SpeedyBot does **NOT** log/persist or do anything (except what you tell it to do
 
 :::
 
-## Step II: Send a Test Message with Your Access Token
-
-- Let's test out your bot access token. You can do this by sending yourself a SpeedyCard in a direct message. Feel free to tap the 🎲 for some examples or craft your own code with the editor
-
-<SpeedyCardEditor></SpeedyCardEditor>
-
-- When you're ready, tap the **Send Message** tab and use the email you signed up with as the destination and hit Send-- in about a second you should receive a new message from your bot
-
-<el-alert
-    title="⛔️ PROBLEM: Nobody is listening ⛔️"
-    type="error"
-    :closable="false"
-    effect="dark"
-  />
-
-You may have noticed that if you tried to submit any data back from a card that has form inputs-- nothing happens, ex:
-
-<img
-    src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/new/card_nosubmit.gif"
-    :style="{ filter: isDark ? 'invert(1)' : 'none' }"
-    style="
-      margin: 1rem 0px;
-      display: inline-block;
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-    "
-  />
-
-- In fact, any user interaction with {{ store.state.userData?.emails[0] ?? 'your bot'}} right now— be it a message, SpeedyCard submission, or file upload, results in icy radio silence
-
-- That's because there's nobody "home" to answer the request-- SpeedyBot can "listen" for messages (or card data submissions or files) so anytime someone interacts with your bot it will respond back automatically per your instructions
-
-## Step III: Setup your SpeedyBot "Listener"
+## Step II: Get your System Ready
 
 To keep things simple at the start, you'll run the bot from your own machine (meaning when your computer is off, your bot is "off" too). Later, if needed, you can deploy your bot to virtually <a href="./examples/index" target="_blank">any standard server or scalable serverless cloud infrastructure you prefer</a>
 
@@ -160,32 +149,27 @@ curl -fsSL https://bun.sh/install | bash
 
 Step 3: Completely close out from Git Bash
 
-Step 4: Re-open Git Bash again and enter the following command:
-
-```sh-vue
-
-bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
-```
+Step 4: Re-open Git Bash again and try **[Step III](#step-3)**
 
 :::
 
-### Boot it up!
+## Step III: Boot it up! {#step-3}
 
 Copy the command below into your terminal to turn on your bot
 
 ::: code-group
 
 ```sh-vue [🚀 Bun (FAST!!)]
-
-bunx --bun create-speedybot@2.0.8 setup --bun --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+bunx --bun create-speedybot@2.0.9 setup -e OAUTH_ENDPOINT -e BASE_URL_LLM -e MODEL -e CLIENT_ID -e CLIENT_SECRET -e APP_KEY -e API_VERSION --project azure --boot --bun --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
 ```sh-vue [👹 Experienced]
 git clone --depth 1 https://github.com/valgaze/speedybot
 cd speedybot
-cd examples/speedybot-starter
+cd examples/azure
 bun install
 bun util/cli.ts setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
+cp .env.example .env # Fill out .env with real values
 bun --watch util/launch.ts
 ```
 
@@ -213,18 +197,18 @@ curl https://get.volta.sh | bash
 volta install node
 ```
 
-Note: If you're having trouble getting setup on Windows see the **[Windows Quickstart](./windows.md)**
+Note: If you're having trouble getting setup on Windows see the **[Windows Quickstart](./../../windows.md)**
 
 Whatever option you choose, verify that Node.js is installed, enter `node -v` in your terminal-- if you see a version number you're good to go!
 
-### Boot it up!
+## Step III: Boot it up!
 
 Once Node is on your machine, copy the command below into your terminal to turn on your bot
 
 ::: code-group
 
 ```sh-vue [🥺 npx (recommended)]
-npx -y speedybot@^2.0.0 setup --project default --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
+npx -y speedybot@2.0.9 setup -e OAUTH_ENDPOINT -e BASE_URL_LLM -e MODEL -e CLIENT_ID -e CLIENT_SECRET -e APP_KEY -e API_VERSION --project azure --boot --install {{ store.state.tokenValid ? `--token ${store.state.token}` : '' }}
 ```
 
 ```sh-vue [👹 Manual Steps (For experienced)]
@@ -233,6 +217,7 @@ cd speedybot
 cd examples/speedybot-starter
 npm i
 npm run bot:setup {{ store.state.tokenValid ? store.state.token : '__ACCESS__TOKEN__HERE__' }}
+cp .env.example .env # Fill out .env with real values
 npm run dev
 ```
 
@@ -240,11 +225,23 @@ npm run dev
 
 </div>
 
-### Talk to Your Bot
+You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `bun run dev`
 
-Now send a message to your bot and you'll see a welcome screen with buttons and cards:
+Note: when you press **CTRL-C** the terminal will display the location of your bot
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/first_spin.gif"     
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/bot_off.gif" />
+
+## Step IV: Customize your agent
+
+Once your bot is loaded, you can customize the bot.ts file to choose which experience you want to deliver to your users. If you've never edited a bot before see **[here for the basics](https://speedybot.js.org/patterns#the-basics)**
+
+Under the first step in `bot.ts` you need to pick one of three LLM strategies to configure your bot's behavior with Azure (ie simple, threaded conversation threads, or streaming) hit save and the bot will reload:
+
+<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/pick_llm_strategy.gif?raw=true" />
+
+Ex. If you selected "streamExample" response tokens will "stream" in to the chat client as they arrive (rather than forcing your users to wait for the full completion):
+
+<img src="https://github.com/valgaze/speedybot-utils/blob/main/assets/various/llm_stream.gif?raw=true"   
     :style="{ filter: isDark ? 'invert(1)' : 'none' }"
     style="
       margin: 1rem 0px;
@@ -256,17 +253,15 @@ Now send a message to your bot and you'll see a welcome screen with buttons and 
       padding: 10px;
     "/>
 
-You can turn off your bot by holding down **CTRL-C** on your keyboard or exiting the terminal. To turn your bot back "on", open your terminal to your project directory and enter `bun run dev`
+## Things to try
 
-Note: when you press **CTRL-C** the terminal will display the location of your bot
+- Additionally, you can take a look at the **[system prompts](https://github.com/valgaze/speedybot/blob/v2/examples/azure/settings/helpers/prompts.ts)** and tune this starter sample to suit your requirements
 
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/bot_off.gif" />
+- Work with file uploads to see how to extract file data and get meta-data (file-name, file-type, size, etc), try uploading.
 
-## Step V Customize your Bot
+Upload a file and use the example code to extract file data like name, type, and size. Test with the **["andy.txt" file](https://github.com/valgaze/speedybot/blob/v2/examples/azure/settings/doc_sample/andy.txt)** to see how you can inject file content into a conversation context
 
-🎉 Congrats! You have a bot running on your machine!
-
-Now it's time to make it useful just for you. To customize your bot's behavior or responses, you'll need a code editor. One popular choice is Visual Studio Code.
+Note: To customize your bot's behavior or its responses, you'll need an editor-- one popular choice is Visual Studio Code.
 
 For installation details, visit **[https://code.visualstudio.com/download](https://code.visualstudio.com/download)**
 
@@ -276,27 +271,15 @@ It works great with SpeedyBot and even provides helpful hints as you build ex.
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/autocomplete.gif?raw=true" />
 
-When adding functionality to your bot the only file you'll need to modify is the `bot.ts` file and SpeedyBot will take care of the rest. See **[here for the details](https://speedybot.js.org/patterns#the-basics)** but the tl;dr version is that anytime a user sends your bot a message, uploads a file, or clicks submit on a **[SpeedyCard](./send-a-card.md)** SpeedyBot will follow your instructions and take actions on the user's behalf.
-
-With SpeedyBot you can really do it all-- start a conversation, communicate with a large language model, call out to 3rd-party APIs/services, add a document to an embedding/vector database, and generally handle user input in any way you choose.
-
-### Live reload
-
-You can now customize this bot however you want by editing the file **[settings/bot.ts](https://github.com/valgaze/speedybot/blob/v2/examples/speedybot-starter/settings/bot.ts)** in your code editor. Note that if your bot is running, when you make a change and click save your bot will auto-reload and instantly reflect your changes.
-
-<img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/live_reload.gif?raw=true" />
-
-Whether you're just starting out on your conversation design journey or a seasoned pro, SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](./examples/voiceflow/README)**, **[process file-uploads](./patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](./patterns.md#restrict-access-pattern)**, **[let users upload documents and then 'chat' with them using an LLM and a R.A.G. pattern](./examples/voiceflow-kb/README.md)**, create + manage **[SpeedyCards](./speedycard.md)**, **[ask for a user's location in a privacy-respecting way](./examples/location/README.md)**, and much more.
-
-When you're ready to deploy it to a server, serverless function or virtually any infrastructure/device, **[check out the examples](./examples.md)**
+When you're ready to deploy it to a server, serverless function or virtually any infrastructure/device, **[check out the examples](./../../examples.md)**
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { useData } from 'vitepress'
-import { useCustomStore } from "./.vitepress/util/store";
-import TokenInput from './.vitepress/components/token_handler.vue'
-import Blur from './.vitepress/components/Blur.vue'
-import SpeedyCardEditor from './.vitepress/components/SpeedyCardEditor.vue'
+import { useCustomStore } from './../../.vitepress/util/store';
+import TokenInput from './../../.vitepress/components/token_handler.vue'
+import Blur from './../../.vitepress/components/Blur.vue'
+import SpeedyCardEditor from './../../.vitepress/components/SpeedyCardEditor.vue'
 const { isDark } = useData()
 const store = useCustomStore()
 
@@ -325,8 +308,6 @@ onMounted(() => {
     runTimeChoice.value = DEFAULT_RUNTIME;
   }
 });
-
-
 
 </script>
 

@@ -69,6 +69,10 @@ function addWebhook(webhook: Webhook) {
   store.webhooks.push(webhook);
 }
 
+async function invalidateToken() {
+  store.tokenValid = false;
+}
+
 async function validateToken(tokenCandidate: string): Promise<void | boolean> {
   const loading = ElLoading.service({
     lock: true,
@@ -141,6 +145,7 @@ export const storeHelper = {
   setToken,
   addWebhook,
   validateToken,
+  invalidateToken,
   cycle,
   setSearchlevel,
 };

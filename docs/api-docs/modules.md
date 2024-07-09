@@ -27,4 +27,4 @@
 
 #### Defined in
 
-[types.ts:122](https://github.com/valgaze/speedybot/blob/4280279/src/types.ts#L122)
+[types.ts:122](https://github.com/valgaze/speedybot/blob/e6d093d/src/types.ts#L122)

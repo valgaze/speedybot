@@ -21,7 +21,7 @@ if (!token) {
 }
 Bot.setToken(token);
 
-// Replace TARGET below with an email address of room id
+// Replace TARGET below with an email address or room id
 const TARGET = "joe@joe.com";
 
 app.post("/speedybot", async (req, res) => {

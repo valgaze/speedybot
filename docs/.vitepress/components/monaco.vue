@@ -82,7 +82,17 @@ onMounted(() => {
 
 type HeaderConfig = {
   iconURL?: string;
-  backgroundColor?: ColorChoices;
+  backgroundColor?: "Default"
+              | "Dark"
+              | "Light"
+              | "Accent"
+              | "Good"
+              | "Warning"
+              | "Attention"
+              | "blue"
+              | "red"
+              | "green"
+              | "yellow";
   rtl?: boolean;
   iconSize?: SizeChoices;
   iconAlignment?: AlignmentChoices;
@@ -90,7 +100,17 @@ type HeaderConfig = {
   iconRound?: boolean;
   textSize?: SizeChoices;
   textAlign?: AlignmentChoices;
-  textColor?: ColorChoices;
+  textColor?: "Default"
+              | "Dark"
+              | "Light"
+              | "Accent"
+              | "Good"
+              | "Warning"
+              | "Attention"
+              | "blue"
+              | "red"
+              | "green"
+              | "yellow";
 };
 type SizeChoices =
   | "Small"
@@ -105,7 +125,17 @@ type SizeChoices =
     addBlock(
     content: string | CardBuilder,
     config: {
-      backgroundColor?: ColorChoices;
+      backgroundColor?: "Default"
+              | "Dark"
+              | "Light"
+              | "Accent"
+              | "Good"
+              | "Warning"
+              | "Attention"
+              | "blue"
+              | "red"
+              | "green"
+              | "yellow";
       vertAlign?: VAlignChoices;
     } = {}
   ): CardBuilder;
@@ -126,8 +156,28 @@ type SizeChoices =
     config: {
       size?: SizeChoices;
       align?: AlignmentChoices;
-      color?: ColorChoices;
-      backgroundColor?: ColorChoices;
+      color?: "Default"
+              | "Dark"
+              | "Light"
+              | "Accent"
+              | "Good"
+              | "Warning"
+              | "Attention"
+              | "blue"
+              | "red"
+              | "green"
+              | "yellow";
+      backgroundColor?: "Default"
+              | "Dark"
+              | "Light"
+              | "Accent"
+              | "Good"
+              | "Warning"
+              | "Attention"
+              | "blue"
+              | "red"
+              | "green"
+              | "yellow";
       vertAlign?: VAlignChoices;
     } = {}): CardBuilder;
     addChips(

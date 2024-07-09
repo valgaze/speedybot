@@ -52,9 +52,11 @@ curl -X POST -H "Content-Type: application/json" -d '{"id": 1234567890987654321}
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
 
-## 6) Supply your Webhook "secret" to your Worker
+## 6) Supply your Webhook "secret" to your server
 
 Even though it's "optional", it's a really, really good idea to set a Webhook Secret too so you can make sure incoming requests are the real deal. For more detail, see **[https://speedybot.js.org/webhooks#securing-webhooks](https://speedybot.js.org/webhooks#securing-webhooks)**
+
+To add a secret to an existing webhook, delete the current webhook and create a new one with the secret.
 
 ## NPM Run Scripts
 

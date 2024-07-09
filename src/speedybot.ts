@@ -437,15 +437,13 @@ export class SpeedyBot<S extends string = string> {
             await botInst._send(msgObj);
           }
           return true;
-
-          // type Thread = [root: string | SpeedyCard, ...messages: Array<string | SpeedyCard>] & { length: 1 | 2 | 3 | 4   5};
         },
 
         send(msg: Message) {
           return botInst.sendTo(roomId, msg);
         },
         reply(msg: string) {
-          return botInst.replyTo(roomId, messageId, msg);
+          return botInst.replyTo(roomId, this.msg.parentId ?? messageId, msg);
         },
         edit(messageObj: MessageResponse, msg: string) {
           return botInst.editMessage(messageObj.roomId, messageObj.id, msg);
@@ -812,7 +810,7 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
   }
 
   public async replyTo(
-    param1: MessageResponse | string,
+    roomIdParam: MessageResponse | string,
     param2: string | undefined,
     param3?: string
   ): Promise<MessageResponse> {
@@ -820,14 +818,14 @@ ${type === "json" ? JSON.stringify(data, null, 2) : data}
     let messageId: string;
     let msg: string;
 
-    if (typeof param1 === "object") {
-      // Handle the overload when param1 is an object (MessageResponse)
-      roomId = param1.roomId; // Use the roomId from param1
-      messageId = param1.id; // Use the messageId from param1
+    if (typeof roomIdParam === "object") {
+      // Handle the overload when roomIdParam is an object (MessageResponse)
+      roomId = roomIdParam.roomId; // Use the roomId from roomIdParam
+      messageId = roomIdParam.id; // Use the messageId from roomIdParam
       msg = param2 || ""; // Use param2 as the message, default to an empty string if not provided
     } else {
-      // Handle the overload when param1 is a string
-      roomId = param1; // Use param1 as the roomId
+      // Handle the overload when roomIdParam is a string
+      roomId = roomIdParam; // Use roomIdParam as the roomId
       messageId = param2 || ""; // Use param2 as the messageId, default to an empty string if not provided
       msg = param3 || ""; // Use param3 as the message, default to an empty string if not provided
     }

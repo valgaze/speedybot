@@ -31,7 +31,7 @@ npm install speedybot
 
 ## SpeedyBot basics
 
-You can get a bot up and running fast by grabbing one of the batteries-included samples at **[https://speedybot.js.org/examples](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](https://speedybot.js.org/examples/voiceflow/README)**, **[process file-uploads](https://speedybot.js.org/patterns.md#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns.md#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, **[ask for a user's location in a privacy-respecting way](https://speedybot.js.org/examples/location/README)** and lots more.
+You can get a bot up and running fast by grabbing one of the batteries-included samples at **[https://speedybot.js.org/examples](https://speedybot.js.org/examples/)** and see how SpeedyBot has you covered for crafting bots that can do it all-- **[securely integrate w/ LLMs + content management systems](https://speedybot.js.org/examples/voiceflow/README)**, **[process file-uploads](https://speedybot.js.org/patterns#handle-file-uploads)**, **[segment content based on user data + behavior](https://speedybot.js.org/patterns#restrict-emails)**, create + manage **[SpeedyCards](https://speedybot.js.org/speedycard)**, **[ask for a user's location in a privacy-respecting way](https://speedybot.js.org/examples/location/README)** and lots more.
 
 ## The basics
 
@@ -100,7 +100,7 @@ Bot.addStep(async ($) => {
 
 ## Garage
 
-SpeedyBot's docs are special-- they're interactive and you can do things with them. From the Patterns docs you can grab **[code snippets](https://speedybot.js.org/patterns)** and throw them right into your bot. Inside the visaul **[SpeedyBot Garage](https://speedybot.js.org/garage)** experience you can register webhooks and design + preview + send **[SpeedyCards](https://speedybot.js.org/speedycard)**
+SpeedyBot's docs are special-- they're interactive and you can do things with them. From the Patterns docs you can grab **[code snippets](https://speedybot.js.org/patterns)** and throw them right into your bot. Inside the visual **[SpeedyBot Garage](https://speedybot.js.org/garage)** experience you can register webhooks and design + preview + send **[SpeedyCards](https://speedybot.js.org/speedycard)**
 
 <img src="https://raw.githubusercontent.com/valgaze/speedybot-utils/main/assets/various/webhook_steps.gif" />
 
@@ -121,3 +121,45 @@ SpeedyBot makes it speedy & easy to build serverless bots for the LLM era. See t
 ## 🐍 Speedybot-Python
 
 If you want to build bots with Python rather than Typescript, you can also check out [🐍Speedybot-Python🐍](https://pypi.org/project/speedybot)
+
+## CLI
+
+It's SpeedyBot all the way down-- the **[SpeedyBot Documentation](https://speedybot.js.org)** is powered by SpeedyBot but SpeedyBot also has a fast and powerful CLI.
+
+- Can run as `npm init speedybot@latest` or `npx -y speedybot`
+
+- Add `--help` flag to end of commands (ex. `npx -y speedybot setup --help`)
+
+## Setup
+
+Download, scaffold, setup, and even boot SpeedyBot projects locally
+
+```
+npm init speedybot@latest setup -- --help
+npx -y speedybot@latest setup --help
+npx -y speedybot@latest setup
+npx -y speedybot@^2.0.0 setup --project default --boot --install
+npx -y speedybot@^2.0.0 setup --project voiceflow-kb -e BOT_TOKEN -e VOICEFLOW_API_KEY --install --boot
+```
+
+## Token
+
+Inspect a WebEx token, see if its valid and see if any associated agents
+
+```
+npm init speedybot@latest token -- --help
+npx -y speedybot@latest token --help
+```
+
+## Webhook
+
+Manage webhooks-- Create, List, and Destroy webhooks associated with a token
+
+```
+npm init speedybot@latest webhook -- --help
+npx -y speedybot@latest webhook --help
+npx -y speedybot@latest webhook list
+npx -y speedybot@latest webhook create -w https://www.myinfra.com -t tokenvalue -s secretvalue
+
+npx -y speedybot@latest webhook remove
+```

@@ -104,10 +104,13 @@ const store = useCustomStore();
 const label = ref("⭐️");
 const emit = defineEmits();
 const checkToken = async (tokenCandidate: string) => {
+  if (!tokenCandidate) store.invalidateToken();
+
   if (tokenCandidate.length > 5) {
     await store.validateToken(tokenCandidate);
     if (store.state.tokenValid) {
       emit("tokenValidated", { valid: true });
+    } else {
     }
   }
 };
