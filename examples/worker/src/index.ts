@@ -8,7 +8,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 import Bot from './../settings/bot';
-import { ENVELOPES, logoRoll } from '../../../../newshack/src';
+import { ENVELOPES, logoRoll } from 'speedybot';
 import { validateWebhook } from './validateWebhook';
 export interface Env {
 	BOT_TOKEN: string;
